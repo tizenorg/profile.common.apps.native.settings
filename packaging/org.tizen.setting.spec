@@ -11,13 +11,6 @@ License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
 Source1:    packaging/firewall.service
 
-%if "%{?tizen_profile_name}" == "tv"
-ExcludeArch: %{arm} %ix86 x86_64
-%endif
-%if "%{?tizen_profile_name}" == "wearable"
-ExcludeArch: %{arm} %ix86 x86_64
-%endif
-
 BuildRequires:  pkgconfig(libtzplatform-config)
 BuildRequires:  pkgconfig(appcore-common)
 BuildRequires:  pkgconfig(appcore-efl)
