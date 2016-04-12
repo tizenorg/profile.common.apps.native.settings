@@ -1,0 +1,16 @@
+# Package Information for pkg-config
+
+prefix=/@TZ_SYS_RO_APP@/org.tizen.setting
+exec_prefix=/usr
+#libdir=/@TZ_SYS_RO_APP@/org.tizen.setting/lib
+libdir=/usr/lib
+
+#includedir=/usr/include/system
+includedir=/usr/include
+
+Name:
+Description:
+Version:
+Requires:json-glib-1.0
+Libs: -L${libdir}  -lsetting-lite-common
+Cflags: -I${includedir}

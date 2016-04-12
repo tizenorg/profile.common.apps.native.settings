@@ -1,0 +1,74 @@
+
+setting-font.c,987
+#define UG_MODULE_API 26,797
+setting_view *__default_view_state(__default_view_state29,867
+setting_view *__app_control_get_operation_handler(__app_control_get_operation_handler76,2790
+setting_view *__get_font_view_to_load(__get_font_view_to_load115,4204
+static void setting_font_ug_cb_resize(153,5436
+static void *setting_font_ug_on_create(setting_font_ug_on_create160,5670
+static void setting_font_ug_on_start(199,7389
+static void setting_font_ug_on_pause(204,7519
+static void setting_font_ug_on_resume(209,7649
+static void setting_font_ug_on_destroy(214,7781
+static void setting_font_ug_on_message(235,8474
+static void setting_font_ug_on_event(242,8650
+static void setting_font_ug_on_key_event(271,9349
+UG_MODULE_API int UG_MODULE_INIT(289,9700
+UG_MODULE_API void UG_MODULE_EXIT(311,10371
+UG_MODULE_API int setting_plugin_reset(332,10808
+static Setting_Cfg_Node_T s_cfg_node_array[s_cfg_node_array352,11474
+UG_MODULE_API int setting_plugin_search_init(357,11839
+
+setting-font-font-size.c,765
+#define STR_FONT_SIZE_CHANGING 25,733
+setting_view setting_view_font_font_size 34,1186
+static char *result_str_arr[result_str_arr41,1407
+static int convert_font_size(43,1487
+char *get_font_size_name_by_id(get_font_size_name_by_id60,1976
+char *_item_text_font_size_keystr2_get(_item_text_font_size_keystr2_get73,2339
+static int setting_font_font_size_create(95,2973
+static int setting_font_font_size_destroy(169,6656
+static int setting_font_font_size_update(196,7248
+static int setting_font_font_size_cleanup(203,7381
+static Eina_Bool __setting_font_font_size_click_softkey_back_cb(224,7857
+static void __setting_font_size_progress_popup_cb(256,8844
+static Eina_Bool __font_change_call(266,9100
+void setting_font_font_size_list_mouse_up_cb(283,9498
+
+setting-font-main.c,1749
+#define SETTING_FONT_MAX_LEN 32,931
+#define FONT_BUF_SIZE 33,963
+setting_view setting_view_font_main 46,1582
+static void setting_font_rot_changed_cb(54,1779
+char *get_example_style_text(get_example_style_text85,2583
+static int _format_font_name_by_id(98,3080
+char *_item_text_keystr2_get(_item_text_keystr2_get137,4412
+static Evas_Object *_font_size_slider_get(_font_size_slider_get162,5097
+static int setting_font_style_is_exist_string(232,8027
+static Eina_List *__setting_font_main_available_list_get(__setting_font_main_available_list_get252,8430
+int get_font_name_id(346,11230
+int get_font_name_str(362,11768
+static void __setting_progress_popup_cb(382,12591
+static void _event_set_font_type_helper(395,12943
+static Eina_Bool __slide_timer(404,13228
+static void __font_size_slider_value_change_cb(436,14181
+void setting_font_main_list_sel_cb(454,14735
+static void __font_vconf_change_cb(525,17323
+#define SLIDER_MAX_VALUE 583,19332
+#define SLIDER_START_POINT_X(585,19360
+#define SLIDER_END_POINT_X(586,19421
+#define SLIDER_LENGTH(587,19505
+static int _slider_get_width(590,19585
+static int _slider_endpoint_x(620,20091
+static int _slider_startpoint_x(634,20320
+static void _slider_mouse_cb(647,20546
+static Eina_Bool __font_change_call(692,21642
+static void setting_font_done_click_cb(712,22152
+static void setting_font_cancel_click_cb(741,23281
+static void __setting_get_font_size_str(752,23564
+static void __setting_get_font_type_str(780,24178
+static int setting_font_main_create(816,24962
+static int setting_font_main_destroy(1033,33895
+static int setting_font_main_update(1097,35483
+static int setting_font_main_cleanup(1129,36401
+static Eina_Bool __setting_font_main_click_softkey_back_cb(1149,36810
