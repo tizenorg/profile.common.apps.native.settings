@@ -1,6 +1,6 @@
 %bcond_with x
 %bcond_with wayland
-
+%define buildarch arm
 
 Name:       org.tizen.setting
 Summary:    Setting application
