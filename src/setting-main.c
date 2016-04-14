@@ -366,6 +366,23 @@ Evas_Object *setting_main_layout_conform_create(Evas_Object *win_layout, Evas_Ob
 }
 
 /**
+ ** @brief Do process when clicking '<-' button
+ **
+ ** @param data application context
+ ** @param obj evas object
+ ** @param event_info event type
+ **/
+static Eina_Bool
+setting_main_click_softkey_back_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	SETTING_TRACE_BEGIN;
+
+	/* Send destroy request */
+	ui_app_exit();
+
+	return EINA_FALSE;
+}
+/**
 * @brief create all view layout
 *
 * win_main
@@ -404,7 +421,12 @@ static int setting_main_create(void *cb)
 	ad->view_layout = view_layout;
 
 	/* push a view to the naviframe */
-	Elm_Object_Item *navi_it = elm_naviframe_item_push(ad->navibar_main, "IDS_ST_OPT_SETTINGS", NULL, NULL, view_layout, NULL);
+	Evas_Object *lbtn = NULL;
+	lbtn = elm_button_add(ad->navibar_main);
+	elm_object_style_set(lbtn, "naviframe/end_btn/default");
+	evas_object_smart_callback_add(lbtn, "clicked", setting_main_click_softkey_back_cb, NULL);
+	Elm_Object_Item *navi_it = elm_naviframe_item_push(ad->navibar_main, "IDS_ST_OPT_SETTINGS", lbtn, NULL, view_layout, NULL);
+
 	elm_naviframe_item_title_enabled_set(navi_it, EINA_TRUE, EINA_TRUE);
 	ad->navibar_main_it = navi_it;
 	elm_object_item_domain_text_translatable_set(navi_it, SETTING_PACKAGE, EINA_TRUE);
