@@ -28,9 +28,6 @@
 
 #include <eventsystem.h>
 #include <bundle_internal.h>
-#include <notification_setting.h>
-#include <notification_setting_internal.h>
-
 
 #define SETTING_SOUND_VOL_MAX 15
 #define SETTING_DEFAULT_RINGTONE_VOL_INT	11
@@ -502,29 +499,6 @@ void __stop_change_cb(void *data, Evas_Object *obj, void *event_info)
 	SETTING_TRACE_END;
 }
 
-char *setting_do_not_disturb_is_enable(void *data)
-{
-	int err = NOTIFICATION_ERROR_NONE;
-	bool do_not_disturb;
-	char *desc;
-	notification_system_setting_h system_setting = NULL;
-
-	err = notification_system_setting_load_system_setting(&system_setting);
-	setting_retvm_if(NULL == system_setting || NOTIFICATION_ERROR_NONE != err,
-									SETTING_GENERAL_ERR_NULL_DATA_PARAMETER,
-									"notification_system_setting_load_system_Setting failed");
-	err = notification_system_setting_get_do_not_disturb(system_setting, &do_not_disturb);
-	SETTING_TRACE("do_not_disturb: %d", do_not_disturb);
-
-	if (1 == do_not_disturb){
-		notification_system_setting_free_system_setting(system_setting);
-		return "IDS_ST_BODY_ON";
-	} else {
-		notification_system_setting_free_system_setting(system_setting);
-		return "IDS_ST_BODY_ALERTTYPE_OFF";
-	}
-}
-
 static void
 __sound_chk_cb(void *data, Evas_Object *obj,
                void *event_info)
@@ -734,23 +708,6 @@ static void __get_lite_main_list(void *data)
 				data, SWALLOW_Type_INVALID, NULL,
 				NULL, 0,
 				"IDS_ST_HEADER_FEEDBACK", NULL, NULL);
-
-		/* Notifications */
-		setting_create_Gendial_field_titleItem(genlist, &itc_group_item, _("IDS_ST_BODY_NOTIFICATIONS"), NULL);
-		/* 9. Notifications - Do not disturb */
-		char *sub_desc = setting_do_not_disturb_is_enable(data);
-		ad->data_do_not_disturb = setting_create_Gendial_field_def(genlist, &itc_2text_2,
-															setting_sound_main_mouse_up_Gendial_list_cb,
-															data, SWALLOW_Type_INVALID, NULL,
-															NULL, 0,
-															"IDS_ST_MBODY_DO_NOT_DISTURB_ABB", sub_desc, NULL);
-		/* 10. Notifications - App notifications */
-		setting_create_Gendial_field_def(genlist, &itc_2text_2,
-										setting_sound_main_mouse_up_Gendial_list_cb,
-										data, SWALLOW_Type_INVALID, NULL,
-										NULL, 0,
-										"IDS_ST_MBODY_APP_NOTIFICATIONS",
-										"IDS_ST_BODY_ALLOW_OR_BLOCK_NOTIFICATIONS_FROM_INDIVIDUAL_APPLICATIONS", NULL);
 
 		ad->gl_lite_main = genlist;
 
@@ -1116,51 +1073,6 @@ static Eina_Bool __feedback_back_cb(void *data, Elm_Object_Item *it)
 	return EINA_TRUE;
 }
 
-void setting_sound_notifications_layout_ug_cb(ui_gadget_h ug,
-											enum ug_mode mode,
-											void *priv)
-{
-	SETTING_TRACE_BEGIN;
-	Evas_Object *base;
-
-	if (!priv)
-		return;
-
-	base = (Evas_Object *) ug_get_layout(ug);
-	if (!base)
-		return;
-
-	switch (mode) {
-		case UG_MODE_FULLVIEW:
-			evas_object_size_hint_weight_set(base, EVAS_HINT_EXPAND,
-					EVAS_HINT_EXPAND);
-			evas_object_show(base);
-			break;
-		default:
-			break;
-	}
-	SETTING_TRACE_END;
-}
-
-static void setting_sound_notifications_destroy_ug_cb(ui_gadget_h ug, void *priv)
-{
-	SETTING_TRACE_BEGIN;
-	ret_if(priv == NULL);
-	SettingProfileUG *ad = (SettingProfileUG *) priv;
-	if (ug) {
-		setting_ug_destroy(ug);
-	}
-	elm_genlist_realized_items_update(ad->gl_lite_main);
-
-	/* do not disturb */
-	if (ad->data_do_not_disturb) {
-		char *sub_desc = setting_do_not_disturb_is_enable(priv);
-		ad->data_do_not_disturb->sub_desc = (char *)strdup(sub_desc);
-		elm_object_item_data_set(ad->data_do_not_disturb->item, ad->data_do_not_disturb);
-		elm_genlist_item_update(ad->data_do_not_disturb->item);
-	}
-}
-
 static void
 setting_sound_main_mouse_up_Gendial_list_cb(void *data,
                                             Evas_Object *obj,
@@ -1186,46 +1098,7 @@ setting_sound_main_mouse_up_Gendial_list_cb(void *data,
 		ad->ringtone_type = list_item->keyStr;
 		setting_sound_main_create_myfile_ug(ad, list_item->keyStr);
 		__setting_sound_ug_key_ungrab(ad);
-	} else if (!safeStrCmp("IDS_ST_MBODY_DO_NOT_DISTURB_ABB", list_item->keyStr)) {
-#if 0
-		SettingProfileUG *ad = (SettingProfileUG *) data;
-		struct ug_cbs *cbs = (struct ug_cbs *)calloc(1, sizeof(struct ug_cbs));
-		setting_retm_if(!cbs, "calloc failed");
-		cbs->layout_cb = setting_sound_notifications_layout_ug_cb;
-		cbs->result_cb = NULL;
-		cbs->destroy_cb = setting_sound_notifications_destroy_ug_cb;
-		cbs->priv = (void *)ad;
-
-		elm_object_tree_focus_allow_set(ad->ly_main, EINA_FALSE);
-
-		SETTING_TRACE("To load ug[%s]", "ug-setting-notification-do-not-disturb-efl");
-		ug_create(ad->ug, "ug-setting-notification-do-not-disturb-efl", UG_MODE_FULLVIEW, NULL, cbs);
-		FREE(cbs);
-#else
-		app_launcher("ug-setting-notification-do-not-disturb-efl");
-#endif
-	} else if (!safeStrCmp("IDS_ST_MBODY_APP_NOTIFICATIONS", list_item->keyStr)) {
-#if 0
-		SettingProfileUG *ad = (SettingProfileUG *) data;
-		struct ug_cbs *cbs = (struct ug_cbs *)calloc(1, sizeof(struct ug_cbs));
-		setting_retm_if(!cbs, "calloc failed");
-		cbs->layout_cb = setting_sound_notifications_layout_ug_cb;
-		cbs->result_cb = NULL;
-		cbs->destroy_cb = setting_sound_notifications_destroy_ug_cb;
-		cbs->priv = (void *)ad;
-
-		elm_object_tree_focus_allow_set(ad->ly_main, EINA_FALSE);
-
-		SETTING_TRACE("To load ug[%s]", "ug-setting-notification-app-notifications-efl");
-		ug_create(ad->ug, "ug-setting-notification-app-notifications-efl", UG_MODE_FULLVIEW, NULL, cbs);
-		FREE(cbs);
-#else
-		app_launcher("ug-setting-notification-app-notifications-efl");
-#endif
-
-	}
-	/* additional */
-	else if (!safeStrCmp("IDS_ST_BODY_VIBRATE_WHEN_RINGING", list_item->keyStr)) {
+	} else if (!safeStrCmp("IDS_ST_BODY_VIBRATE_WHEN_RINGING", list_item->keyStr)) {
 		/* vibrate when ring*/
 		int old_status = list_item->chk_status;/*elm_check_state_get(list_item->eo_check); */
 		if (vconf_set_bool(VCONFKEY_SETAPPL_VIBRATE_WHEN_RINGING_BOOL, !old_status) == 0) {
