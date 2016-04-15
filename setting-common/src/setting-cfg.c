@@ -181,37 +181,12 @@ static Setting_Cfg_Node_T s_cfg_node_array[] = {
 	{KeyStr_Connections, NULL, "move://Tab2.top", Cfg_Item_Pos_Level0, 0, 0, Cfg_Item_Title_Node, NULL, NULL, NULL, uuid_Connectivity, 0, NULL},
 	{KeyStr_WiFi, IMG_WiFi, "wifi-efl-ug", Cfg_Item_Pos_Level0, Cfg_Item_Resetable,   0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Connections, &wifi_tfunc, uuid_WiFi, 0, "wifi-efl-ug"},
 	{KeyStr_Bluetooth, IMG_Bluetooth, "ug-bluetooth-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable,  0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Connections, &bluetooth_tfunc, uuid_Bluetooth, 0, "ug-bluetooth-efl"},
-#ifdef TIZEN_BUILD_TARGET
-	{KeyStr_FlightMode, IMG_FlightMode, "setting-flightmode-efl", Cfg_Item_Pos_Level0, Cfg_Item_unResetable,  0, Cfg_Item_Ui_Node_Toggle, NULL, KeyStr_Connections, &flightmode_tfunc, uuid_FlightMode, 0, NULL},
-#endif
-
-#ifdef TIZEN_BUILD_TARGET
-	{KeyStr_MobileAP, IMG_MobileAP, "ug-setting-mobileap-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable,  0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Connections, NULL, uuid_MobileAP, 0, NULL},
-#ifdef _M0
-	{KeyStr_NFC, IMG_NFC, "setting-nfc-efl|type:nfc", Cfg_Item_Pos_Level0, Cfg_Item_unResetable,  0, Cfg_Item_Ug_Node_Toggle, NULL, KeyStr_Connections, &nfc_tfunc, uuid_NFC, 0, "setting-nfc-efl"},
-#endif
-#endif
-#ifdef TIZEN_BUILD_TARGET
-	{KeyStr_MobileNetworks, IMG_Network, "setting-network-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0,  Cfg_Item_Ug_Node, NULL, KeyStr_Connections, NULL, uuid_Network, 0, NULL},
-#endif
-	/*More connections */
-	{KeyStr_MoreConnections, IMG_More_Connections, "setting-moreconnections-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0,  Cfg_Item_Ug_Node, NULL, KeyStr_Connections, NULL, uuid_Network, 0, NULL},
 
 	/* Group:Device */
 	{KeyStr_Device, NULL, "move://Tab3.top", Cfg_Item_Pos_Level0, 0, 0, Cfg_Item_Title_Node, NULL, NULL, NULL, uuid_SoundDisplay, 0, NULL},
 	{KeyStr_Sounds, IMG_Sounds, "setting-profile-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0, Cfg_Item_Ug_Node, NULL, KeyStr_Device, NULL, uuid_SoundDisplay, 0, NULL},
 	{KeyStr_Display, IMG_Display, "setting-display-efl|viewtype:main", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0, Cfg_Item_Ug_Node, NULL, KeyStr_Device, NULL, uuid_Display, 0, "org.tizen.setting.display"},
 	{KeyStr_ApplicationsItem, IMG_Applications, "setting-applications-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0, Cfg_Item_Ug_Node, NULL, KeyStr_Device, NULL, uuid_Display, 0, "org.tizen.setting.display"},
-
-	/* Group: Personal */
-	{KeyStr_Personal, NULL, "move://Tab3.top", Cfg_Item_Pos_Level0, 0, 0, Cfg_Item_Title_Node, NULL, NULL, NULL, uuid_Personal, 0, NULL},
-	{KeyStr_Wallpaper, IMG_Wallpaper, "org.tizen.wallpaper-ui-service", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Personal, NULL, uuid_HomeAndLockscreen, 0, "org.tizen.setting.wallpaper-ui-service"},
-	{KeyStr_LockScreen, IMG_LockedScreen, "setting-security-efl", Cfg_Item_Pos_Level0, Cfg_Item_Resetable, 0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Personal, NULL, uuid_LockedScreen, 0, "ug-lockscreen-options-efl"},
-#if 0
-	/*Accessbility - not supported since 2015.8.12 */
-	{KeyStr_Accessibility, IMG_Accessibility, "setting-accessibility-efl", Cfg_Item_Pos_Level0, Cfg_Item_unResetable, 0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Personal, NULL, uuid_Accounts, 0, "setting-accessibility-efl"},
-#endif
-	{KeyStr_Accounts, IMG_Accounts, "setting-myaccount-efl|mode:account_list", Cfg_Item_Pos_Level0, Cfg_Item_unResetable, 0, Cfg_Item_AppLauncher_Node, NULL, KeyStr_Personal, NULL, uuid_Accounts, 0, "setting-myaccount-efl"},
 
 	/* Group: System */
 	{KeyStr_System, NULL, "move://Tab4.top", Cfg_Item_Pos_Level0, 0, 0, Cfg_Item_Title_Node, NULL, NULL, NULL, uuid_DeviceMange, 0,  NULL},
