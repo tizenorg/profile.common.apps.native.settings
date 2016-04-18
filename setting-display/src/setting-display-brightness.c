@@ -543,35 +543,24 @@ static Evas_Object *__setting_brightness_add_slider(void *data, Evas_Object *obj
 	Eina_List *items = NULL;
 
 	SETTING_TRACE_BEGIN;
+
 	setting_retvm_if(!data || !obj, NULL, "!data || !obj");
 	retv_if(!data, NULL);
 
-	if (!safeStrCmp(part, "elm.icon")) {
-		int auto_value = SETTING_BRIGHTNESS_AUTOMATIC_ON;
-		int err, ret;
+	if (!safeStrCmp(part, "elm.swallow.content")) {
+
+		Evas_Object *layout;
+
+		// Set custom layout style
+		layout = elm_layout_add(obj);
+		elm_layout_file_set(layout, SETTING_SLIDER_EDJ_NAME, "gl_custom_item");
+		evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+		evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
 		Evas_Object *slider = elm_slider_add(obj);	/*  "elm/slider/horizontal/default" */
 		retv_if(slider == NULL, NULL);
 
-		ret = setting_get_int_slp_key(INT_SLP_SETTING_AUTOMATIC_BRIGHTNESS, &auto_value, &err);/*if get failed,to hold value SETTING_BRIGHTNESS_AUTOMATIC_ON */
-		SETTING_TRACE("auto_value:%d", auto_value);
-
 		elm_layout_signal_emit(item_data->eo_check, "elm,state,val,hide", "");
-
-		if (0 != ret) {
-			/*add error handle,due to different target env.. */
-			SETTING_TRACE_ERROR("Failed to get value of [%s]", VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT);
-		}
-
-		if (auto_value) {
-			double step;
-			elm_slider_indicator_show_set(slider, EINA_TRUE);
-			elm_slider_indicator_format_function_set(slider, _setting_display_brightness_indicator_format, _indicator_free);
-			elm_object_style_set(slider, "center_point");
-			elm_slider_indicator_format_set(slider, "%1.0f");
-
-			step = _step_size_calculate(slider, BRIGHTNESS_AUTO_MIN_LEVEL, BRIGHTNESS_AUTO_MAX_LEVEL);
-			elm_slider_step_set(slider, step);
-		}
 
 		elm_slider_min_max_set(slider, BRIGHTNESS_MIN, BRIGHTNESS_MAX);
 		evas_object_size_hint_weight_set(slider, EVAS_HINT_EXPAND, 0.0);
@@ -606,7 +595,8 @@ static Evas_Object *__setting_brightness_add_slider(void *data, Evas_Object *obj
 			elm_object_item_access_order_set(item_data->item, items);
 		}
 
-		return slider;
+		elm_object_part_content_set(layout, "elm.swallow.content", slider);
+		return layout;
 	}
 
 	return NULL;
@@ -616,7 +606,6 @@ void construct_brightness(void *data, Evas_Object *genlist)
 {
 	SettingDisplayUG *ad = (SettingDisplayUG *) data;
 	const char *left_icon = NULL;
-	int auto_value = SETTING_BRIGHTNESS_AUTOMATIC_ON;
 	int err;
 	int ret = -1;
 	int value = SETTING_BRIGHTNESS_LEVEL5;
@@ -625,17 +614,10 @@ void construct_brightness(void *data, Evas_Object *genlist)
 	SETTING_TRACE_BEGIN;
 	ret_if(data == NULL);
 
-	setting_create_Gendial_itc("slider.main", &(ad->itc_1icon));
+	setting_create_Gendial_itc("full", &(ad->itc_1icon));
 
 	ad->itc_1icon.func.content_get = __setting_brightness_add_slider;
 	ad->last_requested_level = -1;
-
-	ret = setting_get_int_slp_key(INT_SLP_SETTING_AUTOMATIC_BRIGHTNESS, &auto_value, &err);/*if get failed,to hold value SETTING_BRIGHTNESS_AUTOMATIC_ON */
-	SETTING_TRACE("auto_value:%d", auto_value);
-	if (0 != ret) {
-		/*add error handle,due to different target env.. */
-		SETTING_TRACE_ERROR("Failed to get value of [%s]", VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT);
-	}
 
 	/* check manual */
 	ret = vconf_get_int(__display_brightness_get_vconf_need_save(), &value);
@@ -648,26 +630,26 @@ void construct_brightness(void *data, Evas_Object *genlist)
 	left_icon = setting_brightness_get_slider_icon(value);
 
 	/* [UI] Slider control for Bightness */
+
+    setting_create_Gendial_field_def(genlist, &(ad->itc_1text),
+										 NULL,
+	                                     NULL, SWALLOW_Type_INVALID,
+										 NULL, NULL, 0, "IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING",
+	                                     NULL, NULL);
 	ad->data_br_sli =
 	    setting_create_Gendial_field_def(genlist, &(ad->itc_1icon), NULL,
 	                                     NULL, SWALLOW_Type_LAYOUT_SLIDER,
 	                                     (char*)left_icon,
-	                                     NULL, value, "IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING",
+	                                     NULL, value, NULL,
 	                                     NULL,
 	                                     setting_display_birghtness_bright_slider_value_change_cb);
 
 	if (ad->data_br_sli) {
 		ad->data_br_sli->win_main = ad->win_main_layout;
 		ad->data_br_sli->evas = ad->evas;
-		if (auto_value) {
-			ad->data_br_sli->isIndicatorVisible = 1;
-			ad->data_br_sli->slider_min = BRIGHTNESS_MIN;
-			ad->data_br_sli->slider_max = BRIGHTNESS_MAX;
-		} else {
-			ad->data_br_sli->slider_min = BRIGHTNESS_MIN;
-			ad->data_br_sli->slider_max = display_get_max_brightness();
-			ad->data_br_sli->isIndicatorVisible = 0;
-		}
+		ad->data_br_sli->slider_min = BRIGHTNESS_MIN;
+		ad->data_br_sli->slider_max = display_get_max_brightness();
+		ad->data_br_sli->isIndicatorVisible = 0;
 		ad->data_br_sli->userdata = ad;
 
 		__BACK_POINTER_SET(ad->data_br_sli);
@@ -675,11 +657,7 @@ void construct_brightness(void *data, Evas_Object *genlist)
 		SETTING_TRACE_ERROR("ad->data_br_sli is NULL");
 	}
 
-	if (auto_value) {
-		temp = (char *)g_strdup(KeyStr_Brightness_Auto_Adjust);
-	} else {
-		temp = (char *)g_strdup(KeyStr_Brightness_Adjust);
-	}
+	temp = (char *)g_strdup(KeyStr_Brightness_Adjust);
 
 	if (ad->data_adjust) {
 		ad->data_adjust->userdata = ad;
@@ -848,6 +826,7 @@ static void setting_display_set_slider_value(void *data, Evas_Object *obj, doubl
 	vconf_str = __display_brightness_get_vconf_need_save();
 	if (!safeStrCmp(vconf_str, VCONFKEY_SETAPPL_LCD_BRIGHTNESS)) {
 		int ret, err;
+
 		ret = display_set_brightness_with_setting(value);
 		if (ret == DEVICE_ERROR_NONE) {
 			ad->data_br_sli->chk_status = (int)value;

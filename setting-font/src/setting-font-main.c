@@ -166,9 +166,8 @@ static Evas_Object *_font_size_slider_get(void *data, Evas_Object *obj,
 
 	retv_if(!data, NULL);
 	Setting_GenGroupItem_Data *item_data = data;
-	SETTING_TRACE(" --------------------> part:%s", part);
 
-	if (!safeStrCmp(part, "elm.icon")) { /* CENTER WHOLE */
+	if (!safeStrCmp(part, "elm.swallow.content")) { /* CENTER WHOLE */
 		if (SWALLOW_Type_LAYOUT_5STEP_SLIDER == item_data->swallow_type) {
 			SETTING_TRACE("Add 5Step Slider");
 
@@ -829,7 +828,8 @@ static int setting_font_main_create(void *cb)
 	setting_create_Gendial_itc(SETTING_GENLIST_ICON_1LINE_STYLE, &(ad->itc_1text_1icon_2));
 	ad->itc_1text_1icon_2.func.text_get = _item_text_keystr2_get;
 
-	setting_create_Gendial_itc("1icon", &(ad->itc_bg_1icon));
+	setting_create_Gendial_itc("full", &(ad->itc_bg_1icon));
+	setting_create_Gendial_itc("type1", &(ad->itc_1icon));
 	SETTING_TRACE("ad->itc_bg_1icon: %s ", ad->itc_bg_1icon);
 	ad->itc_bg_1icon.func.content_get = _font_size_slider_get;
 
@@ -881,12 +881,11 @@ static int setting_font_main_create(void *cb)
 	char *default_example_str = get_example_style_text(ad->font_size_str, ad->font_type_str);
 
 	ad->font_example =
-	    setting_create_Gendial_field_def(ad->genlist, &(ad->itc_bg_1icon),
+	    setting_create_Gendial_field_def(ad->genlist, &(ad->itc_1icon),
 	                                     NULL,
 	                                     ad, SWALLOW_Type_INVALID, NULL,
 	                                     NULL, 0, NULL,
 	                                     default_example_str, NULL);
-
 	if (ad->font_example) {
 		__BACK_POINTER_SET(ad->font_example);
 	} else {
