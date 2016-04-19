@@ -100,9 +100,7 @@
 #define SETTING_SOUND_EDJ_NAME		SETTING_EDJ_PATH"/setting-sound.edj"
 #define SETTING_GENLIST_EDJ_NAME	SETTING_EDJ_PATH"/setting-genlist.edj"
 #define SETTING_NEW_GENLIST_EDJ_NAME	SETTING_EDJ_PATH"/setting-new-genlist.edj"
-#define SETTING_PROC_EDJ_NAME			SETTING_EDJ_PATH"/setting-proc.edj"
 #define SETTING_SLIDER_EDJ_NAME	SETTING_EDJ_PATH"/setting-slider.edj"
-#define SETTING_EFF_EDJ_NAME			SETTING_EDJ_PATH"/setting-eff.edj"
 
 #define SETTING_THEME_COLOR_THEME_EDJ_NAME		SETTING_EDJ_PATH"/setting-color-theme.edj"
 
