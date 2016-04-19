@@ -27,24 +27,10 @@
 #include "setting-storage-utils.h"
 #include "setting-storage-async-worker.h"
 #include "setting-storage-main.h"
-#if 0
-#define SETTING_STORAGE_PIE_RECT_WIDTH (432 * WIDGET_SCALE_FACTOR)
-#define SETTING_STORAGE_PIE_RECT_HEIGHT (414 * WIDGET_SCALE_FACTOR)
-#define SETTING_STORAGE_PIE_CYCLE_SIZE (294 * WIDGET_SCALE_FACTOR)
-#else
+
 #define SETTING_STORAGE_PIE_RECT_WIDTH (ELM_SCALE_SIZE(432))
 #define SETTING_STORAGE_PIE_RECT_HEIGHT (ELM_SCALE_SIZE(414))
 #define SETTING_STORAGE_PIE_CYCLE_SIZE (ELM_SCALE_SIZE(294))
-#endif
-
-
-
-#define SETTING_STORAGE_APPS_ICON_PATH SETTING_ICON_PATH"/A01-1_icon_color_applications.png"
-#define SETTING_STORAGE_PICS_ICON_PATH SETTING_ICON_PATH"/A01-1_icon_color_pictures.png"
-#define SETTING_STORAGE_AUDIO_ICON_PATH SETTING_ICON_PATH"/A01-1_icon_color_Audio.png"
-#define SETTING_STORAGE_MISCES_ICON_PATH SETTING_ICON_PATH"/A01-1_icon_color_miscellaneous_files.png"
-#define SETTING_STORAGE_AVAIL_ICON_PATH SETTING_ICON_PATH"/A01-1_icon_color_available.png"
-#define SETTING_STORAGE_SYS_ICON_PATH SETTING_ICON_PATH"/A01-1_icon_color_system.png"
 
 const char *storageUg_MMC_stat = VCONFKEY_SYSMAN_MMC_STATUS;
 
@@ -553,7 +539,6 @@ static void storageUg_media_filesys_changed_cb(
 	media_content_type_e media_type,
 	char *uuid,
 	char *path,
-	char *mime_type,
 	void *user_data)
 {
 	SETTING_TRACE_BEGIN;

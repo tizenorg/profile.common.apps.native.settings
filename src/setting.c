@@ -324,11 +324,10 @@ static bool setting_main_app_create(void *data)
 	/*PLUGIN_INIT(ad); */
 	/*if ( ! ad->is_searchmode) */
 	/*{ */
+#if 0
 	elm_theme_extension_add(NULL, SETTING_THEME_EDJ_NAME);
-	elm_theme_extension_add(NULL, SETTING_NEWUX_EDJ_NAME);
-	elm_theme_extension_add(NULL, SETTING_GENLIST_EDJ_NAME);
-	elm_theme_extension_add(NULL, SETTING_NEW_GENLIST_EDJ_NAME);
 	elm_theme_extension_add(NULL, SETTING_SLIDER_EDJ_NAME);
+#endif
 	/*} */
 
 	elm_win_indicator_mode_set(ad->win_main, ELM_WIN_INDICATOR_SHOW);

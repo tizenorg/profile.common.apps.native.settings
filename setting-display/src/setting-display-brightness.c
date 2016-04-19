@@ -25,8 +25,6 @@
 
 #define BRIGHTNESS_MAX 100
 #define BRIGHTNESS_MIN 1
-#define BRIGHTNESS_AUTO_MAX_LEVEL 5
-#define BRIGHTNESS_AUTO_MIN_LEVEL -5
 
 static int setting_display_brightness_create(void *cb);
 static int setting_display_brightness_destroy(void *cb);
@@ -73,25 +71,6 @@ const char *iconPath[SETTING_DISPLAY_ICON_PATH] = {
 };
 
 
-static void update_overheating_text(void *data)
-{
-	SettingDisplayUG *ad = (SettingDisplayUG *)data;
-	int auto_brightnes = 0;
-
-	vconf_get_int(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, &auto_brightnes);
-
-	if (ad->data_overheating && ad->data_br_sli) {
-		if (ad->data_br_sli->slider_max < 100 && !auto_brightnes) {
-			G_FREE(ad->data_overheating->keyStr);
-			ad->data_overheating->keyStr = (char *)g_strdup(KeyStr_Brightness_Overheating);
-		} else {
-			G_FREE(ad->data_overheating->keyStr);
-			ad->data_overheating->keyStr = NULL;
-		}
-		elm_object_item_data_set(ad->data_overheating->item, ad->data_overheating);
-		elm_genlist_item_update(ad->data_overheating->item);
-	}
-}
 /*------------------------------------------------------ */
 /* for client - bus */
 /*------------------------------------------------------ */
@@ -118,19 +97,6 @@ static DBusHandlerResult setting_brightness_dbus_signal_filter(DBusConnection *c
 			return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 		}
 
-		/* update max brightness level*/
-		vconf_get_int(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, &value);
-		if (!value && ad->data_br_sli) {
-			ad->data_br_sli->slider_max = display_get_max_brightness();
-			/*device_display_get_max_brightness(0, (int*)&ad->data_br_sli->slider_max); */
-			SETTING_TRACE("brightness_level:%d", brightness_level);
-			SETTING_TRACE("Brightness max value:%lf", ad->data_br_sli->slider_max);
-			vconf_get_int(VCONFKEY_SETAPPL_LCD_BRIGHTNESS, &value);
-			if (value > ad->data_br_sli->slider_max)
-				vconf_set_int(VCONFKEY_SETAPPL_LCD_BRIGHTNESS, ad->data_br_sli->slider_max);
-
-			update_overheating_text(ad);
-		}
 	}
 
 	return DBUS_HANDLER_RESULT_HANDLED;
@@ -262,10 +228,6 @@ static void _brightness_deregister_event_cb(void *data)
 		if (ret != 0)
 			SETTING_TRACE_ERROR("failed to register a cb key:%s err:%d", "VCONFKEY_SETAPPL_LCD_BRIGHTNESS", ret);
 
-		ret = vconf_ignore_key_changed(VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS, __display_int_vconf_cb);
-		if (ret != 0)
-			SETTING_TRACE_ERROR("failed to register a cb key:%s err:%d", "VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS", ret);
-
 		ad->is_event_registered = 0;
 	}
 
@@ -300,31 +262,11 @@ static void _brightness_overheat_check(void *data)
 	int value = 0;
 	int max_brightness = BRIGHTNESS_MAX;
 	SettingDisplayUG *ad = data;
-	int automatic_on = 0;
 
 	SETTING_TRACE_BEGIN;
 	setting_retm_if(data == NULL, , "Data parameter is NULL");
 
 	value = ad->last_requested_level;
-
-	vconf_get_int(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, &automatic_on);
-
-	if (automatic_on == 0) {
-		max_brightness = display_get_max_brightness();
-
-		if (value > max_brightness && max_brightness != BRIGHTNESS_MAX) {
-			SETTING_TRACE("max brightness is limited");
-
-			elm_slider_value_set(ad->data_br_sli->eo_check, (double)max_brightness);
-			ad->last_requested_level = max_brightness;
-			ad->data_br_sli->slider_max = max_brightness;
-
-			SETTING_TRACE("[TEST]slider_max: %lf", ad->data_br_sli->slider_max);
-
-			setting_display_set_slider_value(ad, ad->data_br_sli->eo_check, (double)max_brightness);
-			update_overheating_text(ad);
-		}
-	}
 }
 
 void static _brightness_slider_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -416,81 +358,6 @@ void __display_int_vconf_cb(keynode_t *key, void *data)
 			value = (int)(status * 1000);
 		}
 		snprintf(strValue, BUF_SIZE, "%d", value);
-
-	} else if (!safeStrCmp(vconf_name, VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT)) {
-		setting_update_gl_item_chk_status(ad->data_br_auto, status);
-		if (ad->data_br) {
-			ad->data_br->sub_desc = (char *)g_strdup(get_brightness_mode_str());
-			elm_object_item_data_set(ad->data_br->item, ad->data_br);
-			elm_genlist_item_update(ad->data_br->item);
-		}
-		if (status) {
-			int val = 50;
-
-			SETTING_TRACE("off->on");
-
-			/*need to update adjust text*/
-			if (ad->data_adjust) {
-				G_FREE(ad->data_adjust->keyStr);
-				ad->data_adjust->keyStr = (char *)g_strdup(KeyStr_Brightness_Auto_Adjust);
-				elm_object_item_data_set(ad->data_adjust->item, ad->data_adjust);
-				elm_genlist_item_update(ad->data_adjust->item);
-			}
-
-			/*save current slider value at VCONFKEY_SETAPPL_LCD_BRIGHTNESS */
-			/* And, slider value should be changed to VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS,to use */
-			vconf_get_int(VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS, &val);
-			if (ad->data_br_sli) {
-				ad->data_br_sli->slider_min = BRIGHTNESS_MIN;
-				ad->data_br_sli->slider_max = BRIGHTNESS_MAX;
-				ad->data_br_sli->chk_status = val;
-				elm_object_item_data_set(ad->data_br_sli->item, ad->data_br_sli);
-				elm_genlist_item_update(ad->data_br_sli->item);
-			}
-
-		} else { /*on->off */
-			int val = 50;
-			int err;
-
-			SETTING_TRACE("on->off");
-
-			/*need to update adjust text*/
-			if (ad->data_adjust) {
-				G_FREE(ad->data_adjust->keyStr);
-				ad->data_adjust->keyStr = (char *)g_strdup(KeyStr_Brightness_Adjust);
-				elm_object_item_data_set(ad->data_adjust->item, ad->data_adjust);
-				elm_genlist_item_update(ad->data_adjust->item);
-			}
-
-			/*save current slider value at VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS,to backup */
-			/*And, slider value should be changed to VCONFKEY_SETAPPL_LCD_BRIGHTNESS,to use */
-			setting_get_int_slp_key(INT_SLP_SETTING_LCD_BRIGHTNESS, &val, &err);
-			if (ad->data_br_sli) {
-				ad->data_br_sli->slider_min = BRIGHTNESS_MIN;
-				ad->data_br_sli->slider_max = display_get_max_brightness();
-				/*device_display_get_max_brightness(0, (int*)&ad->data_br_sli->slider_max); */
-				ad->data_br_sli->chk_status = val;
-				elm_object_item_data_set(ad->data_br_sli->item, ad->data_br_sli);
-				elm_genlist_item_update(ad->data_br_sli->item);
-			}
-
-			/*set the device side value */
-			/*err =  device_display_set_brightness(0, val); */
-			err = display_set_brightness_with_setting(val);
-			if (err != DEVICE_ERROR_NONE) {
-				SETTING_TRACE(" device_display_set_brightness : failed[ret=%d]", err);
-				setting_create_popup(ad, ad->win_get, NULL, "IDS_CST_POP_FAILED",
-				                                 NULL, POPUP_INTERVAL, FALSE, FALSE, 0);
-			}
-
-		}
-		update_overheating_text(ad);
-	} else if (!safeStrCmp(vconf_name, VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS)) {
-		int auto_matic_status = 0;
-
-		vconf_get_int(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, &auto_matic_status);
-		if (auto_matic_status && ad->data_br_sli)
-			elm_slider_value_set(ad->data_br_sli->eo_check, status);
 	}
 
 	return;
@@ -500,13 +367,7 @@ const char *__display_brightness_get_vconf_need_save()
 {
 	int state = 0;
 
-	vconf_get_int(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, &state);
-
-	if (state) {
-		return VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS;
-	} else {
-		return VCONFKEY_SETAPPL_LCD_BRIGHTNESS;
-	}
+	return VCONFKEY_SETAPPL_LCD_BRIGHTNESS;
 }
 
 static double _step_size_calculate(Evas_Object *obj, double min, double max)
@@ -518,23 +379,6 @@ static double _step_size_calculate(Evas_Object *obj, double min, double max)
 	if (steps) step = (1.0 / steps);
 
 	return step;
-}
-
-static char *_setting_display_brightness_indicator_format(double val)
-{
-	char buf[16] = {0,};
-	int value = (int)(val + 0.5);
-
-	value = value / 10;
-	value = value - 5;
-	snprintf(buf, 15, "%d", value);
-
-	return strdup(buf);
-}
-
-static void _indicator_free(char *str)
-{
-	free(str);
 }
 
 static Evas_Object *__setting_brightness_add_slider(void *data, Evas_Object *obj, const char *part)
@@ -728,10 +572,6 @@ static int setting_display_brightness_create(void *cb)
 
 	construct_brightness(ad, genlist);
 
-	/*key notify for refreshing */
-	if (&setting_view_display_brightness == ad->view_to_load)
-		vconf_notify_key_changed(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, __display_int_vconf_cb, ad);
-
 	setting_view_display_brightness.is_create = 1;
 
 	return SETTING_RETURN_SUCCESS;
@@ -747,9 +587,6 @@ static int setting_display_brightness_destroy(void *cb)
 	retv_if(!(setting_view_display_brightness.is_create), SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
 
 	destruct_brightness(cb);
-
-	if (&setting_view_display_brightness == ad->view_to_load)
-		vconf_ignore_key_changed(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, __display_int_vconf_cb);
 
 	if (&setting_view_display_brightness == ad->view_to_load) {
 		if (ad->ly_main != NULL) {
@@ -812,9 +649,6 @@ setting_display_brightness_click_softkey_cancel_cb(void *data,
 	                    &setting_view_display_main, ad);
 }
 
-/**
- * [UI] 'Automatic' toggle
- */
 static void setting_display_set_slider_value(void *data, Evas_Object *obj, double value)
 {
 	SettingDisplayUG *ad = data;
@@ -838,13 +672,6 @@ static void setting_display_set_slider_value(void *data, Evas_Object *obj, doubl
 			setting_get_int_slp_key(INT_SLP_SETTING_LCD_BRIGHTNESS, &tmp, &err);
 			vconf_get_int(VCONFKEY_SETAPPL_LCD_BRIGHTNESS, &tmp);
 			elm_slider_value_set(obj, tmp);
-			setting_create_popup(ad, ad->win_get, NULL, "IDS_CST_POP_FAILED",
-			                                 NULL, POPUP_INTERVAL, FALSE, FALSE, 0);
-		}
-	} else {
-		int ret = vconf_set_int(VCONFKEY_SETAPPL_LCD_AUTOMATIC_BRIGHTNESS, value);
-		/*add error handle.. */
-		if (0 != ret) {
 			setting_create_popup(ad, ad->win_get, NULL, "IDS_CST_POP_FAILED",
 			                                 NULL, POPUP_INTERVAL, FALSE, FALSE, 0);
 		}

@@ -49,12 +49,7 @@
 /* Choose default programe*/
 #define Display_APP_Full_Name 1
 #define MAX_APP_NAME 1024
-#define IMAGES_MIME_TYPE "image/png"	/* temporary implement */
-#define SOUNDS_MIME_TYPE "audio/mpeg"	/* temporary implement */
-#define VIDEOS_MIME_TYPE "video/3gpp"	/* temporary implement */
-#define OTHERS_MIME_TYPE "application/pdf"	/* temporary implement */
 #define TBL_NAME "menu"
-#define MIME_FIELD_NAME "mimetype"
 #define NAME_BUF_LEN (128)
 
 #define REGION_ITEM_MAX 300
