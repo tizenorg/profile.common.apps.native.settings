@@ -112,15 +112,6 @@ Requires(post): attr
 Setting application
  BEAT UI, Setting application.
 
-%package ref
-Summary: replacement for org.tizen.setting.xml
-Group: Application/Core Applications
-Requires(post): org.tizen.setting
-
-%description ref
-replace for org.tizen.setting.xml
- need to check
-
 %package devel
 Summary: A setting common library (Development)
 Group: Application Framework/Settings
@@ -217,54 +208,20 @@ mkdir -p %{buildroot}%{_libdir}/systemd/system/default.target.wants
 %clean
 
 %post
-#if [ ! -d %{OPTPREFIX} ]
-#then
-#	echo "CREATE %{OPTPREFIX} DIR"
-#    mkdir -p %{OPTPREFIX}
-#	echo "CREATE %{OPTPREFIX}/data DIR"
-#    mkdir -p %{OPTPREFIX}/data
-#fi
-#chmod a+w %{OPTPREFIX}/data
-
-
-
-update-mime-database %{_prefix}/share/mime
-
 # Set vconf values with -g/-u options
 GOPTION="-g 6514"
 
 #resetSound
-#DEFAULT_CALL_TONE="%{OPTSHAREREFIX}/Ringtones/ringtone_sdk.mp3"
-#DEFAULT_NOTI_TONE="%{OPTSHAREREFIX}/Alerts/General notification_sdk.wav"
-
-	DEFAULT_CALL_TONE="%{TZ_SYS_SHARE}/settings/Ringtones/ringtone_sdk.mp3"
-	DEFAULT_NOTI_TONE="%{TZ_SYS_SHARE}/Alerts/General notification_sdk.wav"
-
-
+DEFAULT_CALL_TONE="%{TZ_SYS_SHARE}/settings/Ringtones/ringtone_sdk.mp3"
+DEFAULT_NOTI_TONE="%{TZ_SYS_SHARE}/Alerts/General notification_sdk.wav"
 
 #resetImages
-#	DEFAULT_HOME="%{OPTSHAREREFIX}/Wallpapers/Home_default.jpg"
-#	DEFAULT_LOCK="%{OPTSHAREREFIX}/Wallpapers/Default.jpg"
-	DEFAULT_HOME="%{TZ_SYS_SHARE}/Wallpapers/Home_default.jpg"
-	DEFAULT_LOCK="%{TZ_SYS_SHARE}/Wallpapers/Default.jpg"
-
-	#rm -f %{_sysconfdir}/localtime
-	#ln -s %{_datadir}/zoneinfo/Asia/Seoul %{_sysconfdir}/localtime
-
-#if [ -e /etc/localtime ]
-#then
-#	rm -f /etc/localtime
-#	ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
-#fi
+DEFAULT_HOME="%{TZ_SYS_SHARE}/Wallpapers/Home_default.jpg"
+DEFAULT_LOCK="%{TZ_SYS_SHARE}/Wallpapers/Default.jpg"
 
 #resetSecurity
 	rm -rf {_prefix}/data/setting/set_info
 
-# for support shared menu icons
-#ln -s %{RESDIR}/icons %{PREFIX}/shared/res/icons
-
-#APP_PATH_INFO=`%{PREFIX}/bin/setting_conf_util get_data_path`
-#echo "-------------------------------------------------------------> "$APP_PATH_INFO
 sync
 
 mkdir -p %{_prefix}/ug/bin/
@@ -274,10 +231,6 @@ mkdir -p %{PREFIX}/shared/res
 mkdir -p %{_prefix}/apps/org.tizen.mode-syspopup/res/edje
 mkdir -p %{_prefix}/apps/org.tizen.mode-syspopup/bin/
 
-%post ref
-rm -rf %{_datadir}/packages/org.tizen.setting.xml
-mv %{_datadir}/packages/org.tizen.setting.xml.ref %{_datadir}/packages/org.tizen.setting.xml
-
 %posttrans
 
 %files -n org.tizen.setting
@@ -286,16 +239,11 @@ mv %{_datadir}/packages/org.tizen.setting.xml.ref %{_datadir}/packages/org.tizen
 %{PREFIX}/author-signature.xml
 %{PREFIX}/signature1.xml
 
-# Firewall -------------------------------------------------------
-%{_sysconfdir}/opt/upgrade/210.org.tizen.setting.patch.sh
-
 %defattr(-,root,root,-)
-#%{_prefix}/apps/org.tizen.mode-syspopup/res/locale/*
 
 %{PREFIX}/bin/setting
 %{CONFIGDIR}/*
 %{PREFIX}/bin/setting_conf_util
-#%{PREFIX}/bin/setting_turnoff_light
 %{PREFIX}/bin/setting_volume_popup
 
 %attr(0755,root,root) %{PREFIX}/bin/setting_help_ringtone
@@ -304,18 +252,12 @@ mv %{_datadir}/packages/org.tizen.setting.xml.ref %{_datadir}/packages/org.tizen
 %{_datadir}/packages/org.tizen.setting.xml
 %{_datadir}/icons/default/small/org.tizen.setting.png
 
-#%{_datadir}/settings/*
-
 %{PREFIX}/res/*
-%{_datadir}/mime/packages/*
 
 %{TZ_SYS_SHARE}/settings/*
-#%{OPTSHAREREFIX}/*
 
 %{PREFIX}/shared/res/*
 %attr(-,app,app) %dir %{PREFIX}/shared
-
-#[  124s] error: File not found by glob: /usr/src/packages/BUILDROOT/org.tizen.setting-0.2.0-99.aarch64/usr/share/settings/*
 
 # new
 %{PREFIX}/lib/ug/*
@@ -336,7 +278,3 @@ mv %{_datadir}/packages/org.tizen.setting.xml.ref %{_datadir}/packages/org.tizen
 %{_includedir}/setting-common-general-func.h
 %{_includedir}/setting-common-resource.h
 %{_includedir}/setting-common-search.h
-
-%files ref
-%{_datadir}/mime/packages/mime.setting.xml
-%{_datadir}/packages/org.tizen.setting.xml.ref

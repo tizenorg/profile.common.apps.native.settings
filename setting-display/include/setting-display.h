@@ -210,12 +210,6 @@ extern setting_view setting_view_display_main;
 extern setting_view setting_view_display_brightness;
 extern setting_view setting_view_display_backlight;
 
-void setting_display_layout_ug_cb(ui_gadget_h ug, enum ug_mode mode,
-                                  void *priv);
-
-Eina_Bool __show_smartstay_guide_popup(void *data);
-Eina_Bool __show_smartrotation_guide_popup(void *data);
-
 extern void destruct_brightness(void *data);
 extern void construct_brightness(void *data, Evas_Object *genlist);
 
