@@ -199,17 +199,6 @@ ADD_CUSTOM_TARGET(ug-setting-manage-applications-efl.edj
 ADD_DEPENDENCIES(${PROJECT_NAME} ug-setting-manage-applications-efl.edj)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/ug-setting-manage-applications-efl.edj DESTINATION ${TZ_SYS_RO_APP}/${SETTING_PKG_NAME}/res/edje/)
 
-# make setting-custompopup.edj
-ADD_CUSTOM_TARGET(setting-custompopup.edj
-		COMMAND edje_cc -id ${CMAKE_SOURCE_DIR}/resource/images -sd ${CMAKE_SOURCE_DIR}/resource/sounds -id ${CMAKE_SOURCE_DIR}/resource/icons
-		${CMAKE_SOURCE_DIR}/resource/setting-custompopup.edc
-		${CMAKE_BINARY_DIR}/setting-custompopup.edj
-		DEPENDS ${CMAKE_SOURCE_DIR}/resource/setting-custompopup.edc
-)
-
-ADD_DEPENDENCIES(${PROJECT_NAME} setting-custompopup.edj)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/setting-custompopup.edj DESTINATION ${TZ_SYS_RO_APP}/${SETTING_PKG_NAME}/res/edje/)
-
 INSTALL(FILES ${CMAKE_SOURCE_DIR}/resource/langlist.xml DESTINATION ${TZ_SYS_RO_APP}/${SETTING_PKG_NAME}/def_config)
 #------------------------------------------------------------------------------------------
 
@@ -217,7 +206,6 @@ INSTALL(FILES ${CMAKE_SOURCE_DIR}/resource/langlist.xml DESTINATION ${TZ_SYS_RO_
 SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 
 INSTALL(FILES ${CMAKE_SOURCE_DIR}/org.tizen.setting.xml DESTINATION /usr/share/packages/)
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/org.tizen.setting.xml.ref DESTINATION /usr/share/packages/)
 
 INSTALL(FILES ${CMAKE_SOURCE_DIR}/${SETTING_PKG_NAME}.png DESTINATION ${TZ_SYS_RO_ICONS}/default/small)
 INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/resource/icons DESTINATION ${TZ_SYS_RO_APP}/${SETTING_PKG_NAME}/res FILES_MATCHING PATTERN "*.png")
@@ -240,10 +228,6 @@ INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/resource/media/settings DESTINATION ${TZ_S
 # install changeable UI code
 INSTALL(FILES ${CMAKE_SOURCE_DIR}/resource/changeable/org.tizen.setting.xml DESTINATION ${TZ_SYS_RO_APP}/org.tizen.setting/shared/res/tables)
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/mime.setting.xml DESTINATION /usr/share/mime/packages)
-
-
-
 #------------------------------------------------------------------
 #add setting-sfinder-plugin
 #ADD_SUBDIRECTORY(setting-sfinder-plugin)
@@ -257,7 +241,3 @@ CONFIGURE_FILE(
 )
 INSTALL(FILES ${CMAKE_SOURCE_DIR}/src/setting-common-internal.pc DESTINATION ${LIBDIR}/pkgconfig)
 #-----------------------------------------------------------------------------------
-
-# install firewall script for FOTA(210.org.tizen.setting.patch.sh)
-INSTALL(PROGRAMS ${CMAKE_SOURCE_DIR}/210.org.tizen.setting.patch.sh DESTINATION /etc/opt/upgrade/)
-

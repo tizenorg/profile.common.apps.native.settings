@@ -74,18 +74,6 @@ typedef struct _ListItemObject {
 } ListItemObject;
 
 
-/**
-* @brief add serach index for Database
-*
-* @param keystr keyword to be searched
-* @param infostr additional info
-* @param data_type 1:UGname 2:menustring 3:title
-* @param viewname to find page
-* @param fieldname to find field in the page
-*/
-extern int setting_search_get_module_item_state(char *keyword, char *ug_name, Cfg_Item_State *stat, cfg_func_table *pops);
-extern int setting_search_set_module_item_state(char *keyword, char *ug_name, Cfg_Item_State stat, cfg_func_table *pops);
-
 extern void setting_add_db_search_index(sqlite3 *db, char *locale, char *keystr, char *infostr, int data_type, char *viewname, char *fieldname, char *icon_path);
 extern int setting_searchdb_open(sqlite3 **ppdb);
 extern void setting_searchdb_close(sqlite3 *db);

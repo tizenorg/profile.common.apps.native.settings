@@ -553,7 +553,6 @@ static void storageUg_media_filesys_changed_cb(
 	media_content_type_e media_type,
 	char *uuid,
 	char *path,
-	char *mime_type,
 	void *user_data)
 {
 	SETTING_TRACE_BEGIN;
