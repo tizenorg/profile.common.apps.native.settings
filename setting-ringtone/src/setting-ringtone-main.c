@@ -90,7 +90,7 @@ char *_ringtone_gl_label_get(void *data, Evas_Object *obj, const char *part)
 	retvm_if(data == NULL, NULL, "Data parameter is NULL");
 	Setting_GenGroupItem_Data *item_data = (Setting_GenGroupItem_Data *) data;
 
-	if (safeStrCmp(part, "elm.text.main.left"))
+	if (safeStrCmp(part, "elm.text"))
 		return NULL;
 
 	return (char *)g_strdup(_(item_data->keyStr));
@@ -103,12 +103,10 @@ Evas_Object *_ringtone_gl_icon_get(void *data, Evas_Object *obj,
 	Setting_GenGroupItem_Data *item_data = (Setting_GenGroupItem_Data *) data;
 	/*SettingRingtoneUG *ad = (SettingRingtoneUG *) (item_data->userdata); */
 
-	if (safeStrCmp(part, "elm.icon.right"))
+	if (safeStrCmp(part, "elm.swallow.end"))
 		return NULL;
 
-	Evas_Object *lay = elm_layout_add(obj);
-
-	Evas_Object *radio = elm_radio_add(lay);
+	Evas_Object *radio = elm_radio_add(obj);
 	evas_object_propagate_events_set(radio, EINA_FALSE);
 	evas_object_repeat_events_set(radio, EINA_TRUE);
 	elm_radio_state_value_set(radio, item_data->chk_status);
@@ -116,10 +114,7 @@ Evas_Object *_ringtone_gl_icon_get(void *data, Evas_Object *obj,
 	evas_object_show(radio);
 	item_data->eo_check = radio;
 
-	elm_layout_theme_set(lay, "layout", "list/C/type.2", "default");
-	elm_layout_content_set(lay, "elm.swallow.content", radio);
-
-	return lay;
+	return radio;
 }
 
 static void _ringtone_gl_del(void *data, Evas_Object *obj)

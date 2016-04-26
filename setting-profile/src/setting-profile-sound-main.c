@@ -33,7 +33,6 @@
 
 
 #define SETTING_SOUND_VOL_MAX 15
-#define SETTING_DEFAULT_RINGTONE_VOL_INT	11
 #define SETTING_DEFAULT_NOTI_VOL_INT		11
 #define SETTING_DEFAULT_MEDIA_VOL_INT		9
 #define SETTING_DEFAULT_SYSTEM_VOL_INT		9
@@ -60,62 +59,6 @@ setting_view setting_view_sound_main = {
 		elm_genlist_clear(genlist);\
 		evas_object_smart_callback_add(genlist, "realized", __gl_realized_cb, NULL);\
 		elm_scroller_policy_set(genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);\
-	}
-
-
-/* should be called in function to return void */
-#define ADD_GENLIST2(genlist, parent) \
-	{\
-		genlist = elm_genlist_add(parent);\
-		retm_if(genlist == NULL, "Cannot set genlist object as contento of layout");\
-		elm_genlist_mode_set(genlist, ELM_LIST_COMPRESS);\
-		elm_object_style_set(genlist, "dialogue");\
-		elm_genlist_clear(genlist);\
-		evas_object_smart_callback_add(genlist, "realized", __gl_realized_cb, NULL);\
-		elm_scroller_policy_set(genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);\
-	}
-
-/* keystr, toggle */
-#define ADD_TOGGLE_MENU2(item, genlist, item_style, keystr, value, data) \
-	{\
-		item = setting_create_Gendial_field_def(genlist, &(item_style), \
-		                                        setting_sound_main_mouse_up_Gendial_list_cb, \
-		                                        data, SWALLOW_Type_1ICON_1RADIO, NULL, \
-		                                        NULL, value, \
-		                                        keystr, NULL, \
-		                                        __sound_chk_cb); \
-		if (item) { \
-			item->userdata = data; \
-		} else { \
-			SETTING_TRACE_ERROR("%s item is NULL", keystr); \
-		} \
-	}
-
-
-/* keystr, multiline, toggle */
-/* should be called in function to return void */
-#define ADD_TOGGLE_MENU(_item, genlist, item_style, keystr, substr, value, data) \
-	{\
-		_item = setting_create_Gendial_field_def(genlist, &(item_style), \
-		                                        setting_sound_main_mouse_up_Gendial_list_cb, \
-		                                        data, SWALLOW_Type_1ICON_1RADIO, NULL, \
-		                                        NULL, value, \
-		                                        keystr, NULL, \
-		                                        __sound_chk_cb); \
-		if (_item) { \
-			_item->userdata = data;\
-		} else { \
-			SETTING_TRACE_ERROR("%s item is NULL", keystr);\
-		} \
-		if (substr) {\
-			Setting_GenGroupItem_Data *item_data = setting_create_Gendial_field_def(genlist, &itc_multiline_text,\
-			                                                                        NULL,\
-			                                                                        NULL,\
-			                                                                        SWALLOW_Type_LAYOUT_SPECIALIZTION_X,\
-			                                                                        NULL, NULL, 0,  substr, NULL, NULL);\
-			setting_retm_if(NULL == item_data, "item_data is NULL");\
-			elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);\
-		}\
 	}
 
 #define ADD_SOUND_SLIDER(item_data, genlist, item_style, l_img, r_img, value, keystr, data, sld_cb, sld_max, start_cb, stop_cb) \
@@ -148,75 +91,6 @@ setting_view setting_view_sound_main = {
  *basic func
  *
  ***************************************************/
-static Eina_Bool __play_ringtone_sound_idle_cb(void *data)
-{
-	SETTING_TRACE_BEGIN;
-	retv_if(!data, EINA_FALSE);
-
-	Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data;
-	SettingProfileUG *ad = list_item->userdata;
-
-	if (list_item->eo_check) {
-		double current;
-		current = elm_slider_value_get(list_item->eo_check);
-		list_item->chk_status = (int)(current + 0.5);
-	}
-
-	/*
-	 * S5 concept:
-	 * On the volume popup,
-	 *  1) if user controls the slider, don't play any sounds£¬just change volume.
-	 *  2) if user controls the HW volume key for ringtone sound, the beep sound is supported
-
-	 * On Setting > Sound
-	 *  1) if user controls the slider, change volume & play sound
-	 *  2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
-	*/
-	if (0 == safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
-		return EINA_FALSE;
-	}
-
-	if (ad->mp_ringtone == NULL) {
-		setting_sound_close_other_mm_players_but_type(ad, SOUND_TYPE_RINGTONE);
-		char	*pa_tone_path = NULL;
-		pa_tone_path = vconf_get_str(VCONFKEY_SETAPPL_CALL_RINGTONE_PATH_STR);
-		if (pa_tone_path == NULL) {
-			if (isEmulBin())
-				pa_tone_path = (char *)strdup(SETTING_DEFAULT_CALL_TONE_SDK);
-			else
-				pa_tone_path = (char *)strdup(SETTING_DEFAULT_CALL_TONE);
-
-			if (vconf_set_str(VCONFKEY_SETAPPL_CALL_RINGTONE_PATH_STR, pa_tone_path) < 0) {
-				FREE(pa_tone_path);
-				return EINA_FALSE;
-			}
-		}
-		if (list_item->chk_status > 0) {
-			setting_sound_play_sound_origin(&(ad->mp_ringtone), ad, NULL,
-			                                pa_tone_path,
-			                                (float)list_item->chk_status,
-			                                SOUND_TYPE_RINGTONE);
-		}
-	} else {
-		player_state_e state;
-		player_get_state(*(ad->mp_ringtone), &state);
-		SETTING_TRACE("ringtone player status : %d", state);
-		if (state == PLAYER_STATE_PAUSED) {
-			player_start(*(ad->mp_ringtone));
-		} else if (state == PLAYER_STATE_PLAYING) {
-			/*bool is_muted = 0; */
-			/*player_is_muted(*(ad->mp_ringtone), &is_muted); */
-			/*SETTING_TRACE("ringtone player is muted : %d", is_muted); */
-			if (/*is_muted &&*/ ad->sound_on)
-				player_set_mute(*(ad->mp_ringtone), 0);
-		}
-	}
-
-	ad->play_ringtone_idler = NULL;
-	return EINA_FALSE;
-}
-
-
 void __start_change_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	SETTING_TRACE_BEGIN;
@@ -226,90 +100,13 @@ void __start_change_cb(void *data, Evas_Object *obj, void *event_info)
 	SettingProfileUG *ad = list_item->userdata;
 	ret_if(ad == NULL);
 	setting_sound_create_warning_popup_during_call(ad);
-	if (list_item == ad->data_call_volume) {
-		ad->is_ringtone_slidering = TRUE;
-		setting_sound_close_other_mm_players_but_type(ad, SOUND_TYPE_RINGTONE);
-	} else if (list_item == ad->data_noti_volume) {
+	if (list_item == ad->data_noti_volume) {
 		setting_sound_close_other_mm_players_but_type(ad, SOUND_TYPE_NOTIFICATION);
 	} else if (list_item == ad->data_media_volume) {
 		setting_sound_close_other_mm_players_but_type(ad, SOUND_TYPE_MEDIA);
 	} else if (list_item == ad->data_touch_volume) {
 		setting_sound_close_all_mm_players(ad);
 	}
-}
-
-static void __call_slider_change_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	SETTING_TRACE_BEGIN;
-
-	/* error check */
-	ret_if(data == NULL);
-
-	double val = elm_slider_value_get(obj);
-
-	Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data;
-	SettingProfileUG *ad = list_item->userdata;
-
-	ad->is_ringtone_slidering = TRUE;
-
-	if (list_item->chk_status != (int)(val + 0.5)) {
-		list_item->chk_status = (int)(val + 0.5);
-		sound_manager_set_volume(SOUND_TYPE_RINGTONE, list_item->chk_status);
-		SETTING_TRACE_DEBUG("ringtone volume is %d, %f", list_item->chk_status, val);
-
-		#if FUNCTION_SYSTEM_SETTING
-		if (list_item->chk_status == 0) {
-			/* change to Vibration mode */
-			// call system_setting
-			//system_settings_set_value_bool(SYSTEM_SETTINGS_KEY_SOUND_SILENT_MODE, false);
-			vconf_set_bool(VCONFKEY_SETAPPL_SOUND_STATUS_BOOL, FALSE);
-			vconf_set_bool(VCONFKEY_SETAPPL_VIBRATION_STATUS_BOOL, TRUE);
-
-		} else {
-			if (!ad->sound_on) {
-				/* change to Sound mode */
-				// call system_setting
-				//system_settings_set_value_bool(SYSTEM_SETTINGS_KEY_SOUND_SILENT_MODE, false);
-				vconf_set_bool(VCONFKEY_SETAPPL_SOUND_STATUS_BOOL, TRUE);
-				vconf_set_bool(VCONFKEY_SETAPPL_VIBRATION_STATUS_BOOL, FALSE);
-			}
-		}
-		#else
-		if (list_item->chk_status == 0) {
-			/* change to Vibration mode */
-			vconf_set_bool(VCONFKEY_SETAPPL_SOUND_STATUS_BOOL, FALSE);
-			vconf_set_bool(VCONFKEY_SETAPPL_VIBRATION_STATUS_BOOL, TRUE);
-			setting_set_event_system(SYS_EVENT_SILENT_MODE, EVT_KEY_SILENT_MODE, EVT_VAL_SILENTMODE_OFF);
-			/*insert log for vibrate mode on state */
-		} else {
-			if (!ad->sound_on) {
-				vconf_set_bool(VCONFKEY_SETAPPL_SOUND_STATUS_BOOL, TRUE);
-				vconf_set_bool(VCONFKEY_SETAPPL_VIBRATION_STATUS_BOOL, FALSE);
-				setting_set_event_system(SYS_EVENT_SILENT_MODE, EVT_KEY_SILENT_MODE, EVT_VAL_SILENTMODE_OFF);
-				/*insert log for sound mode on state */
-			}
-		}
-		#endif
-
-		setting_sound_update_slider_icon(list_item, SND_SLIDER_CALL);
-
-		/*elm_genlist_item_update(list_item->item); */
-		elm_slider_value_set(obj, list_item->chk_status);
-		SETTING_TRACE_DEBUG("[TIME] change sound mode : %d msec ", appcore_measure_time());
-	}
-
-	setting_sound_create_warning_popup_during_call(ad);
-	if (ad->calling_popup)
-		return;
-
-	if (ad->play_ringtone_idler) {
-		ecore_idler_del(ad->play_ringtone_idler);
-		ad->play_ringtone_idler = NULL;
-	}
-	ad->play_ringtone_idler = ecore_idler_add(__play_ringtone_sound_idle_cb, list_item);
-
-	/*SWIP_EFFECT_ENABLE(ad->ly_main, ad->ctrl_bar); */
-	SETTING_TRACE("list_item->chk_status:%d", list_item->chk_status);
 }
 
 static void __noti_slider_change_cb(void *data, Evas_Object *obj, void *event_info)
@@ -502,48 +299,6 @@ void __stop_change_cb(void *data, Evas_Object *obj, void *event_info)
 	SETTING_TRACE_END;
 }
 
-char *setting_do_not_disturb_is_enable(void *data)
-{
-	int err = NOTIFICATION_ERROR_NONE;
-	bool do_not_disturb;
-	char *desc;
-	notification_system_setting_h system_setting = NULL;
-
-	err = notification_system_setting_load_system_setting(&system_setting);
-	setting_retvm_if(NULL == system_setting || NOTIFICATION_ERROR_NONE != err,
-									SETTING_GENERAL_ERR_NULL_DATA_PARAMETER,
-									"notification_system_setting_load_system_Setting failed");
-	err = notification_system_setting_get_do_not_disturb(system_setting, &do_not_disturb);
-	SETTING_TRACE("do_not_disturb: %d", do_not_disturb);
-
-	if (1 == do_not_disturb){
-		notification_system_setting_free_system_setting(system_setting);
-		return "IDS_ST_BODY_ON";
-	} else {
-		notification_system_setting_free_system_setting(system_setting);
-		return "IDS_ST_BODY_ALERTTYPE_OFF";
-	}
-}
-
-static void
-__sound_chk_cb(void *data, Evas_Object *obj,
-               void *event_info)
-{
-	SETTING_TRACE_BEGIN;
-	/* error check */
-	ret_if(data == NULL);
-	Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data;
-	SettingProfileUG *ad = list_item->userdata;
-	ret_if(ad == NULL);
-
-	setting_sound_close_all_mm_players(ad);
-	list_item->chk_status = elm_check_state_get(obj);	/*  for genlist update status */
-	/* rollback */
-	setting_update_gl_item_chk_status(list_item, !list_item->chk_status);
-	setting_sound_main_mouse_up_Gendial_list_cb(ad, NULL, list_item->item);
-}
-
-#define INIT_PATH	_TZ_SYS_SHARE"/settings/Vibrations/"
 static void __get_lite_main_list(void *data)
 {
 	SETTING_TRACE_BEGIN;
@@ -579,74 +334,7 @@ static void __get_lite_main_list(void *data)
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
 
-	/* 1. Ringtones */
-	SETTING_TRACE(" ???????????? ad->viewtype : %s ", ad->viewtype);
-
-	if (0 != safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
-
-		int sd_status = VCONFKEY_SYSMAN_MMC_REMOVED;
-		if (vconf_get_int(VCONFKEY_SYSMAN_MMC_STATUS, &sd_status) != 0) {
-			SETTING_TRACE_ERROR("fail to get mmc status");
-		}
-		char *sdcard_filepath = vconf_get_str(VCONFKEY_SETAPPL_CALL_VIBRATION_PATTERN_STR);
-		if (0 == safeStrNCmp(sdcard_filepath, INIT_PATH, safeStrLen(INIT_PATH))) {
-			vconf_set_str(VCONFKEY_SETAPPL_CALL_VIBRATION_PATTERN_STR, "NONE");
-			sdcard_filepath = vconf_get_str(VCONFKEY_SETAPPL_CALL_VIBRATION_PATTERN_STR);
-		}
-		if (safeStrCmp(sdcard_filepath, "NONE") != 0 && sd_status == VCONFKEY_SYSMAN_MMC_MOUNTED) {
-			/*check sdcard filepath*/
-			if (sdcard_filepath)
-				pa_ringtone = strdup(sdcard_filepath);
-			FREE(sdcard_filepath);
-			vconf_set_str(VCONFKEY_SETAPPL_CALL_VIBRATION_PATTERN_STR, "NONE");
-		} else {
-			pa_ringtone = vconf_get_str(VCONFKEY_SETAPPL_CALL_RINGTONE_PATH_STR);
-		}
-		if (setting_sound_check_file_exist(ad, pa_ringtone) == SETTING_RETURN_FAIL) {
-			if (isEmulBin()) {
-				pa_ringtone = (char *)strdup(SETTING_DEFAULT_CALL_TONE_SDK);
-			} else {
-				pa_ringtone = (char *)strdup(SETTING_DEFAULT_CALL_TONE);
-			}
-		}
-		vconf_ret = vconf_set_str(VCONFKEY_SETAPPL_CALL_RINGTONE_PATH_STR, pa_ringtone);
-		if (vconf_ret < 0) {
-			SETTING_TRACE_DEBUG("failed to set vconf");
-		}
-		sub_desc = setting_media_basename(pa_ringtone);
-		ad->data_call_alert_tone =
-		    setting_create_Gendial_field_def(genlist, &itc_2text_2,
-		                                     setting_sound_main_mouse_up_Gendial_list_cb,
-		                                     ad, SWALLOW_Type_INVALID, NULL,
-		                                     NULL, 0, "IDS_ST_MBODY_RINGTONE",
-		                                     sub_desc, NULL);
-		if (ad->data_call_alert_tone) {
-			__BACK_POINTER_SET(ad->data_call_alert_tone);
-			ad->data_call_alert_tone->userdata = ad;
-		}
-
-		FREE(pa_ringtone);
-		G_FREE(sub_desc);
-	}
-
-
-	/* 2. call volumn. */
-	if (sound_manager_get_volume(SOUND_TYPE_RINGTONE, &mm_value) < 0)
-		mm_value = SETTING_DEFAULT_RINGTONE_VOL_INT;
-	if (sound_value == FALSE)
-		mm_value = 0;
-
-	left_icon = setting_sound_get_slider_icon(SND_SLIDER_CALL, mm_value);
-	ADD_SOUND_SLIDER(ad->data_call_volume, genlist,
-	                 (*itc_slider),
-	                 left_icon, NULL,
-	                 mm_value, "IDS_ST_MBODY_RINGTONE", ad,/*"IDS_ST_HEADER_RINGTONES" is for volume App,in Setting > Sound,it has no title */
-	                 __call_slider_change_cb,
-	                 SETTING_SOUND_VOL_MAX,
-	                 __start_change_cb, __stop_change_cb);
-	__BACK_POINTER_SET(ad->data_call_volume);
-
-	/* 3. Notification alert */
+	/* 1. Notification alert */
 	if (0 != safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
 		pa_ringtone = vconf_get_str(VCONFKEY_SETAPPL_NOTI_MSG_RINGTONE_PATH_STR);
 		if (setting_sound_check_file_exist(ad, pa_ringtone) == SETTING_RETURN_FAIL) {
@@ -671,7 +359,7 @@ static void __get_lite_main_list(void *data)
 		FREE(pa_ringtone);
 		G_FREE(sub_desc);
 	}
-	/* 4.noti volumn */
+	/* 2. noti volumn */
 	if (sound_manager_get_volume(SOUND_TYPE_NOTIFICATION, &mm_value) < 0)
 		mm_value = SETTING_DEFAULT_NOTI_VOL_INT;
 	if (sound_value == FALSE)
@@ -687,7 +375,7 @@ static void __get_lite_main_list(void *data)
 	                 __start_change_cb, __stop_change_cb);
 	__BACK_POINTER_SET(ad->data_noti_volume);
 
-	/* 5.media volume */
+	/* 3. media volume */
 	if (sound_manager_get_volume(SOUND_TYPE_MEDIA, &mm_value) < 0)
 		mm_value = SETTING_DEFAULT_MEDIA_VOL_INT;
 
@@ -701,7 +389,7 @@ static void __get_lite_main_list(void *data)
 
 	__BACK_POINTER_SET(ad->data_media_volume);
 
-	/* 6.system volume */
+	/* 4. system volume */
 	if (sound_manager_get_volume(SOUND_TYPE_SYSTEM, &mm_value) < 0) {
 		SETTING_TRACE_DEBUG("Fail to get volume");
 		mm_value = SETTING_DEFAULT_SYSTEM_VOL_INT;
@@ -720,31 +408,9 @@ static void __get_lite_main_list(void *data)
 	__BACK_POINTER_SET(ad->data_touch_volume);
 
 	if (0 != safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
-		/* 7. Vibrate when ringing */
-		if (vconf_get_bool(VCONFKEY_SETAPPL_VIBRATE_WHEN_RINGING_BOOL, &vconf_value) < 0) {
-			vconf_value = TRUE;	/*  default value of vibrate sound : on */
-		}
-		ADD_TOGGLE_MENU2(ad->data_sound_when_ring, genlist, itc_1text_1icon, "IDS_ST_BODY_VIBRATE_WHEN_RINGING", vconf_value, ad);
-		__BACK_POINTER_SET(ad->data_sound_when_ring);
-		setting_genlist_item_disabled_set(ad->data_sound_when_ring, !sound_value);
-
-		/* 8. Feedback */
-		setting_create_Gendial_field_def(genlist, &itc_1text,
-				setting_sound_main_mouse_up_Gendial_list_cb,
-				data, SWALLOW_Type_INVALID, NULL,
-				NULL, 0,
-				"IDS_ST_HEADER_FEEDBACK", NULL, NULL);
-
 		/* Notifications */
 		setting_create_Gendial_field_titleItem(genlist, &itc_group_item, _("IDS_ST_BODY_NOTIFICATIONS"), NULL);
-		/* 9. Notifications - Do not disturb */
-		char *sub_desc = setting_do_not_disturb_is_enable(data);
-		ad->data_do_not_disturb = setting_create_Gendial_field_def(genlist, &itc_2text_2,
-															setting_sound_main_mouse_up_Gendial_list_cb,
-															data, SWALLOW_Type_INVALID, NULL,
-															NULL, 0,
-															"IDS_ST_MBODY_DO_NOT_DISTURB_ABB", sub_desc, NULL);
-		/* 10. Notifications - App notifications */
+		/* 5. Notifications - App notifications */
 		setting_create_Gendial_field_def(genlist, &itc_2text_2,
 										setting_sound_main_mouse_up_Gendial_list_cb,
 										data, SWALLOW_Type_INVALID, NULL,
@@ -993,23 +659,8 @@ setting_sound_main_result_myfile_ug_cb(ui_gadget_h ug,
 		ringtone_file = setting_media_basename(ringtone_path);
 		SETTING_TRACE("ringtone_file:%s", ringtone_file);
 
-		if (0 == safeStrCmp(ad->ringtone_type, "IDS_ST_MBODY_RINGTONE")) {
-			if (vconf_set_str(VCONFKEY_SETAPPL_CALL_RINGTONE_PATH_STR, ringtone_path) == 0) {
-				if (ad->data_call_alert_tone) {
-					ad->data_call_alert_tone->sub_desc = (char *)g_strdup(ringtone_file);
-
-					elm_object_item_data_set(ad->data_call_alert_tone->item, ad->data_call_alert_tone);
-					elm_genlist_item_update(ad->data_call_alert_tone->item);
-				}
-			}
-			if (recommend_time) {
-				char recommend_info[512] = {0,};
-				snprintf(recommend_info, 512, "%s; %smsec", ringtone_path, recommend_time);
-				SETTING_TRACE_DEBUG("%s", recommend_info);
-				vconf_set_str(VCONFKEY_SETAPPL_CALL_RINGTONE_PATH_WITH_RECOMMENDATION_TIME_STR, recommend_info);
-			}
-		} else if (0 ==
-		           safeStrCmp(ad->ringtone_type, "IDS_ST_BODY_NOTIFICATION")) {
+		if (0 ==
+				safeStrCmp(ad->ringtone_type, "IDS_ST_BODY_NOTIFICATION")) {
 			if (vconf_set_str(VCONFKEY_SETAPPL_NOTI_MSG_RINGTONE_PATH_STR, ringtone_path) == 0) {
 				if (ad->data_msg_alert_tone) {
 					ad->data_msg_alert_tone->sub_desc = (char *)g_strdup(ringtone_file);
@@ -1104,63 +755,6 @@ static void setting_sound_main_create_myfile_ug(SettingProfileUG *ad, char *titl
 	return;
 }
 
-static Eina_Bool __feedback_back_cb(void *data, Elm_Object_Item *it)
-{
-	SETTING_TRACE_BEGIN;
-	/* error check */
-	retv_if(data == NULL, EINA_TRUE);
-	SettingProfileUG *ad = (SettingProfileUG *) data;
-	/*setting_view_change(&setting_view_feedback_main, &setting_view_sound_main, ad); */
-	elm_naviframe_item_pop(ad->navi_bar);
-	SETTING_TRACE_END;
-	return EINA_TRUE;
-}
-
-void setting_sound_notifications_layout_ug_cb(ui_gadget_h ug,
-											enum ug_mode mode,
-											void *priv)
-{
-	SETTING_TRACE_BEGIN;
-	Evas_Object *base;
-
-	if (!priv)
-		return;
-
-	base = (Evas_Object *) ug_get_layout(ug);
-	if (!base)
-		return;
-
-	switch (mode) {
-		case UG_MODE_FULLVIEW:
-			evas_object_size_hint_weight_set(base, EVAS_HINT_EXPAND,
-					EVAS_HINT_EXPAND);
-			evas_object_show(base);
-			break;
-		default:
-			break;
-	}
-	SETTING_TRACE_END;
-}
-
-static void setting_sound_notifications_destroy_ug_cb(ui_gadget_h ug, void *priv)
-{
-	SETTING_TRACE_BEGIN;
-	ret_if(priv == NULL);
-	SettingProfileUG *ad = (SettingProfileUG *) priv;
-	if (ug) {
-		setting_ug_destroy(ug);
-	}
-	elm_genlist_realized_items_update(ad->gl_lite_main);
-
-	/* do not disturb */
-	if (ad->data_do_not_disturb) {
-		char *sub_desc = setting_do_not_disturb_is_enable(priv);
-		ad->data_do_not_disturb->sub_desc = (char *)strdup(sub_desc);
-		elm_object_item_data_set(ad->data_do_not_disturb->item, ad->data_do_not_disturb);
-		elm_genlist_item_update(ad->data_do_not_disturb->item);
-	}
-}
-
 static void
 setting_sound_main_mouse_up_Gendial_list_cb(void *data,
                                             Evas_Object *obj,
@@ -1181,101 +775,11 @@ setting_sound_main_mouse_up_Gendial_list_cb(void *data,
 	}
 
 	SETTING_TRACE("clicking item[%s]", _(list_item->keyStr));
-	if (!safeStrCmp("IDS_ST_MBODY_RINGTONE", list_item->keyStr)
-	    || !safeStrCmp("IDS_ST_BODY_NOTIFICATION", list_item->keyStr)) {
+	if (!safeStrCmp("IDS_ST_BODY_NOTIFICATION", list_item->keyStr)) {
 		ad->ringtone_type = list_item->keyStr;
 		setting_sound_main_create_myfile_ug(ad, list_item->keyStr);
 		__setting_sound_ug_key_ungrab(ad);
-	} else if (!safeStrCmp("IDS_ST_MBODY_DO_NOT_DISTURB_ABB", list_item->keyStr)) {
-#if 0
-		SettingProfileUG *ad = (SettingProfileUG *) data;
-		struct ug_cbs *cbs = (struct ug_cbs *)calloc(1, sizeof(struct ug_cbs));
-		setting_retm_if(!cbs, "calloc failed");
-		cbs->layout_cb = setting_sound_notifications_layout_ug_cb;
-		cbs->result_cb = NULL;
-		cbs->destroy_cb = setting_sound_notifications_destroy_ug_cb;
-		cbs->priv = (void *)ad;
-
-		elm_object_tree_focus_allow_set(ad->ly_main, EINA_FALSE);
-
-		SETTING_TRACE("To load ug[%s]", "ug-setting-notification-do-not-disturb-efl");
-		ug_create(ad->ug, "ug-setting-notification-do-not-disturb-efl", UG_MODE_FULLVIEW, NULL, cbs);
-		FREE(cbs);
-#else
-		app_launcher("ug-setting-notification-do-not-disturb-efl");
-#endif
 	} else if (!safeStrCmp("IDS_ST_MBODY_APP_NOTIFICATIONS", list_item->keyStr)) {
-#if 0
-		SettingProfileUG *ad = (SettingProfileUG *) data;
-		struct ug_cbs *cbs = (struct ug_cbs *)calloc(1, sizeof(struct ug_cbs));
-		setting_retm_if(!cbs, "calloc failed");
-		cbs->layout_cb = setting_sound_notifications_layout_ug_cb;
-		cbs->result_cb = NULL;
-		cbs->destroy_cb = setting_sound_notifications_destroy_ug_cb;
-		cbs->priv = (void *)ad;
-
-		elm_object_tree_focus_allow_set(ad->ly_main, EINA_FALSE);
-
-		SETTING_TRACE("To load ug[%s]", "ug-setting-notification-app-notifications-efl");
-		ug_create(ad->ug, "ug-setting-notification-app-notifications-efl", UG_MODE_FULLVIEW, NULL, cbs);
-		FREE(cbs);
-#else
 		app_launcher("ug-setting-notification-app-notifications-efl");
-#endif
-
-	}
-	/* additional */
-	else if (!safeStrCmp("IDS_ST_BODY_VIBRATE_WHEN_RINGING", list_item->keyStr)) {
-		/* vibrate when ring*/
-		int old_status = list_item->chk_status;/*elm_check_state_get(list_item->eo_check); */
-		if (vconf_set_bool(VCONFKEY_SETAPPL_VIBRATE_WHEN_RINGING_BOOL, !old_status) == 0) {
-			/* new status */
-			setting_update_gl_item_chk_status(list_item, !old_status);
-		}
-	} else if (!safeStrCmp("IDS_ST_BODY_SCREEN_LOCK_SOUND", list_item->keyStr)) {
-		int old_status = list_item->chk_status;/*elm_check_state_get(list_item->eo_check); */
-		if (vconf_set_bool(VCONFKEY_SETAPPL_SOUND_LOCK_BOOL, !old_status) == 0) {
-			/* new status */
-			setting_update_gl_item_chk_status(list_item, !old_status);
-		}
-	} else if (!safeStrCmp("IDS_ST_MBODY_DIALLING_KEYPAD_TONE", list_item->keyStr)) {
-		int old_status = list_item->chk_status;/*elm_check_state_get(list_item->eo_check); */
-		/* To do : set vconfkey for touch sounds */
-		if (vconf_set_bool(VCONFKEY_SETAPPL_BUTTON_SOUNDS_BOOL, !old_status) == 0) {
-			/* new status */
-			setting_update_gl_item_chk_status(list_item, !old_status);
-		}
-	} else if (!safeStrCmp("IDS_ST_MBODY_TOUCH_SOUND", list_item->keyStr)) {
-		int old_status = list_item->chk_status;/*elm_check_state_get(list_item->eo_check); */
-		/* To do : set vconfkey for touch sounds */
-		if (vconf_set_bool(VCONFKEY_SETAPPL_TOUCH_SOUNDS_BOOL, !old_status) == 0) {
-			/* new status */
-			setting_update_gl_item_chk_status(list_item, !old_status);
-		}
-	} else if (!safeStrCmp("IDS_ST_HEADER_FEEDBACK", list_item->keyStr)) {
-		__setting_sound_ug_key_ungrab(ad);
-
-		int vconf_value = 0;
-		Evas_Object *genlist = NULL;
-		ADD_GENLIST2(genlist, ad->navi_bar);
-		/* 1. Touch sounds */
-		if (vconf_get_bool(VCONFKEY_SETAPPL_TOUCH_SOUNDS_BOOL, &vconf_value) < 0)
-			vconf_value = TRUE;	/*  default value of touch sounds : on */
-		ADD_TOGGLE_MENU(ad->data_touch_sounds, genlist, itc_1text_1icon, "IDS_ST_MBODY_TOUCH_SOUND", "IDS_ST_BODY_PLAY_A_SOUND_WHEN_BUTTONS_ICONS_AND_MENU_ITEMS_ARE_TAPPED", vconf_value, ad)
-
-		/* 2. Keytones */
-		if (vconf_get_bool(VCONFKEY_SETAPPL_BUTTON_SOUNDS_BOOL, &vconf_value) < 0)
-			vconf_value = TRUE;	/*  default value of touch sounds : on */
-		ADD_TOGGLE_MENU(ad->data_button_sounds, genlist, itc_1text_1icon, "IDS_ST_MBODY_DIALLING_KEYPAD_TONE", "IDS_ST_BODY_PLAY_TONE_WHEN_THE_DIALLING_KEYPAD_IS_TAPPED", vconf_value, ad)
-
-		/*  3. Screen lock sound */
-		if (vconf_get_bool(VCONFKEY_SETAPPL_SOUND_LOCK_BOOL, &vconf_value) < 0)
-			vconf_value = 0;	/*  default value of lock/unlock sound : off */
-		ADD_TOGGLE_MENU(ad->data_lock_sound, genlist, itc_1text_1icon, "IDS_ST_BODY_SCREEN_LOCK_SOUND", "IDS_ST_BODY_PLAY_SOUNDS_WHEN_LOCKING_AND_UNLOCKING_SCREEN", vconf_value, ad)
-
-		Elm_Object_Item *navi_it = elm_naviframe_item_push(ad->navi_bar, "IDS_ST_HEADER_FEEDBACK", NULL, NULL, genlist, NULL);
-		elm_object_item_domain_text_translatable_set(navi_it, SETTING_PACKAGE, EINA_TRUE);
-
-		elm_naviframe_item_pop_cb_set(navi_it, (Elm_Naviframe_Item_Pop_Cb)__feedback_back_cb, ad);
 	}
 }
