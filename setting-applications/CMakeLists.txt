@@ -2,8 +2,19 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/${SETTING_COMMON}/include)
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(pkgs_display REQUIRED elementary ecore edje evas appcore-common appcore-efl ui-gadget-1 capi-appfw-application dlog capi-system-device efl-extension
-deviced json-glib-1.0 capi-appfw-package-manager pkgmgr-info libtzplatform-config)
+pkg_check_modules(pkgs_display REQUIRED	elementary
+										ecore
+										edje
+										evas
+										appcore-common
+										appcore-efl
+										ui-gadget-1
+										capi-appfw-application
+										dlog
+										json-glib-1.0
+										capi-appfw-package-manager
+										pkgmgr-info
+										libtzplatform-config)
 
 FOREACH(flag ${pkgs_display_CFLAGS})
 	SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
@@ -25,7 +36,6 @@ SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=/usr/lib")
 ADD_LIBRARY(${SETTING_APPLICATIONS_UG} SHARED
 	./src/setting-applications.c
 	./src/setting-applications-main.c
-	./src/setting-applications-defaultapp.c
 	)
 
 TARGET_LINK_LIBRARIES(${SETTING_APPLICATIONS_UG} -L${CMAKE_BINARY_DIR}/${SETTING_COMMON} -lsetting-common)

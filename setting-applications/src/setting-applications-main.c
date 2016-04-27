@@ -19,9 +19,6 @@
  *
  */
 #include <setting-applications-main.h>
-#include <dd-display.h>
-
-#include <setting-common-draw-widget.h>
 
 static int setting_applications_main_create(void *cb);
 static int setting_applications_main_destroy(void *cb);
@@ -40,28 +37,6 @@ setting_view setting_view_applications_main = {
  *basic func
  *
  ***************************************************/
-
-static UNUSED void setting_applications_main_vconf_change_cb(keynode_t *key, void *data)
-{
-	ret_if(data == NULL);
-
-	SettingApplicationsUG *ad = data;
-	int status = 0;
-
-	status = vconf_keynode_get_bool(key);
-	char *vconf_name = vconf_keynode_get_name(key);
-	SETTING_TRACE("status:%d", status);
-
-	if (!safeStrCmp(vconf_name, VCONFKEY_SETAPPL_LCD_TIMEOUT_NORMAL)) {
-		if (ad->data_back) {
-			G_FREE(ad->data_back->sub_desc);
-			ad->data_back->sub_desc = get_pa_backlight_time_value_str();
-			elm_object_item_data_set(ad->data_back->item, ad->data_back);
-			elm_genlist_item_update(ad->data_back->item);
-		}
-	}
-}
-
 static int setting_applications_main_create(void *cb)
 {
 	SETTING_TRACE_BEGIN;
@@ -83,24 +58,12 @@ static int setting_applications_main_create(void *cb)
 
 	ad->genlist = scroller;
 	elm_genlist_mode_set(ad->genlist, ELM_LIST_COMPRESS);
-	/*register vconf key */
-
-	evas_object_smart_callback_add(ad->genlist, "realized", __gl_realized_cb, NULL);
-
-	Elm_Object_Item *item = NULL;
 
 	setting_create_Gendial_field_def(ad->genlist, &itc_1text,
 	                                 setting_applications_main_mouse_up_Gendial_list_cb,
 	                                 ad, SWALLOW_Type_INVALID, NULL,
 	                                 NULL, 0,
 	                                 KeyStr_ApplicationManager, NULL, NULL);
-
-	setting_create_Gendial_field_def(ad->genlist, &itc_1text,
-	                                 setting_applications_main_mouse_up_Gendial_list_cb,
-	                                 ad, SWALLOW_Type_INVALID, NULL,
-	                                 NULL, 0,
-	                                 KeyStr_DefaultApplications, NULL, NULL);
-
 
 	setting_view_applications_main.is_create = 1;
 	return SETTING_RETURN_SUCCESS;
@@ -115,13 +78,9 @@ static int setting_applications_main_destroy(void *cb)
 
 	SettingApplicationsUG *ad = (SettingApplicationsUG *) cb;
 
-	if (ad->nf_it) {
-		ad->nf_it = NULL;
-	}
 	if (ad->ly_main != NULL) {
 		evas_object_del(ad->ly_main);
 		ad->ly_main = NULL;
-		/* if(ad->back_dialData) FREE(ad->back_dialData); */
 	}
 	setting_view_applications_main.is_create = 0;
 	return SETTING_RETURN_SUCCESS;
@@ -137,13 +96,6 @@ static int setting_applications_main_update(void *cb)
 
 	if (ad->ly_main != NULL) {
 		evas_object_show(ad->ly_main);
-		if (ad->data_br) {
-			ad->data_br->sub_desc =
-			    (char *)g_strdup(get_brightness_mode_str());
-			elm_object_item_data_set(ad->data_br->item, ad->data_br);
-			elm_genlist_item_update(ad->data_br->item);
-
-		}
 	}
 
 	return SETTING_RETURN_SUCCESS;
@@ -204,9 +156,6 @@ setting_applications_main_mouse_up_Gendial_list_cb(void *data, Evas_Object *obj,
 
 	if (!safeStrCmp(KeyStr_ApplicationManager, list_item->keyStr)) {
 		setting_applications_manage_apps_ug(ad);
-	} else if (!safeStrCmp(KeyStr_DefaultApplications, list_item->keyStr)) {
-		setting_view_change(&setting_view_applications_main,
-		                    &setting_view_applications_defaultapp, ad);
 	}
 }
 
@@ -223,6 +172,5 @@ static Eina_Bool setting_applications_main_click_softkey_back_cb(void *data, Elm
 	ug_destroy_me(ad->ug);
 	SETTING_TRACE_END;
 	return EINA_FALSE;
-
 }
 
