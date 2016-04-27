@@ -123,6 +123,12 @@
 		<label xml:lang="ja-jp">サウンド</label>
 		<label xml:lang="ko-kr">소리</label>
 	</ui-application>
+	<ui-application appid="setting-sound-efl" exec="@TZ_SYS_RO_APP@/org.tizen.setting/bin/setting-sound-efl" type="capp" nodisplay="true" taskmanage="false" ui-gadget="true">
+		<icon>@TZ_SYS_RO_ICONS@/default/small/org.tizen.setting.png</icon>
+		<label>Sound</label>
+		<label xml:lang="en-us">Sound</label>
+		<label xml:lang="ko-kr">소리</label>
+	</ui-application>
 	<ui-application appid="setting-display-efl" exec="@TZ_SYS_RO_APP@/org.tizen.setting/bin/setting-display-efl" type="capp" nodisplay="true" taskmanage="false" ui-gadget="true">
 		<icon>@TZ_SYS_RO_ICONS@/default/small/org.tizen.setting.png</icon>
 		<label>Display</label>
@@ -133,7 +139,6 @@
 		<label>Applications</label>
 		<label xml:lang="en-us">Applications</label>
 	</ui-application>
-
 	<ui-application appid="setting-fileview-efl" exec="@TZ_SYS_RO_APP@/org.tizen.setting/bin/setting-fileview-efl" type="capp" nodisplay="true" taskmanage="false" ui-gadget="true">
 		<icon>@TZ_SYS_RO_ICONS@/default/small/org.tizen.setting.png</icon>
 		<label>Fileview</label>

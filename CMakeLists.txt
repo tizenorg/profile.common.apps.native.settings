@@ -16,6 +16,7 @@ SET(CMAKE_SKIP_BUILD_RPATH true)
 
 #set variable
 SET(SETTING_PROFILE setting-profile)
+SET(SETTING_SOUND setting-sound)
 SET(SETTING_DISPLAY setting-display)
 SET(SETTING_APPLICATIONS setting-applications)
 SET(SETTING_MORECONNECTIONS setting-moreconnections)
@@ -31,6 +32,7 @@ SET(SETTING_RINGTONE setting-ringtone)
 SET(SETTING_APPMGR setting-appmgr)
 
 SET(SETTING_PROFILE_UG setting-profile-efl)
+SET(SETTING_SOUND_UG setting-sound-efl)
 SET(SETTING_DISPLAY_UG setting-display-efl)
 SET(SETTING_APPLICATIONS_UG setting-applications-efl)
 SET(SETTING_TIME_UG setting-time-efl)
