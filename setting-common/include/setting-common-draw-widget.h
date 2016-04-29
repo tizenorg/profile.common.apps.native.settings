@@ -338,6 +338,8 @@ extern Setting_GenGroupItem_Data *setting_create_Gendial_field_def(Evas_Object *
                                                                    char *sub_desc,
                                                                    setting_call_back_func chk_change_cb);
 
+extern void setting_add_gl_help(Evas_Object *scroller, const char *str);
+
 extern Setting_GenGroupItem_Data *setting_create_Gendial_field_entry_with_return_key(Evas_Object *
         genlist,
         const Elm_Genlist_Item_Class *itc,
