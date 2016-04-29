@@ -36,42 +36,6 @@ setting_view setting_view_phone_language_region = {
 	.cleanup = setting_phone_language_region_cleanup,
 };
 
-
-
-#if 0
-/**
- * @brief Callback of language change flush timer
- *
- * @param cb The view data passed between all callbacks
- * @return #1 means call it again, else means call it only once
- */
-static Eina_Bool setting_phone_language_region_flush_timer_cb(void *cb)
-{
-	SETTING_TRACE_BEGIN;
-	retv_if(cb == NULL, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
-	SettingPhoneUG *ad = (SettingPhoneUG *) cb;
-
-	elm_config_all_flush();
-	ad->lang_flush_timer = NULL;
-
-	SETTING_TRACE_END;
-	return EINA_FALSE;
-}
-#endif
-
-static Eina_Bool setting_phone_language_region_freeze_event_timer_cb(void *cb)
-{
-	SETTING_TRACE_BEGIN;
-	retv_if(cb == NULL, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
-	SettingPhoneUG *ad = (SettingPhoneUG *) cb;
-
-	evas_object_freeze_events_set(ad->navi_bar, EINA_FALSE);
-
-	ad->event_freeze_timer = NULL;
-	SETTING_TRACE_END;
-	return EINA_FALSE;
-}
-
 /**
  * @brief Finds appid with specific category
  *
@@ -144,48 +108,6 @@ static void setting_phone_lang_create_keyboard_ug(SettingPhoneUG *ad)
 }
 
 /**
- * @brief create voice recognition ug by app control
- *
- */
-static void setting_phone_lang_create_voice_recognition_ug(SettingPhoneUG *ad)
-{
-	SETTING_TRACE_BEGIN;
-	if (app_group_launcher("setting-voice-efl|show_what:stt") == 0) {
-		ad->event_freeze_timer = ecore_timer_add(1, setting_phone_language_region_freeze_event_timer_cb, ad);
-		evas_object_freeze_events_set(ad->navi_bar, EINA_TRUE);
-	}
-}
-
-/**
- * @brief create text-to-speech ug by app control
- *
- */
-static void setting_phone_lang_create_text_speech_ug(SettingPhoneUG *ad)
-{
-	SETTING_TRACE_BEGIN;
-	if (app_group_launcher("setting-voice-efl|show_what:tts") == 0) {
-		ad->event_freeze_timer = ecore_timer_add(1, setting_phone_language_region_freeze_event_timer_cb, ad);
-		evas_object_freeze_events_set(ad->navi_bar, EINA_TRUE);
-	}
-}
-
-/**
- * @brief create readout(old name : drivingmode) ug by app control
- *
- * @param ad The view data passed
- */
-static void setting_phone_lang_create_readout_ug(SettingPhoneUG *ad)
-{
-	SETTING_TRACE_BEGIN;
-	ret_if(ad == NULL);
-
-	if (app_launcher("setting-drivingmode-efl") == 0) {
-		ad->event_freeze_timer = ecore_timer_add(1, setting_phone_language_region_freeze_event_timer_cb, ad);
-		evas_object_freeze_events_set(ad->navi_bar, EINA_TRUE);
-	}
-}
-
-/**
  * @brief Callback of cancel button
  *
  * @param cb The view data passed between all callbacks
@@ -234,16 +156,6 @@ static void setting_phone_lang_item_Gendial_mouse_up_cb(void *data,
 		                    &setting_view_phone_region_format, ad);
 	} else if (!safeStrCmp("IDS_ST_BODY_KEYBOARD", list_item->keyStr)) {
 		setting_phone_lang_create_keyboard_ug(ad);
-	} else if (!safeStrCmp("IDS_VC_HEADER_VOICE_RECOGNITION", list_item->keyStr)) {
-		setting_phone_lang_create_voice_recognition_ug(ad);
-	} else if (!safeStrCmp("IDS_ST_HEADER_TEXT_TO_SPEECH", list_item->keyStr)) {
-		setting_phone_lang_create_text_speech_ug(ad);
-	} else if (!safeStrCmp("IDS_VC_MBODY_NOTIFICATION_READ_OUT", list_item->keyStr)) {
-		setting_phone_lang_create_readout_ug(ad);
-	} else if (!safeStrCmp("IDS_ST_BODY_VOICE_CONTROL", list_item->keyStr)) {
-		app_group_launcher("org.tizen.voice-setting|show:voice-control");
-	} else if (!safeStrCmp("IDS_ST_BODY_TTS", list_item->keyStr)) {
-		app_group_launcher("org.tizen.voice-setting|show:tts");
 	}
 }
 
@@ -351,18 +263,6 @@ static int setting_phone_language_region_create(void *cb)
 	                                     NULL, 0, "IDS_ST_BODY_KEYBOARD",
 	                                     NULL, NULL);
 
-	/* Speech */
-	ad->data_title_speech = setting_create_Gendial_field_titleItem(scroller, &itc_group_item, _("IDS_ST_BODY_SPEECH"), NULL);
-	setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
-	                                 setting_phone_lang_item_Gendial_mouse_up_cb,
-	                                 ad, SWALLOW_Type_INVALID, NULL,
-	                                 NULL, 0, "IDS_ST_BODY_VOICE_CONTROL",
-	                                 NULL, NULL);
-	setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
-	                                 setting_phone_lang_item_Gendial_mouse_up_cb,
-	                                 ad, SWALLOW_Type_INVALID, NULL,
-	                                 NULL, 0, "IDS_ST_BODY_TTS",
-	                                 NULL, NULL);
 	if (pa_region) {
 		FREE(pa_region);
 	}
@@ -480,31 +380,10 @@ static int setting_phone_language_region_update(void *cb)
 			elm_object_item_data_set(ad->data_title_keyboard->item, ad->data_title_keyboard);
 			elm_genlist_item_update(ad->data_title_keyboard->item);
 		}
-		if (ad->data_title_speech) {
-			G_FREE(ad->data_title_speech->keyStr);
-			ad->data_title_speech->keyStr = (char *)g_strdup(_("IDS_ST_BODY_SPEECH"));
-			elm_object_item_data_set(ad->data_title_speech->item, ad->data_title_speech);
-			elm_genlist_item_update(ad->data_title_speech->item);
-		}
-		if (ad->data_readout) {
-			G_FREE(ad->data_readout->sub_desc);
-			ad->data_readout->sub_desc = get_pa_noti_readout_str();
-			elm_object_item_data_set(ad->data_readout->item, ad->data_readout);
-			elm_genlist_item_update(ad->data_readout->item);
-		}
-
 		FREE(pa_region);
 	}
-#if 0
-	if (ad->lang_change) {
-		ad->lang_flush_timer = ecore_timer_add(0.3, setting_phone_language_region_flush_timer_cb, ad);
-		ad->lang_change = EINA_FALSE;
-	}
-#endif
 	return SETTING_RETURN_SUCCESS;
 }
-
-
 
 /**
  * @brief Callback of view cleanup

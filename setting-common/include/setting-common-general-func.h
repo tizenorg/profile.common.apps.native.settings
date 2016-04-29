@@ -86,7 +86,6 @@ extern char *get_pa_week_format_str();
 extern char *get_pa_roaming_network_str();
 extern char *get_pa_select_network();
 extern char *get_pa_screen_lock_type_str();
-extern char *get_pa_noti_readout_str();
 extern double get_widgets_factor();
 extern char *setting_gettext(const char *s);
 extern char *modesyspopup_gettext(const char *s);

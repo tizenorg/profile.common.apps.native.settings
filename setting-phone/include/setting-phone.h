@@ -164,11 +164,7 @@ struct _SettingPhoneUG {
 	Setting_GenGroupItem_Data *data_region_fmt;
 	Setting_GenGroupItem_Data *data_region_fmt_example;
 	Setting_GenGroupItem_Data *data_keyboard;
-	Setting_GenGroupItem_Data *data_voice_recog;
-	Setting_GenGroupItem_Data *data_text_speech;
-	Setting_GenGroupItem_Data *data_readout;
 	Setting_GenGroupItem_Data *data_title_keyboard;
-	Setting_GenGroupItem_Data *data_title_speech;
 
 	Evas_Object *chk_region;
 	int prev_region;
