@@ -37,41 +37,18 @@
 
 #include <stdio.h>
 #include <Elementary.h>
-#include <ITapiSim.h>
-
 #include <glib-object.h>
-
-/* #include <mobileap_lib.h> */
-#include<telephony.h>
 
 #include <setting-common-draw-widget.h>
 #include <setting-common-view.h>
-
-#include <TapiUtility.h>
-#include <tapi_common.h>
-#include <ITapiSim.h>
-/*#include <tethering.h> */
 #include <notification.h>
 #include <dbus/dbus.h>
 
 #define MAX_DISPLAY_STR_LEN_ON_PHONE_INFO	256
-
-#define SETTING_ABOUT_PROGRESSBAR_TIMEOUT 10
-/*#define SETTING_ABOUT_MOBILE_AP_TURNED_OFF "Mobile hotspot will be turned off." */
 #define SETTING_ABOUT_MOBILE_AP_TURNED_OFF "IDS_ST_POP_DISABLE_TETHERING_Q"
-
 #define SETTING_ABOUT_MY_NUMBERS_LEN 3
 #define SETTING_ABOUT_WIFI_MAC_STR_LEN 17
-#define SETTING_ABOUT_DEFAULT_DEVICE_NAME	"Redwood"
 #define SETTING_ABOUT_PUK_LOCKED "PUK is locked"
-#define SETTING_SIM_MSISDN_DIALING_NUMBER_LEN TAPI_SIM_MSISDN_DIALING_NUMBER_LEN+1
-
-typedef enum _SETTING_SIM_STATUS {
-    SETTING_SIM_STATUS_UNKNOWN = 0,
-    SETTING_SIM_STATUS_IN_CHECKING = 1,
-    SETTING_SIM_STATUS_LOCKED = 2,
-    SETTING_SIM_STATUS_PERM_BLOCKED = 3
-} SETTING_SIM_STATUS;
 
 typedef struct _SettingAboutUG SettingAboutUG;
 
@@ -82,25 +59,16 @@ typedef struct _SettingAboutUG SettingAboutUG;
  */
 struct _SettingAboutUG {
 	ui_gadget_h ug;
-	TapiHandle *handle;
-	bool tapi_responsed;
 	bool pause_flag;
 
 	setting_view *view_to_load;
 
-	Elm_Genlist_Item_Class itc_1text;
 	Elm_Genlist_Item_Class itc_2text_2;
-	Elm_Genlist_Item_Class itc_group_item;
-	Elm_Genlist_Item_Class itc_2text_3_parent;
-	Elm_Genlist_Item_Class itc_1icon_1text_sub;
-	Elm_Genlist_Item_Class itc_help_style;
 
 	/* add more variables here (move your appdata to here) */
 	Evas *evas;
 	Evas_Object *win_main_layout;
 	Evas_Object *win_get;
-
-	ui_gadget_h ug_loading;
 
 	Evas_Object *navi_bar;
 	Evas_Object *ly_main;
@@ -116,27 +84,16 @@ struct _SettingAboutUG {
 	Setting_GenGroupItem_Data *item_dev_name_main;
 	bool is_dev_name_focus;
 	int cursor_pos;
-	Setting_GenGroupItem_Data *item_data_imei;
-	Setting_GenGroupItem_Data *item_model;
 	Setting_GenGroupItem_Data *item_version;
 	Setting_GenGroupItem_Data *item_data_cpu;
 	Setting_GenGroupItem_Data *item_data_battery;
 	Setting_GenGroupItem_Data *item_data_bt;
 	Setting_GenGroupItem_Data *item_data_wifi;
-	Setting_GenGroupItem_Data *item_data_sn;
-	Setting_GenGroupItem_Data *item_data_my_phone_number;
-	Setting_GenGroupItem_Data *item_data_status;
 	Evas_Object *popup;
 	Evas_Object *popup_space;
-	char *old_name;
 	bool empty_flag;
-	/*char *my_numbers[SETTING_ABOUT_MY_NUMBERS_LEN]; */
-	TelSimMsisdnList_t my_numbers;
 	bool popup_showed_flag; /** if popup has been showed, do not show again*/
 	bool drag_flag;
-	int noti_id;
-	SETTING_SIM_STATUS sim_status;
-	Eina_Bool need_update;
 
 	/*idler for popup */
 	Ecore_Idler *idler_remove_popup;
@@ -150,17 +107,6 @@ struct _SettingAboutUG {
 extern setting_view setting_view_about_main;
 extern void setting_about_main_get_wifi_mac_address_string(char *str, int size);
 extern void setting_about_main_get_bluetooth_address_string(char *str, int size);
-
-
-/**
-* @brief ug layout callback
-*
-* @param ug
-* @param mode
-* @param priv
-*/
-void setting_about_layout_ug_cb(ui_gadget_h ug, enum ug_mode mode,
-                                void *priv);
 
 /**
  * @}

@@ -28,37 +28,6 @@
 #define UG_MODULE_API __attribute__ ((visibility("default")))
 #endif
 
-
-void setting_about_layout_ug_cb(ui_gadget_h ug, enum ug_mode mode,
-                                void *priv)
-{
-	/*SettingAboutUG *ad = (SettingAboutUG *) priv; */
-	Evas_Object *base;
-
-	if (!priv) {
-		return;
-	}
-	SETTING_TRACE_BEGIN;
-
-	base = (Evas_Object *) ug_get_layout(ug);
-	if (!base) {
-		return;
-	}
-
-	switch (mode) {
-		case UG_MODE_FULLVIEW:
-			evas_object_size_hint_weight_set(base, EVAS_HINT_EXPAND,
-			                                 EVAS_HINT_EXPAND);
-			/* elm_win_resize_object_add(ad->win_get, base); */
-			evas_object_show(base);
-			break;
-		default:
-			break;
-	}
-
-	SETTING_TRACE_END;
-}
-
 /**
 * @brief Event process when the sizeof UG view changes
 *
@@ -107,12 +76,7 @@ static void *setting_about_ug_on_create(ui_gadget_h ug, enum ug_mode mode,
 	setting_view_node_table_register(&setting_view_about_main, NULL);
 
 	/*  creating a view. */
-	setting_create_Gendial_itc(SETTING_GENLIST_ICON_1LINE_STYLE, &(aboutUG->itc_1text));
 	setting_create_Gendial_itc(SETTING_GENLIST_2LINE_STYLE, &(aboutUG->itc_2text_2));
-	setting_create_Gendial_itc(SETTING_GENLIST_2LINE_STYLE, &(aboutUG->itc_2text_3_parent));
-	setting_create_Gendial_itc(SETTING_GENLIST_2LINE_STYLE, &(aboutUG->itc_1icon_1text_sub));
-	setting_create_Gendial_itc(SETTING_GENLIST_GROUP_INDEX_STYLE, &(aboutUG->itc_group_item));
-	setting_create_Gendial_itc("multiline/1text", &(aboutUG->itc_help_style));
 
 	setting_view_node_set_cur_view(&setting_view_about_main);
 	setting_view_create(&setting_view_about_main, (void *)aboutUG);
@@ -329,64 +293,5 @@ UG_MODULE_API int UG_MODULE_INIT(struct ug_module_ops *ops)
 UG_MODULE_API void UG_MODULE_EXIT(struct ug_module_ops *ops)
 {
 	SETTING_TRACE_BEGIN;
-	SettingAboutUG *aboutUG;
 	setting_retm_if(!ops, "ops == NULL");
-
-	aboutUG = ops->priv;
-	if (aboutUG) {
-		if (aboutUG->handle
-		    && tel_deinit(aboutUG->handle) == TAPI_API_SUCCESS) {
-			SETTING_TRACE("tel_deinit sucessed");
-		}
-		FREE(aboutUG);
-	}
 }
-
-/**
- * @brief aboutUG searchable nodes array
- *
- * @see the struct Setting_Cfg_Node_T
- */
-static Setting_Cfg_Node_T s_cfg_node_array[] = {
-	{"IDS_ST_BODY_IMEI", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_IMEI", 0, 0, 0, Cfg_Item_View_Node, NULL,  NULL, NULL, NULL},
-	{"IDS_ST_BODY_MY_NUMBER", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_MY_NUMBER", 0, 0, 0, Cfg_Item_View_Node, NULL,  NULL, NULL, NULL},
-	{"IDS_CAM_POP_MODEL", NULL, "viewtype:frontpage;tab:first;keyword:IDS_CAM_POP_MODEL", 0, 0, 0, Cfg_Item_View_Node,  NULL, NULL, NULL, NULL},
-	{"IDS_ST_BODY_VERSION", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_VERSION", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_BODY_BLUETOOTH", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_BLUETOOTH", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_HEADER_WI_FI", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_HEADER_WI_FI", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_BODY_SERIAL_NUMBER", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_SERIAL_NUMBER", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_BODY_BATTERY", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_BATTERY", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_BODY_CPU_USAGE", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_CPU_USAGE", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_MBODY_DEVICE_STATUS", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_MBODY_DEVICE_STATUS", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_BODY_LICENCE", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_LICENCE", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_MBODY_SOFTWARE_UPDATE", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_MBODY_SOFTWARE_UPDATE", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-	{"IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB", NULL, "viewtype:frontpage;tab:first;keyword:IDS_ST_BODY_ADVANCEDOPTIONS_CERTIFICATES", 0, 0, 0, Cfg_Item_View_Node, NULL, NULL, NULL, NULL},
-};
-
-/**
- * @brief init search db for aboutUG searchable nodes
- *
- * @param service struct Setting_Cfg_Node_T
- * @param priv struct Setting_Cfg_Node_T
- * @param applocale struct Setting_Cfg_Node_T
- *
- * @return 0 for success
- */
-UG_MODULE_API int setting_plugin_search_init(app_control_h service, void *priv, char **applocale)
-{
-	SETTING_TRACE_BEGIN;
-	SETTING_TRACE(">> setting-about-efl DB search code");
-
-	*applocale = strdup("setting:"_TZ_SYS_RO_APP"/org.tizen.setting/res/locale");
-
-	Eina_List **pplist = (Eina_List **)priv;
-	int i;
-	int size = sizeof(s_cfg_node_array) / sizeof(s_cfg_node_array[0]);
-	for (i = 0; i < size; i++) {
-		Setting_Cfg_Node_T *node = setting_plugin_search_item_subindex_add(s_cfg_node_array[i].key_name, s_cfg_node_array[i].ug_args, IMG_AboutDevice, s_cfg_node_array[i].item_type,  s_cfg_node_array[i].data, "About");
-		*pplist = eina_list_append(*pplist, node);
-	}
-	return 0;
-}
-
-

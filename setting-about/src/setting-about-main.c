@@ -31,30 +31,13 @@
 
 #include <app_manager.h>
 #include <efl_extension.h>
-#include <ITapiModem.h>
 
 #define MAX_DEVICE_NAME_LEN		32
 
-#define DEVICED_BUS_NAME			"org.tizen.system.deviced"
-#define DEVICED_OBJECT_PATH			"/Org/Tizen/System/DeviceD"
-#define DEVICED_INTERFACE_NAME		DEVICED_BUS_NAME
-#define DEVICED_PATH_BOARD			DEVICED_OBJECT_PATH"/Board"
-#define DEVICED_INTERFACE_BOARD		DEVICED_INTERFACE_NAME".Board"
-#define METHOD_GET_SERIAL			"GetSerial"
-
-
 /** @todo : need to handle unicode encoded input characters */
-
 #define DEVICE_NAME					"IDS_ST_HEADER_DEVICE_NAME"
-#define DEVICE_NAME_EXCEED_STR	"IDS_ST_TPOP_MAXIMUM_NUMBER_OF_CHARACTERS_REACHED"
-
-
 #define EMPTY_LIMITATION_STR		"IDS_ST_BODY_THE_NAME_FIELD_CANNOT_BE_EMPTY"
-#define SOFTWARE_UPDATE_STR		"IDS_ST_MBODY_SOFTWARE_UPDATE"
-#define DEVICE_NAME_UNALLOWED_SPACE_KEY_STR "Device name cannot contain spaces"
 #define DEVICE_NAME_DEFAULE     "Redwood"
-
-#define APP_NAME "Settings"
 
 static int setting_about_main_create(void *cb);
 static int setting_about_main_destroy(void *cb);
@@ -67,12 +50,6 @@ setting_view setting_view_about_main = {
 	.update = setting_about_main_update,
 	.cleanup = setting_about_main_cleanup,
 };
-
-void __setting_about_gl_realized_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	/*SETTING_TRACE_BEGIN; */
-	setting_retm_if(event_info == NULL, "invalid parameter: event_info is NULL");
-}
 
 /**
  * @brief popup response callback fuc.
@@ -234,99 +211,6 @@ static void __setting_about_popup_mobile_ap_turn_off_ask_resp_cb(void *data,
 }
 
 /**
- * @brief regulatory popup response cp.
- *
- * @param data application context
- * @param obj evas object
- * @param event_info event type
- */
-
-static void __setting_about_popup_regulatory_info_rsp_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	retm_if(data == NULL, "Data parameter is NULL");
-	evas_object_del(data);
-}
-
-
-/**
- * @brief show regulatory info popup.
- *
- * @param data application context
- */
-static void __setting_about_popup_regulatory_info(void *data)
-{
-	SETTING_TRACE_BEGIN;
-
-	Evas_Object *popup;
-	SettingAboutUG *ad;
-	Evas_Object *layout;
-	Evas_Object *icon;
-	Evas_Object *btn1;
-	char buf[4096];
-
-	ad = (SettingAboutUG *) data;
-	popup = elm_popup_add(ad->win_main_layout);
-	eext_object_event_callback_add(popup, EEXT_CALLBACK_BACK, eext_popup_back_cb, NULL);
-
-	elm_object_part_text_set(popup, "title,text", _(KeyStr_Regulatory_Info));
-	layout = elm_layout_add(popup);
-	elm_layout_file_set(layout, SETTING_THEME_EDJ_NAME, "popup_center_image");
-	evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
-	icon = elm_image_add(layout);
-	snprintf(buf, sizeof(buf), "%s/00_popup_regulatory_info.png", SETTING_ICON_PATH);
-	elm_image_file_set(icon, buf, NULL);
-	elm_image_resizable_set(icon, EINA_TRUE, EINA_TRUE);
-	elm_object_part_content_set(layout, "elm.swallow.content", icon);
-
-	evas_object_show(layout);
-	elm_object_content_set(popup, layout);
-
-	btn1 = elm_button_add(popup);
-	elm_object_style_set(btn1, "popup");
-	elm_object_text_set(btn1, _("IDS_ST_BUTTON_OK"));
-	elm_object_part_content_set(popup, "button1", btn1);
-	evas_object_smart_callback_add(btn1, "clicked", __setting_about_popup_regulatory_info_rsp_cb, popup);
-	evas_object_show(popup);
-
-	SETTING_TRACE_END;
-}
-
-/**
- * @brief get Model Name.
- *		- No ini: Unavailable
- *		- I9500 @ target: GT-I9500
- *		- I9500 @ emul: SDK
- *		- SLP   @ target: GT-SLP
- *		- SLP   @ emul: SDK
- *
- * @param szStr the buffer for store the model name
- * @param nSize buffer size
- */
-void setting_about_main_get_phone_model_name(char *szStr, int nSize)
-{
-	retm_if(szStr == NULL, "szStr parameter is NULL");
-
-	char *value = NULL;
-	int ret = system_info_get_platform_string("http://tizen.org/system/model_name", &value);
-	SETTING_TRACE("value : %s", value);
-	if (ret != SYSTEM_INFO_ERROR_NONE) {
-		SETTING_TRACE_ERROR("fail to call system_info_get_platform_string");
-		FREE(value);
-		snprintf(szStr, nSize, "%s", _("IDS_ST_HEADER_UNAVAILABLE"));
-		return;
-	}
-
-	if (value) {
-		snprintf(szStr, nSize, "%s", value);
-	} else {
-		snprintf(szStr, nSize, "%s", _("IDS_ST_HEADER_UNAVAILABLE"));
-	}
-
-	FREE(value);
-}
-
-/**
  * @brief get software version.
  *
  * @param szStr the buffer for store SW version
@@ -404,88 +288,6 @@ void setting_about_main_get_wifi_mac_address_string(char *str, int size)
 		snprintf(str, size, "%s", _("IDS_ST_HEADER_UNAVAILABLE"));
 	}
 }
-
-static DBusMessage *dbus_method_sync_with_reply(const char *dest, const char *path,
-                                                const char *interface, const char *method,
-                                                const char *sig, char *param[])
-{
-	DBusConnection *conn;
-	DBusMessage *msg;
-	DBusMessageIter iter;
-	DBusMessage *reply;
-	DBusError err;
-
-	conn = dbus_bus_get(DBUS_BUS_SYSTEM, NULL);
-	if (!conn) {
-		return NULL;
-	}
-
-	msg = dbus_message_new_method_call(dest, path, interface, method);
-	if (!msg) {
-		return NULL;
-	}
-
-	dbus_message_iter_init_append(msg, &iter);
-
-	dbus_error_init(&err);
-
-	reply = dbus_connection_send_with_reply_and_block(conn, msg, -1, &err);
-	if (!reply) {
-	}
-
-	if (dbus_error_is_set(&err)) {
-		SETTING_TRACE_ERROR("dbus_connection_send error(%s:%s)", err.name, err.message);
-		dbus_error_free(&err);
-		reply = NULL;
-	}
-
-	dbus_message_unref(msg);
-	return reply;
-}
-
-/**
- * @brief get serial number.
- *
- * @param szStr the buffer for store SN
- * @param nSize buffer size
- */
-void setting_about_main_get_sn(char *szStr, int nSize)
-{
-	retm_if(szStr == NULL, "szStr parameter is NULL");
-
-	DBusError err;
-	DBusMessage *msg;
-	int ret, len;
-	char *serial_num;
-
-	msg = dbus_method_sync_with_reply(DEVICED_BUS_NAME, DEVICED_PATH_BOARD,
-	                                  DEVICED_INTERFACE_BOARD, METHOD_GET_SERIAL, NULL, NULL);
-	if (!msg) {
-		SETTING_TRACE_ERROR("fail send message");
-		snprintf(szStr, nSize, "%s", _("IDS_ST_HEADER_UNAVAILABLE"));
-		return;
-	}
-
-	dbus_error_init(&err);
-
-
-	ret = dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &serial_num, DBUS_TYPE_INT32, &len, DBUS_TYPE_INVALID);
-	if (!ret) {
-		SETTING_TRACE_ERROR("no message : [%s:%s]", err.name, err.message);
-		snprintf(szStr, nSize, "%s", _("IDS_ST_HEADER_UNAVAILABLE"));
-		return;
-	}
-
-	dbus_message_unref(msg);
-	dbus_error_free(&err);
-
-	if (serial_num && strlen(serial_num)) {
-		snprintf(szStr, nSize, "%s", serial_num);
-	} else {
-		snprintf(szStr, nSize, "%s", _("IDS_ST_HEADER_UNAVAILABLE"));
-	}
-}
-
 
 /**
  * @brief get current battery percentage.
@@ -1148,216 +950,6 @@ static void __setting_about_main_vconf_change_cb(keynode_t *key, void *data)
 }
 
 /**
- * @brief UG destroy callback
- *
- * @param ug the UG which is needed to be destoried
- * @param priv application data
- */
-static void __destroy_ug_cb(ui_gadget_h ug, void *priv)
-{
-	SETTING_TRACE_BEGIN;
-
-	/* restore the '<-' button on the navigate bar */
-	ret_if(!priv);
-	SettingAboutUG *ad = (SettingAboutUG *) priv;	/* ad is point to priv */
-
-	if (ug) {
-		setting_ug_destroy(ug);
-		ad->ug_loading = NULL;
-	}
-	elm_object_tree_focus_allow_set(ad->ly_main, EINA_TRUE);
-}
-
-/**
- * @brief Lunch cetificates UG(setting-manage-certificates-efl)
- *
- * @param data application data
- */
-static void __setting_about_main_certificates_clicked(void *data)
-{
-	SETTING_TRACE_BEGIN;
-	retm_if(data == NULL, "Data parameter is NULL");
-	SettingAboutUG *ad = (SettingAboutUG *)data;
-
-	struct ug_cbs *cbs = (struct ug_cbs *)calloc(1, sizeof(struct ug_cbs));
-	if (!cbs) {
-		return;
-	}
-
-	cbs->layout_cb = setting_about_layout_ug_cb;
-	cbs->result_cb = NULL;
-	cbs->destroy_cb = __destroy_ug_cb;
-	cbs->priv = (void *)ad;
-
-	elm_object_tree_focus_allow_set(ad->ly_main, EINA_FALSE);
-	ad->ug_loading =
-	    setting_ug_create(ad->ug, "setting-manage-certificates-efl", UG_MODE_FULLVIEW, NULL, cbs);
-
-	if (NULL == ad->ug_loading) {	/* error handling */
-		SETTING_TRACE_ERROR("NULL == ad->ug_loading");
-	}
-	FREE(cbs);
-}
-
-/**
- * @brief Lunch UG setting-phone-efl
- *
- * @param data application context
- */
-static void __setting_about_main_licence_launch(void *data)
-{
-	SETTING_TRACE_BEGIN;
-	retm_if(data == NULL, "Data parameter is NULL");
-	SettingAboutUG *ad = (SettingAboutUG *)data;
-
-	app_control_h svc;
-	if (app_control_create(&svc)) {
-		return;
-	}
-
-	app_control_add_extra_data(svc, "viewtype", "license");
-
-	struct ug_cbs *cbs = (struct ug_cbs *)calloc(1, sizeof(struct ug_cbs));
-	if (!cbs) {
-		app_control_destroy(svc);
-		return;
-	}
-
-	cbs->layout_cb = setting_about_layout_ug_cb;
-	cbs->result_cb = NULL;
-	cbs->destroy_cb = __destroy_ug_cb;
-	cbs->priv = (void *)ad;
-
-
-	elm_object_tree_focus_allow_set(ad->ly_main, EINA_FALSE);
-	ad->ug_loading =
-	    setting_ug_create(ad->ug, "setting-phone-efl", UG_MODE_FULLVIEW, svc, cbs);
-
-	if (NULL == ad->ug_loading) {	/* error handling */
-		SETTING_TRACE_ERROR("NULL == ad->ug_loading");
-	}
-	app_control_destroy(svc);
-	FREE(cbs);
-}
-
-/**
- * @brief expanlist sub-item selected callback
- *
- * @param data app context
- * @param obj evas object
- * @param event_info event type
- */
-static void __setting_about_sub_list_sel_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	SETTING_TRACE_BEGIN;
-	/* error check */
-	retm_if(event_info == NULL, "Invalid argument: event info is NULL");
-	Elm_Object_Item *subitem = (Elm_Object_Item *) event_info;
-	Elm_Object_Item *parentItem = elm_genlist_item_parent_get(subitem);
-	elm_genlist_item_selected_set(subitem, 0);
-	Setting_GenGroupItem_Data *data_subItem = elm_object_item_data_get(subitem);
-	Setting_GenGroupItem_Data *data_parentItem = elm_object_item_data_get(parentItem);  /* parent data */
-	ret_if(NULL == data_subItem || NULL == data_parentItem);
-
-
-	int err;
-	setting_set_string_slp_key(data_parentItem->int_slp_setting_binded, data_subItem->keyStr, &err);
-	setting_retm_if(0 != err, "Set vconf error[%d]", data_parentItem->int_slp_setting_binded);
-
-	data_parentItem->sub_desc = (char *)g_strdup(_(data_subItem->keyStr));
-	elm_object_item_data_set(data_parentItem->item, data_parentItem);
-	elm_genlist_item_update(data_parentItem->item);
-	elm_radio_value_set(data_subItem->rgd, data_subItem->chk_status);
-}
-
-/**
- * @brief expanlist sub-item radio checked callback
- *
- * @param data app context
- * @param obj evas object
- * @param event_info event type
- */
-
-static void __setting_about_sub_list_rd_change(void *data, Evas_Object *obj, void *event_info)
-{
-	SETTING_TRACE_BEGIN;
-	retm_if(data == NULL, "Data parameter is NULL");
-	Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data;
-
-	Elm_Object_Item *subItem = list_item->item;
-	Elm_Object_Item *parentItem = elm_genlist_item_parent_get(subItem);
-
-	Setting_GenGroupItem_Data *data_subItem = elm_object_item_data_get(subItem);	 /* subItem data */
-	Setting_GenGroupItem_Data *data_parentItem = elm_object_item_data_get(parentItem);  /* parent data */
-	ret_if(NULL == data_subItem || NULL == data_parentItem);
-
-	int err;
-	setting_set_string_slp_key(data_parentItem->int_slp_setting_binded, data_subItem->keyStr, &err);
-
-	ret_if(0 != err);
-	data_parentItem->sub_desc = (char *)g_strdup(_(data_subItem->keyStr));
-	elm_object_item_data_set(data_parentItem->item, data_parentItem);
-	elm_genlist_item_update(data_parentItem->item);
-	elm_radio_value_set(obj, data_subItem->chk_status);
-}
-
-/**
- * @brief expanlist state changed callback
- *
- * @param data app context
- * @param obj evas object
- * @param event_info event type
- */
-void setting_about_main_exp_cb(void *data, Evas_Object *obj, void *event_info)
-{
-	SETTING_TRACE_BEGIN;
-	setting_retm_if(data == NULL, "Data parameter is NULL");
-	setting_retm_if(event_info == NULL, "event_info parameter is NULL");
-
-	SettingAboutUG *ad = (SettingAboutUG *) data;
-	Elm_Object_Item *parentItem = event_info;	 /* parent item */
-	Setting_GenGroupItem_Data *data_parentItem = elm_object_item_data_get(parentItem);
-	Evas_Object *scroller = elm_object_item_widget_get(parentItem);
-
-	Evas_Object *rgd = elm_radio_add(scroller);
-	elm_radio_value_set(rgd, -1);
-
-	int err;
-	char sel_num[SETTING_SIM_MSISDN_DIALING_NUMBER_LEN] = { 0, };
-	setting_retm_if(NULL == data_parentItem, "data_parentItem is NULL");
-	setting_get_string_slp_key(data_parentItem->int_slp_setting_binded, sel_num, &err);
-	SETTING_TRACE("binded: %d, checked: %s, err: %d", data_parentItem->int_slp_setting_binded, sel_num, err);
-
-	int i = 0;
-	int sel_idx = -1;
-	Setting_GenGroupItem_Data *item_data = NULL;
-
-	/*for(; i < SETTING_ABOUT_MY_NUMBERS_LEN; i++) { */
-	for (; i < ad->my_numbers.count; i++) {
-		if (ad->my_numbers.list[i].num[0] == '\0') {
-			break;
-		}
-
-		if (sel_idx == -1 && 0 == safeStrCmp(sel_num, ad->my_numbers.list[i].num)) {
-			sel_idx = i;
-		}
-		item_data = setting_create_Gendial_exp_sub_field(scroller,
-		                                                 &(ad->itc_1icon_1text_sub),
-		                                                 __setting_about_sub_list_sel_cb, ad, parentItem,
-		                                                 SWALLOW_Type_1RADIO, rgd,
-		                                                 i,
-		                                                 ad->my_numbers.list[i].num, __setting_about_sub_list_rd_change);
-		if (item_data) {
-			item_data->userdata = ad;
-		} else {
-			SETTING_TRACE_ERROR("item_data is NULL");
-		}
-	}
-
-	elm_radio_value_set(rgd, sel_idx);
-}
-
-/**
 * @brief Do process when clicking '<-' button
 *
 * @param data application context
@@ -1571,29 +1163,10 @@ setting_about_main_mouse_up_Gendial_list_cb(void *data, Evas_Object *obj,
 	retm_if(list_item == NULL, "return of elm_object_item_data_get is NULL");
 
 	SETTING_TRACE("clicking item[%s]", _(list_item->keyStr));
-	if (!safeStrCmp("IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB", list_item->keyStr)) {
-		__setting_about_main_certificates_clicked(data);
-	} else if (!safeStrCmp(KeyStr_Regulatory_Info, list_item->keyStr)) {
-		__setting_about_popup_regulatory_info(data);
-	} else if (!safeStrCmp("IDS_ST_MBODY_LEGAL_INFORMATION_ABB", list_item->keyStr)) {
-		__setting_about_main_licence_launch(data);
-	} else if (!safeStrCmp("IDS_ST_MBODY_SOFTWARE_UPDATE", list_item->keyStr)) {
-#ifdef SUPPORT_FOTA
-		SettingAboutUG *ad = (SettingAboutUG *)list_item->userdata;
-		Evas_Object *back_btn = elm_object_item_part_content_get(ad->navi_item, "prev_btn");
-		if (back_btn) {
-			SETTING_TRACE_DEBUG("Change focus to back_btn");
-			elm_object_focus_set(back_btn, EINA_TRUE);
-		}
-
-		app_launcher("org.tizen.oma-dm");
-#endif
-	} else if (!safeStrCmp(SETTING_ABOUT_DEVICE_NAME_STR, list_item->keyStr)) {
+	if (!safeStrCmp(SETTING_ABOUT_DEVICE_NAME_STR, list_item->keyStr)) {
 		__setting_about_main_creat_name_view(data);
 	}
 }
-
-
 
 /**
  * @brief callback function for genlist event "drag"
@@ -1708,15 +1281,6 @@ static Eina_Bool setting_about_main_timer_update_cb(const void *data)
 		elm_object_item_data_set(ad->item_data_battery->item, ad->item_data_battery);
 		elm_genlist_item_update(ad->item_data_battery->item);
 	}
-	if (ad->need_update) {
-		if (ad->item_data_my_phone_number) {
-			G_FREE(ad->item_data_my_phone_number->sub_desc);
-			ad->item_data_my_phone_number->sub_desc = (char *)g_strdup(SETTING_ABOUT_PUK_LOCKED);
-			elm_object_item_data_set(ad->item_data_my_phone_number->item, ad->item_data_my_phone_number);
-			elm_genlist_item_update(ad->item_data_my_phone_number->item);
-			ad->need_update = FALSE;
-		}
-	}
 	return TRUE;
 }
 
@@ -1740,54 +1304,9 @@ int setting_about_main_generate_genlist(void *data)
 	Elm_Object_Item *item = NULL;
 	Setting_GenGroupItem_Data *item_data = NULL;
 	char str[MAX_DISPLAY_STR_LEN_ON_PHONE_INFO] = { 0, };
-	telephony_handle_list_s tapi_handle_list;
 	int i = 0;
-	int tapi_handle_count = 0;
 	int ret_value = 0;
 	int ret_get_app_info = 0;
-	app_info_h app_info = NULL;
-	ret_get_app_info = app_info_create("org.tizen.oma-dm", &app_info);
-
-	/* [UI] Software update */
-	if (ret_get_app_info != APP_MANAGER_ERROR_NONE) {
-		SETTING_TRACE("No corresponding app_id for [%s]\n", "org.tizen.oma-dm");
-	} else {
-		if (!is_emul_bin) {
-			item_data = setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
-					setting_about_main_mouse_up_Gendial_list_cb,
-					ad, SWALLOW_Type_INVALID, NULL, NULL,
-					0, "IDS_ST_MBODY_SOFTWARE_UPDATE",
-					NULL, NULL);
-			if (item_data) {
-				item_data->userdata = ad;
-			} else {
-				SETTING_TRACE_ERROR("item_data is NULL");
-			}
-		}
-	}
-
-	/* [UI] Certificates */
-	/* implementation is in progress. */
-	item_data = setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
-			setting_about_main_mouse_up_Gendial_list_cb,
-			ad, SWALLOW_Type_INVALID, NULL, NULL,
-			0, "IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB", NULL, NULL);
-	if (item_data) {
-	} else {
-		SETTING_TRACE_ERROR("item_data is NULL");
-	}
-
-	/* [UI] Legal Information */
-	setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
-			setting_about_main_mouse_up_Gendial_list_cb,
-			ad, SWALLOW_Type_INVALID, NULL, NULL,
-			0, "IDS_ST_MBODY_LEGAL_INFORMATION_ABB", NULL, NULL);
-
-	/*//////////////////////////////////////////////////////////////////// */
-	(void)setting_create_Gendial_field_titleItem(scroller,
-			&(ad->itc_group_item),
-			"IDS_ST_BODY_DEVICE_INFORMATION", NULL);
-	/*//////////////////////////////////////////////////////////////////// */
 
 	/* 1. Name */
 	/* Device name */
@@ -1811,58 +1330,6 @@ int setting_about_main_generate_genlist(void *data)
 	}
 	FREE(pa_sub_desc);
 
-
-	/* 2. Phone number */
-	/* Initialize telephony handle */
-	int telephony_init_ret = telephony_init(&tapi_handle_list);
-	if (telephony_init_ret != TELEPHONY_ERROR_NONE) {
-		tapi_handle_count = 0;
-	} else {
-		tapi_handle_count = tapi_handle_list.count;
-	}
-	SETTING_TRACE_DEBUG("tapi_handle_list.count:%d", tapi_handle_list.count);
-	/* my numbers(SIM1 and SIM2) */
-	for (i = 0; i < tapi_handle_count; i++) {
-		memset(str, 0x00, sizeof(str));
-		char *my_number = NULL;
-		ret_value = telephony_sim_get_subscriber_number(tapi_handle_list.handle[i], &my_number);
-		if (ret_value != TELEPHONY_ERROR_NONE) {
-			SETTING_TRACE_ERROR("telephony_sim_get_subscriber_number() failed!!! [%d]", ret_value);
-			my_number = (char *)g_strdup("IDS_ST_HEADER_UNAVAILABLE");
-		} else if (isEmptyStr(my_number)) {
-			SETTING_TRACE_DEBUG("telephony_sim_get_subscriber_number() success, BUT return empty my number");
-			my_number = (char *)g_strdup("IDS_ST_HEADER_UNAVAILABLE");
-		}
-		/* [UI] Phone number */
-		item_data =
-			setting_create_Gendial_field_def(scroller, &(ad->itc_2text_2), NULL,
-					NULL, SWALLOW_Type_INVALID, NULL,
-					NULL, 0, "IDS_ST_BODY_PHONE_NUMBER", my_number, NULL);
-		if (item_data) {
-			elm_object_item_disabled_set(item_data->item, EINA_TRUE);
-			elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-		} else {
-			SETTING_TRACE_ERROR("item_data is NULL");
-		}
-		FREE(my_number);
-
-	}
-
-	/* 3. [UI] Model number */
-	memset(str, 0x00, sizeof(str));
-	setting_about_main_get_phone_model_name(str, sizeof(str));
-	item_data =
-		setting_create_Gendial_field_def(scroller, &(ad->itc_2text_2), NULL,
-				NULL, SWALLOW_Type_INVALID, NULL,
-				NULL, 0, "IDS_ST_BODY_MODEL_NUMBER", str, NULL);
-	if (item_data) {
-		elm_object_item_disabled_set(item_data->item, EINA_TRUE);
-		elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-	} else {
-		SETTING_TRACE_ERROR("item_data is NULL");
-	}
-	ad->item_model = item_data;
-
 	/* 4. [UI] Tizen version */
 	memset(str, 0x00, sizeof(str));
 	setting_about_main_get_sw_version(str, sizeof(str));
@@ -1871,42 +1338,12 @@ int setting_about_main_generate_genlist(void *data)
 				NULL, SWALLOW_Type_INVALID, NULL,
 				NULL, 0, "IDS_ST_MBODY_TIZEN_VERSION", str, NULL);
 	if (item_data) {
-		elm_object_item_disabled_set(item_data->item, EINA_TRUE);
+		elm_object_item_disabled_set(str, EINA_TRUE);
 		elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 	} else {
 		SETTING_TRACE_ERROR("item_data is NULL");
 	}
 	ad->item_version = item_data;
-
-	/* 5. IMEI(IMEI 1 andd IMEI 2) */
-	for (i = 0; i < tapi_handle_count; i++) {
-		memset(str, 0x00, sizeof(str));
-		/*setting_about_main_get_imei(str, sizeof(str),tapi_handle_list.handle[i]); */
-		char *imei = NULL;
-		ret_value = telephony_modem_get_imei(tapi_handle_list.handle[i], &imei);
-		if (ret_value != TELEPHONY_ERROR_NONE) {
-			SETTING_TRACE_ERROR("telephony_modem_get_imei() failed!!! [%d]", ret_value);
-			imei = (char *)g_strdup("IDS_ST_HEADER_UNAVAILABLE");
-		}
-		/* [UI] IMEI */
-		item_data =
-			setting_create_Gendial_field_def(scroller, &(ad->itc_2text_2), NULL,
-					NULL, SWALLOW_Type_INVALID, NULL,
-					NULL, 0, SETTING_ABOUT_IMEI_STR, imei, NULL);
-		if (item_data) {
-			elm_object_item_disabled_set(item_data->item, EINA_TRUE);
-			elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-		} else {
-			SETTING_TRACE_ERROR("item_data is NULL");
-		}
-		FREE(imei);
-
-	}
-	ret_value = telephony_deinit(&tapi_handle_list);
-	if (ret_value != TELEPHONY_ERROR_NONE) {
-		SETTING_TRACE_ERROR("Deinitialize failed!!!");
-	}
-	/*ad->item_data_imei = item_data; */
 
 	/* 6. [UI] Bluetooth address */
 	if (!is_emul_bin) {  /* requested by DI Kim due to BT BS on 11/26 */
@@ -1917,7 +1354,7 @@ int setting_about_main_generate_genlist(void *data)
 					NULL, SWALLOW_Type_INVALID, NULL,
 					NULL, 0, "IDS_ST_MBODY_BLUETOOTH_ADDRESS", str, NULL); /*ad->itc_2text_2 */
 		if (ad->item_data_bt) {
-			elm_object_item_disabled_set(ad->item_data_bt->item, EINA_TRUE);
+			elm_object_item_disabled_set(str, EINA_TRUE);
 			elm_genlist_item_select_mode_set(ad->item_data_bt->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 			__BACK_POINTER_SET(ad->item_data_bt);
 		} else {
@@ -1936,27 +1373,12 @@ int setting_about_main_generate_genlist(void *data)
 				NULL, SWALLOW_Type_INVALID, NULL,
 				NULL, 0, "IDS_ST_BODY_WI_FI_MAC_ADDRESS", str, NULL);
 	if (ad->item_data_wifi) {
-		elm_object_item_disabled_set(ad->item_data_wifi->item, EINA_TRUE);
+		elm_object_item_disabled_set(str, EINA_TRUE);
 		elm_genlist_item_select_mode_set(ad->item_data_wifi->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 		__BACK_POINTER_SET(ad->item_data_wifi);
 	} else {
 		SETTING_TRACE_ERROR("item_data is NULL");
 	}
-
-	/* 8. [UI] Serial number */
-	memset(str, 0x00, sizeof(str));
-	setting_about_main_get_sn(str, sizeof(str));
-	item_data =
-		setting_create_Gendial_field_def(scroller, &(ad->itc_2text_2), NULL,
-				NULL, SWALLOW_Type_INVALID, NULL,
-				NULL, 0, SETTING_ABOUT_SN_STR, str, NULL);
-	if (item_data) {
-		elm_object_item_disabled_set(item_data->item, EINA_TRUE);
-		elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-	} else {
-		SETTING_TRACE_ERROR("item_data is NULL");
-	}
-	ad->item_data_sn = item_data;
 
 	/* 9. [UI] Battery power */
 	memset(str, 0x00, sizeof(str));
@@ -1966,7 +1388,7 @@ int setting_about_main_generate_genlist(void *data)
 				NULL, SWALLOW_Type_INVALID, NULL,
 				NULL, 0, "IDS_ST_BUTTON_BATTERY_POWER_ABB", str, NULL);
 	if (item_data) {
-		elm_object_item_disabled_set(item_data->item, EINA_TRUE);
+		elm_object_item_disabled_set(str, EINA_TRUE);
 		elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 		ad->item_data_battery = item_data;
 		__BACK_POINTER_SET(ad->item_data_battery);
@@ -1989,43 +1411,11 @@ int setting_about_main_generate_genlist(void *data)
 				NULL, SWALLOW_Type_INVALID, NULL,
 				NULL, 0, SETTING_ABOUT_CPU_USAGE_STR, str, NULL);
 	if (ad->item_data_cpu) {
-		elm_object_item_disabled_set(ad->item_data_cpu->item, EINA_TRUE);
+		elm_object_item_disabled_set(str, EINA_TRUE);
 		elm_genlist_item_select_mode_set(ad->item_data_cpu->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 		__BACK_POINTER_SET(ad->item_data_cpu);
 	} else {
 		SETTING_TRACE_ERROR("item_data is NULL");
-	}
-
-
-	/* 12. Security status */
-#if 0
-	app_info_h app_info2 = NULL;
-	ret_get_app_info = app_info_create("org.tizen.smack-update-service", &app_info2);
-	if (ret_get_app_info == APP_MANAGER_ERROR_NONE) {
-		char *security_status = NULL;
-		security_status = vconf_get_str(VCONFKEY_SECURITY_SPD_INSTALLED_POLICY_VERSION);
-		if (!security_status) {
-			SETTING_TRACE_ERROR("Failed to register into SPD server");
-			security_status = (char *)g_strdup("IDS_ST_HEADER_UNAVAILABLE");
-		}
-	}
-#else
-	char *security_status = (char *)g_strdup("IDS_ST_HEADER_UNAVAILABLE");
-#endif
-	item_data =
-		setting_create_Gendial_field_def(scroller, &(ad->itc_2text_2), NULL,
-				NULL, SWALLOW_Type_INVALID, NULL,
-				NULL, 0, "IDS_ST_TMBODY_SECURITY_STATUS", security_status, NULL);
-	if (item_data) {
-		elm_object_item_disabled_set(item_data->item, EINA_TRUE);
-		elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-	} else {
-		SETTING_TRACE_ERROR("item_data is NULL");
-	}
-	G_FREE(security_status);
-
-	if (app_info) {
-		app_info_destroy(app_info);
 	}
 
 	ad->update_timer =
@@ -2055,7 +1445,6 @@ static int setting_about_main_create(void *cb)
 	elm_genlist_clear(scroller);	/* first to clear list */
 	ad->genlsit = scroller;
 	evas_object_smart_callback_add(scroller, "realized", __gl_realized_cb, NULL);
-	evas_object_smart_callback_add(scroller, "realized", __setting_about_gl_realized_cb, NULL);
 
 	ad->ly_main =
 		setting_create_layout_navi_bar(ad->win_main_layout, ad->win_get,
