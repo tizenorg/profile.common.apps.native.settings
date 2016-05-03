@@ -30,7 +30,7 @@
 
 #define EXPORT_PUBLIC __attribute__ ((visibility ("default")))
 
-/*  TAPI*/
+/*	TAPI*/
 #include <tapi_common.h>
 #include <ITapiModem.h>
 
@@ -43,7 +43,7 @@
 #include <call-manager.h>
 
 
-#define NO_UG_FOUND_MSG 			"IDS_MSGF_POP_UNSUPPORTED"
+#define NO_UG_FOUND_MSG				"IDS_MSGF_POP_UNSUPPORTED"
 
 #define Keystr_Connection	"IDS_ST_BODY_CONNECTION"
 
@@ -51,9 +51,9 @@
 
 
 typedef enum _FLIGHT_MODE_OPEARTION {
-    FM_INVALID = 0, /*< There is no request waiting for processing */
-    FM_ENTER = 1,	/*< Some "flightmode enter" request is waiting for processing */
-    FM_LEAVE,		/*< Some "flightmode leave" request is waiting for processing */
+	FM_INVALID = 0, /*< There is no request waiting for processing */
+	FM_ENTER = 1,	/*< Some "flightmode enter" request is waiting for processing */
+	FM_LEAVE,		/*< Some "flightmode leave" request is waiting for processing */
 } FLIGHT_MODE_OPEARTION;
 
 
@@ -61,24 +61,24 @@ typedef enum _FLIGHT_MODE_OPEARTION {
 #define WIFI_LAST_ON_OFF_STATE "PREFKEY_WIFI_ON_OFF"
 
 enum {
-    OP_WIFI_TURNING_INVALID = 0x00,
-    OP_WIFI_TURNING_OFF,
-    OP_WIFI_TURNING_ON,
+	OP_WIFI_TURNING_INVALID = 0x00,
+	OP_WIFI_TURNING_OFF,
+	OP_WIFI_TURNING_ON,
 };
 
 enum {
-    SC_All_List,
-    SC_Max
+	SC_All_List,
+	SC_Max
 };
 
 
 enum {
-    GL_Group_Connection,
-    GL_Group_Device,
-    GL_Group_Personal,
-    GL_Group_System,
-    GL_Group_Apps,
-    GL_Max
+	GL_Group_Connection,
+	GL_Group_Device,
+	GL_Group_Personal,
+	GL_Group_System,
+	GL_Group_Apps,
+	GL_Max
 };
 
 /**
@@ -86,7 +86,7 @@ enum {
  */
 typedef struct _setting_main_appdata {
 
-	ui_gadget_h ug; 					/**< ug */
+	ui_gadget_h ug;						/**< ug */
 
 	Evas *evas;
 	Evas_Object *win_main;
@@ -99,7 +99,7 @@ typedef struct _setting_main_appdata {
 	/* listen / unlisten code */
 	Eina_List *listened_list;
 	Evas_Object *conform;
-	Evas_Object *view_layout;       /* view layout */
+	Evas_Object *view_layout;		/* view layout */
 
 	Elm_Genlist_Item_Class itc_table[GENDIAL_Type_MAX];
 
@@ -113,7 +113,7 @@ typedef struct _setting_main_appdata {
 	/* ---------------------------------------------------------- */
 	Ecore_Timer *event_freeze_timer;
 
-	//bundle *b;
+	/*bundle *b; */
 
 	Cfg_Item_Type is_searchmode;
 	Eina_Hash *main_list_hash;
@@ -135,10 +135,10 @@ typedef Setting_GenGroupItem_Data *(*UI_HANDLER)(void *data, char *title, char *
 
 
 typedef enum {
-    ERROR_STATE = -1,
-    DEFAULT_UI = 0,
-    UI_PROC,
-    UG_HANDLE,
+	ERROR_STATE = -1,
+	DEFAULT_UI = 0,
+	UI_PROC,
+	UG_HANDLE,
 } mainlist_entry_action_type;
 
 typedef struct _mainlist_entry {

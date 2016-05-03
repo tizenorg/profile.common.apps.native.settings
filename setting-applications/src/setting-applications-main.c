@@ -48,22 +48,22 @@ static int setting_applications_main_create(void *cb)
 	Evas_Object *scroller = NULL;
 
 	ad->ly_main =
-	    setting_create_layout_navi_bar_genlist(ad->win_main_layout,
-	                                           ad->win_get,
-	                                           KeyStr_Applications, NULL,/* ARROW */
-	                                           NULL,
-	                                           (setting_call_back_func)setting_applications_main_click_softkey_back_cb,
-	                                           NULL, ad, &scroller,
-	                                           &(ad->navi_bar));
+		setting_create_layout_navi_bar_genlist(ad->win_main_layout,
+											   ad->win_get,
+											   KeyStr_Applications, NULL,/* ARROW */
+											   NULL,
+											   (setting_call_back_func)setting_applications_main_click_softkey_back_cb,
+											   NULL, ad, &scroller,
+											   &(ad->navi_bar));
 
 	ad->genlist = scroller;
 	elm_genlist_mode_set(ad->genlist, ELM_LIST_COMPRESS);
 
 	setting_create_Gendial_field_def(ad->genlist, &itc_1text,
-	                                 setting_applications_main_mouse_up_Gendial_list_cb,
-	                                 ad, SWALLOW_Type_INVALID, NULL,
-	                                 NULL, 0,
-	                                 KeyStr_ApplicationManager, NULL, NULL);
+									 setting_applications_main_mouse_up_Gendial_list_cb,
+									 ad, SWALLOW_Type_INVALID, NULL,
+									 NULL, 0,
+									 KeyStr_ApplicationManager, NULL, NULL);
 
 	setting_view_applications_main.is_create = 1;
 	return SETTING_RETURN_SUCCESS;
@@ -139,7 +139,7 @@ static void setting_applications_manage_apps_ug(SettingApplicationsUG *ad)
 
 static void
 setting_applications_main_mouse_up_Gendial_list_cb(void *data, Evas_Object *obj,
-                                                   void *event_info)
+												   void *event_info)
 {
 	/* error check */
 	setting_retm_if(data == NULL, "Data parameter is NULL");
@@ -148,7 +148,7 @@ setting_applications_main_mouse_up_Gendial_list_cb(void *data, Evas_Object *obj,
 	Elm_Object_Item *item = (Elm_Object_Item *) event_info;
 	elm_genlist_item_selected_set(item, 0);
 	Setting_GenGroupItem_Data *list_item =
-	    (Setting_GenGroupItem_Data *) elm_object_item_data_get(item);
+		(Setting_GenGroupItem_Data *) elm_object_item_data_get(item);
 
 	SettingApplicationsUG *ad = (SettingApplicationsUG *) data;
 
@@ -164,7 +164,7 @@ static Eina_Bool setting_applications_main_click_softkey_back_cb(void *data, Elm
 	SETTING_TRACE_BEGIN;
 	/* error check */
 	setting_retvm_if(data == NULL, EINA_FALSE,
-	                 "[Setting > Applications] Data parameter is NULL");
+					 "[Setting > Applications] Data parameter is NULL");
 
 	SettingApplicationsUG *ad = (SettingApplicationsUG *) data;
 

@@ -47,7 +47,7 @@
 
 /* launching */
 #ifdef LAUNCHING_DEBUG_LOG
-#define LAUNCH_SETTING_IN(fmt, arg...)  LOG(LOG_DEBUG, "LAUNCH", "[setting:Application:%s:IN]" fmt, __FUNCTION__, ##arg)
+#define LAUNCH_SETTING_IN(fmt, arg...)	LOG(LOG_DEBUG, "LAUNCH", "[setting:Application:%s:IN]" fmt, __FUNCTION__, ##arg)
 #define LAUNCH_SETTING_OUT(fmt, arg...) LOG(LOG_DEBUG, "LAUNCH", "[setting:Application:%s:OUT]" fmt, __FUNCTION__, ##arg)
 #else
 #define LAUNCH_SETTING_IN(fmt, arg...)
@@ -55,11 +55,11 @@
 #endif
 
 #if !defined(LOCALEDIR)
-#define LOCALEDIR 	_TZ_SYS_RO_APP"/org.tizen.setting/res/locale"
+#define LOCALEDIR	_TZ_SYS_RO_APP"/org.tizen.setting/res/locale"
 #endif
 
 #if !defined(EDJDIR)
-#define EDJDIR 	_TZ_SYS_RO_APP"/org.tizen.setting/res/edje"
+#define EDJDIR	_TZ_SYS_RO_APP"/org.tizen.setting/res/edje"
 #endif
 
 #define SUPPORT_BOTTOM_BTNS 1
@@ -83,15 +83,15 @@
 #define SUPPORT_ACCESSIBILITY			1
 
 #define SUPPORT_STORAGE				1
-#define SUPPORT_WIFI_DIRECT                     1
-#define SUPPORT_DATA_USAGE                      1
+#define SUPPORT_WIFI_DIRECT						1
+#define SUPPORT_DATA_USAGE						1
 #define SUPPORT_TETHERING	0
 
 /*#endif*/
 
 #define SUPPORT_APP_ROATION			1
 
-#define  LOW_BATTERY_DO_NOTHING			1	/**< 1 : turn the low batter handlding off */
+#define	 LOW_BATTERY_DO_NOTHING			1	/**< 1 : turn the low batter handlding off */
 
 
 #define SUPPORT_SIMLOCK 0
@@ -142,20 +142,20 @@
 #define SETTING_TRACE(fmt, arg...) \
 	do {\
 		printf("\n[SETTING]\033[0;36m" fmt "\033[0m\t%s:%d\n", \
-		       ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+			   ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
 	}while(0);
 
 #define SETTING_TRACE_SECURE_DEBUG(fmt, arg...) \
 	do {\
 		printf("\n[SETTING]\033[0;32mDEBUG: " fmt "\033[0m\t%s:%d\n", \
-		       ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+			   ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
 	}while(0);
 
 
 #define SETTING_TRACE_DEBUG(fmt, arg...) \
 	do {\
 		printf("\n[SETTING]\033[0;32mDEBUG: " fmt "\033[0m\t%s:%d\n", \
-		       ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+			   ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
 	}while(0);
 
 #define SETTING_TRACE_WARNING(fmt, arg...) \
@@ -172,14 +172,14 @@
 #define SETTING_TRACE_BEGIN do {\
 		{\
 			printf("\n[SETTING]\033[0;35mENTER FUNCTION: %s. \033[0m\t%s:%d\n", \
-			       __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+				   __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
 		}\
 	}while(0);
 
 #define SETTING_TRACE_END  do {\
 		{\
 			printf("\n[SETTING]\033[0;35mEXIT FUNCTION: %s. \033[0m\t%s:%d\n", \
-			       __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+				   __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
 		}\
 	}while(0);
 #endif
