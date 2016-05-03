@@ -29,7 +29,7 @@
 
 #include <appcore-efl.h>
 
-#define EXPORT_PUBLIC __attribute__ ((visibility ("default")))
+#define EXPORT_PUBLIC __attribute__ ((visibility("default")))
 
 #ifdef _
 #undef _
@@ -95,7 +95,7 @@ extern bool is_substr_ncase(const char *parentstr, const char *substr);
 
 /* check if partern belongs to array..*/
 extern bool is_string_belong_to_array(const char *partern, const char **array,
-                                      int array_num);
+									  int array_num);
 extern int safeStrCmp(const char *s1, const char *s2);
 extern int safeStrNCmp(const char *s1, const char *s2, int len);
 extern char *safeStrNCat(char *dst, const char *src, int maxlen);
@@ -153,7 +153,7 @@ ui_gadget_h setting_ug_create(ui_gadget_h parent, const char *name, enum ug_mode
 void setting_ug_destroy(ui_gadget_h parent);
 char *strcasestr(const char *haystack, const char *needle);
 extern void setting_layout_ug_cb(ui_gadget_h ug, enum ug_mode mode,
-                                 void *priv);
+								 void *priv);
 
 
 #endif				/* __SETTING_COMMON_GENERAL_FUNC_H__ */

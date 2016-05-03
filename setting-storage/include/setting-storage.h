@@ -42,7 +42,7 @@ extern const char *storageUg_ENCRYPT_stat;
 #define SETTING_STORAGE_PROGRESSBAR_TIMEOUT 10
 
 
-#define SAFE_STRDUP(src) (src)?strdup(src):NULL
+#define SAFE_STRDUP(src) (src) ? strdup(src) : NULL
 
 typedef struct _Setting_Storage_Status {
 	double	dTotal;
@@ -165,7 +165,7 @@ struct _SettingStorageUG {
 	void *del_worker;
 
 	Evas_Object *ly_select_all;		/** misc > 'select all' layout */
-	Evas_Object* ly_default;
+	Evas_Object *ly_default;
 
 	Evas_Object *title_left_btn;
 	Evas_Object *title_right_btn;
