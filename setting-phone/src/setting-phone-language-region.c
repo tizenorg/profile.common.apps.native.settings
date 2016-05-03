@@ -59,7 +59,7 @@ static int _find_appid_ime_list(const pkgmgrinfo_appinfo_h handle, void *user_da
 		LOGW("user_data is null!");
 	}
 
-	return -1;  /* This callback is no longer called. */
+	return -1;	/* This callback is no longer called. */
 }
 
 /**
@@ -93,7 +93,7 @@ static void setting_phone_lang_create_keyboard_ug(SettingPhoneUG *ad)
 		if (ret == APP_CONTROL_ERROR_NONE) {
 			app_control_set_operation(app_control, APP_CONTROL_OPERATION_DEFAULT);
 			app_control_set_app_id(app_control, app_id);
-			app_control_add_extra_data(app_control, "caller", "settings");  /* Indicates Settings application is caller. */
+			app_control_add_extra_data(app_control, "caller", "settings");	/* Indicates Settings application is caller. */
 			app_control_set_launch_mode(app_control, APP_CONTROL_LAUNCH_MODE_GROUP);
 			ret = app_control_send_launch_request(app_control, NULL, NULL);
 			if (ret != APP_CONTROL_ERROR_NONE) {
@@ -134,8 +134,8 @@ static Eina_Bool setting_phone_lang_click_softkey_cancel_cb(void *data, Elm_Obje
  * @return #1 on success, else on failed
  */
 static void setting_phone_lang_item_Gendial_mouse_up_cb(void *data,
-                                                        Evas_Object *obj,
-                                                        void *event_info)
+														Evas_Object *obj,
+														void *event_info)
 {
 	SETTING_TRACE_BEGIN;
 	setting_retm_if(!data || !event_info, "data||event_info is NULL");
@@ -150,10 +150,10 @@ static void setting_phone_lang_item_Gendial_mouse_up_cb(void *data,
 
 	if (!safeStrCmp("IDS_ST_HEADER_DISPLAY_LANGUAGE", list_item->keyStr)) {
 		setting_view_change(&setting_view_phone_language_region,
-		                    &setting_view_phone_display_language, ad);
+							&setting_view_phone_display_language, ad);
 	} else if (!safeStrCmp(_(REGION_FORMAT_LOWER), list_item->keyStr)) {
 		setting_view_change(&setting_view_phone_language_region,
-		                    &setting_view_phone_region_format, ad);
+							&setting_view_phone_region_format, ad);
 	} else if (!safeStrCmp("IDS_ST_BODY_KEYBOARD", list_item->keyStr)) {
 		setting_phone_lang_create_keyboard_ug(ad);
 	}
@@ -185,13 +185,13 @@ static int setting_phone_language_region_create(void *cb)
 
 	char *title = "IDS_ST_HEADER_LANGUAGE_AND_INPUT";
 	ad->ly_language =
-	    setting_create_layout_navi_bar_genlist(ad->win_main_layout,
-	                                           ad->win_get, title,
+		setting_create_layout_navi_bar_genlist(ad->win_main_layout,
+											   ad->win_get, title,
 											   NULL,
-	                                           NULL,
-	                                           setting_phone_lang_click_softkey_cancel_cb,
-	                                           NULL, ad, &scroller,
-	                                           &(ad->navi_bar));
+											   NULL,
+											   setting_phone_lang_click_softkey_cancel_cb,
+											   NULL, ad, &scroller,
+											   &(ad->navi_bar));
 	Elm_Object_Item *navi_it = elm_naviframe_top_item_get(ad->navi_bar);
 	elm_naviframe_item_pop_cb_set(navi_it, setting_phone_lang_click_softkey_cancel_cb, ad);
 	retv_if(ad->ly_language == NULL, SETTING_RETURN_FAIL);
@@ -202,14 +202,14 @@ static int setting_phone_language_region_create(void *cb)
 
 	char *pa_display_lang = get_pa_display_language_str();
 	ad->data_display_language =
-	    setting_create_Gendial_field_def(scroller,
-	                                     &(ad->itc_2text_2),
-	                                     setting_phone_lang_item_Gendial_mouse_up_cb,
-	                                     ad, SWALLOW_Type_INVALID,
-	                                     NULL, NULL, 0,
-	                                     "IDS_ST_HEADER_DISPLAY_LANGUAGE",
-	                                     _(pa_display_lang),
-	                                     NULL);
+		setting_create_Gendial_field_def(scroller,
+										 &(ad->itc_2text_2),
+										 setting_phone_lang_item_Gendial_mouse_up_cb,
+										 ad, SWALLOW_Type_INVALID,
+										 NULL, NULL, 0,
+										 "IDS_ST_HEADER_DISPLAY_LANGUAGE",
+										 _(pa_display_lang),
+										 NULL);
 	if (ad->data_display_language) {
 		ad->data_display_language->userdata = ad;
 	} else {
@@ -232,13 +232,13 @@ static int setting_phone_language_region_create(void *cb)
 		region_format_str = setting_phone_lang_get_region_str(pa_region);
 	}
 	ad->data_region_fmt =
-	    setting_create_Gendial_field_def(scroller,
-	                                     &(ad->itc_2text_2),
-	                                     setting_phone_lang_item_Gendial_mouse_up_cb,
-	                                     ad, SWALLOW_Type_INVALID,
-	                                     NULL, NULL, 0,
-	                                     _(REGION_FORMAT_LOWER),
-	                                     region_format_str, NULL);
+		setting_create_Gendial_field_def(scroller,
+										 &(ad->itc_2text_2),
+										 setting_phone_lang_item_Gendial_mouse_up_cb,
+										 ad, SWALLOW_Type_INVALID,
+										 NULL, NULL, 0,
+										 _(REGION_FORMAT_LOWER),
+										 region_format_str, NULL);
 	if (ad->data_region_fmt) {
 		ad->data_region_fmt->userdata = ad;
 	} else {
@@ -247,21 +247,21 @@ static int setting_phone_language_region_create(void *cb)
 
 	char *example_desc = setting_phone_lang_get_example_desc(pa_region, ad);
 	ad->data_region_fmt_example = setting_create_Gendial_field_def(scroller, &itc_multiline_text,
-	                                                               NULL,
-	                                                               NULL,
-	                                                               SWALLOW_Type_LAYOUT_SPECIALIZTION_X,
-	                                                               NULL, NULL, 0, example_desc, NULL, NULL);
+																   NULL,
+																   NULL,
+																   SWALLOW_Type_LAYOUT_SPECIALIZTION_X,
+																   NULL, NULL, 0, example_desc, NULL, NULL);
 	if (ad->data_region_fmt_example)
 		elm_genlist_item_select_mode_set(ad->data_region_fmt_example->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 
 	/* keyboard */
 	ad->data_title_keyboard = setting_create_Gendial_field_titleItem(scroller, &itc_group_item, _("IDS_ST_BODY_KEYBOARD"), NULL);
 	ad->data_keyboard =
-	    setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
-	                                     setting_phone_lang_item_Gendial_mouse_up_cb,
-	                                     ad, SWALLOW_Type_INVALID, NULL,
-	                                     NULL, 0, "IDS_ST_BODY_KEYBOARD",
-	                                     NULL, NULL);
+		setting_create_Gendial_field_def(scroller, &(ad->itc_1text),
+										 setting_phone_lang_item_Gendial_mouse_up_cb,
+										 ad, SWALLOW_Type_INVALID, NULL,
+										 NULL, 0, "IDS_ST_BODY_KEYBOARD",
+										 NULL, NULL);
 
 	if (pa_region) {
 		FREE(pa_region);

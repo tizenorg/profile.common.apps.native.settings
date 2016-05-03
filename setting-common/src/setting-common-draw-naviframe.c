@@ -175,7 +175,7 @@ void setting_navi_items_update(Evas_Object *navigate_bar)
 		const char *mbutton_str = evas_object_data_get(eo_view, "mbutton_str");
 		const char *rbutton_str = evas_object_data_get(eo_view, "rbutton_str");
 		const char *eo_view_t = evas_object_type_get(eo_view);
-		/*SETTING_TRACE("navi_title  [%s]:%s", _(navi_title), navi_title); */
+		/*SETTING_TRACE("navi_title	 [%s]:%s", _(navi_title), navi_title); */
 		/*SETTING_TRACE("eo_view_t:%s", eo_view_t); */
 		/*SETTING_TRACE("lbutton_str:%s", lbutton_str); */
 		/*SETTING_TRACE("mbutton_str:%s", mbutton_str); */
@@ -252,7 +252,7 @@ static void __rotate_ctxpopup_cb(void *data, Evas_Object *obj, void *event_info)
 		evas_object_move(btn_data->ctxpopup, 0, h);
 	}
 #else
-	// @todo : repace codes using X with codes tizen 3.0 API
+	/* @todo : repace codes using X with codes tizen 3.0 API */
 #endif
 }
 
@@ -279,7 +279,7 @@ EXPORT_PUBLIC
 Evas_Object *setting_create_win_layout(Evas_Object *win_obj)
 {
 	Evas_Object *layout = NULL;
-	/*  Base Layout */
+	/*	Base Layout */
 	layout = elm_layout_add(win_obj);
 	evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	setting_retvm_if(layout == NULL, FALSE, "layout == NULL");
@@ -294,19 +294,19 @@ Evas_Object *setting_create_win_layout(Evas_Object *win_obj)
 
 EXPORT_PUBLIC
 Elm_Object_Item *setting_create_guild_layout(Evas_Object *navi_bar,
-                                             char *title_str,
-                                             char *lbutton_str,
-                                             char *rbutton_str,
-                                             char *mbutton_str,
-                                             setting_call_back_func lbutton_click_cb,
-                                             setting_call_back_func rbutton_click_cb,
-                                             setting_call_back_func mbutton_click_cb,
-                                             char *content_str1,
-                                             char **png_list,
-                                             char *content_str2,
-                                             char *content_button_str,
-                                             setting_call_back_func content_button_click_cb,
-                                             void *cb_data)
+											 char *title_str,
+											 char *lbutton_str,
+											 char *rbutton_str,
+											 char *mbutton_str,
+											 setting_call_back_func lbutton_click_cb,
+											 setting_call_back_func rbutton_click_cb,
+											 setting_call_back_func mbutton_click_cb,
+											 char *content_str1,
+											 char **png_list,
+											 char *content_str2,
+											 char *content_button_str,
+											 setting_call_back_func content_button_click_cb,
+											 void *cb_data)
 {
 	Evas_Object *scroller = elm_genlist_add(navi_bar);
 	retvm_if(scroller == NULL, NULL, "Cannot set scroller object  as contento of layout");
@@ -320,36 +320,36 @@ Elm_Object_Item *setting_create_guild_layout(Evas_Object *navi_bar,
 	ADD_GL_BUTTON(scroller, content_button_str, content_button_click_cb, cb_data)
 
 	return setting_push_layout_navi_bar(title_str,
-	                                    lbutton_str, rbutton_str, NULL,
-	                                    lbutton_click_cb,
-	                                    rbutton_click_cb,
-	                                    NULL, cb_data, scroller, navi_bar, NULL);
+										lbutton_str, rbutton_str, NULL,
+										lbutton_click_cb,
+										rbutton_click_cb,
+										NULL, cb_data, scroller, navi_bar, NULL);
 }
 
 EXPORT_PUBLIC
 Elm_Object_Item *setting_create_guild_layout2(Evas_Object *navi_bar,
-                                              char *title_str,
-                                              char *lbutton_str,
-                                              char *rbutton_str,
-                                              char *mbutton_str,
-                                              setting_call_back_func lbutton_click_cb,
-                                              setting_call_back_func rbutton_click_cb,
-                                              setting_call_back_func mbutton_click_cb,
-                                              char *content_str1,
-                                              Evas_Object **ug_layout,
-                                              char *content_str2,
-                                              char *content_button_str,
-                                              setting_call_back_func content_button_click_cb,
-                                              void *cb_data)
+											  char *title_str,
+											  char *lbutton_str,
+											  char *rbutton_str,
+											  char *mbutton_str,
+											  setting_call_back_func lbutton_click_cb,
+											  setting_call_back_func rbutton_click_cb,
+											  setting_call_back_func mbutton_click_cb,
+											  char *content_str1,
+											  Evas_Object **ug_layout,
+											  char *content_str2,
+											  char *content_button_str,
+											  setting_call_back_func content_button_click_cb,
+											  void *cb_data)
 {
 	Evas_Object *scroller;
 	Elm_Object_Item *item = setting_push_layout_navi_bar_scroller(navi_bar,
-	                                                              title_str,
-	                                                              lbutton_str, rbutton_str,
-	                                                              lbutton_click_cb,
-	                                                              rbutton_click_cb,
-	                                                              cb_data, &scroller,
-	                                                              navi_bar);
+																  title_str,
+																  lbutton_str, rbutton_str,
+																  lbutton_click_cb,
+																  rbutton_click_cb,
+																  cb_data, &scroller,
+																  navi_bar);
 	Evas_Object *outer_box = setting_create_client_bx(navi_bar);
 	/*add top text window.. */
 	if (content_str1) {
@@ -430,46 +430,46 @@ Evas_Object *setting_create_navi_bar(Evas_Object *layout)
 * if sip is shown,the buttons created by this API will be shown,it sip is hidden,they will be hiden too
 * @return non
 * eg:
-* 	//4 common buttons
-* 	setting_append_naviframe_title_buttons(ad->navi_it, ad->navi_bar,
-* 					       "1", "2", "3" ,"4",
-* 					       _back_cb,
-* 					       _back_cb,
-* 					       _back_cb,
-* 					       _back_cb);
+*	//4 common buttons
+*	setting_append_naviframe_title_buttons(ad->navi_it, ad->navi_bar,
+*						   "1", "2", "3" ,"4",
+*						   _back_cb,
+*						   _back_cb,
+*						   _back_cb,
+*						   _back_cb);
 *
-* 	//more button +2 common buttons + '<-'button
-* 	setting_append_naviframe_title_buttons(ad->navi_it, ad->navi_bar,
-* 					       NULL, "2", "3" ,NULL,
-* 					       _back_cb,
-* 					       _back_cb,
-* 					       _back_cb,
-* 					       _back_cb);
+*	//more button +2 common buttons + '<-'button
+*	setting_append_naviframe_title_buttons(ad->navi_it, ad->navi_bar,
+*						   NULL, "2", "3" ,NULL,
+*						   _back_cb,
+*						   _back_cb,
+*						   _back_cb,
+*						   _back_cb);
 *
-* 	//1common buton + '<-'button
-* 	setting_append_naviframe_title_buttons(ad->navi_it, ad->navi_bar,
-* 					       NULL, NULL, _("IDS_SA_BUTTON_DONE_ABB") ,NULL,
-* 					       NULL,
-* 					       NULL,
-* 					       _back_cb,
-* 					       _back_cb);
+*	//1common buton + '<-'button
+*	setting_append_naviframe_title_buttons(ad->navi_it, ad->navi_bar,
+*						   NULL, NULL, _("IDS_SA_BUTTON_DONE_ABB") ,NULL,
+*						   NULL,
+*						   NULL,
+*						   _back_cb,
+*						   _back_cb);
 */
 EXPORT_PUBLIC
 void setting_append_naviframe_title_buttons(Elm_Object_Item *navi_it,
-                                            Evas_Object *navigate_bar,
-                                            char *more_button_str,
-                                            char *left_button_str,
-                                            char *right_button_str,
-                                            char *back_button_str,
-                                            setting_call_back_func more_button_click_cb,
-                                            setting_call_back_func left_button_click_cb,
-                                            setting_call_back_func right_button_click_cb,
-                                            setting_call_back_func back_button_click_cb,
-                                            void *cb_data)
+											Evas_Object *navigate_bar,
+											char *more_button_str,
+											char *left_button_str,
+											char *right_button_str,
+											char *back_button_str,
+											setting_call_back_func more_button_click_cb,
+											setting_call_back_func left_button_click_cb,
+											setting_call_back_func right_button_click_cb,
+											setting_call_back_func back_button_click_cb,
+											void *cb_data)
 {
 	SETTING_TRACE_BEGIN;
 	Evas_Object *btn = NULL;
-	/*  create buttons */
+	/*	create buttons */
 	if (more_button_click_cb) {
 		if (!more_button_str) {
 
@@ -517,14 +517,14 @@ void setting_append_naviframe_title_buttons(Elm_Object_Item *navi_it,
 /*"title_more_btn" won't be supported any more, so don't pass mbutton_str */
 EXPORT_PUBLIC
 Elm_Object_Item *setting_create_navi_bar_top_buttons(char *title_str,
-                                                     char *lbutton_str,
-                                                     char *rbutton_str,
-                                                     char *mbutton_str,
-                                                     setting_call_back_func lbutton_click_cb,
-                                                     setting_call_back_func rbutton_click_cb,
-                                                     setting_call_back_func mbutton_click_cb,
-                                                     void *cb_data, Evas_Object *eo_view,/*any container obj */
-                                                     Evas_Object *navigate_bar)
+													 char *lbutton_str,
+													 char *rbutton_str,
+													 char *mbutton_str,
+													 setting_call_back_func lbutton_click_cb,
+													 setting_call_back_func rbutton_click_cb,
+													 setting_call_back_func mbutton_click_cb,
+													 void *cb_data, Evas_Object *eo_view,/*any container obj */
+													 Evas_Object *navigate_bar)
 {
 	/*SETTING_TRACE_BEGIN; */
 	Evas_Object *l_button = NULL;
@@ -533,27 +533,27 @@ Elm_Object_Item *setting_create_navi_bar_top_buttons(char *title_str,
 	Elm_Object_Item *navi_it = NULL;
 
 	if (lbutton_str) {
-		/*  create buttons */
+		/*	create buttons */
 		l_button = setting_create_button(navigate_bar, lbutton_str,
-		                                 "naviframe/toolbar/default",
-		                                 lbutton_click_cb, cb_data);
+										 "naviframe/toolbar/default",
+										 lbutton_click_cb, cb_data);
 	}
 	if (rbutton_str) {
 		r_button = setting_create_button(navigate_bar, rbutton_str,
-		                                 "naviframe/end_btn/default",
-		                                 rbutton_click_cb, cb_data);
+										 "naviframe/end_btn/default",
+										 rbutton_click_cb, cb_data);
 	}
 	if (mbutton_str) {
 		m_button = setting_create_button(navigate_bar, mbutton_str,
-		                                 NULL,
-		                                 mbutton_click_cb, cb_data);
+										 NULL,
+										 mbutton_click_cb, cb_data);
 	}
 	navi_it = elm_naviframe_item_push(navigate_bar, title_str,
-	                                  NULL, NULL, eo_view,
-	                                  NULL);
+									  NULL, NULL, eo_view,
+									  NULL);
 	retv_if(!navi_it, NULL);
 
-	/*  arrange buttons into  navi_it*/
+	/*	arrange buttons into  navi_it*/
 	if (l_button) { /* done */
 		elm_object_item_part_content_set(navi_it, "title_toolbar_button1", l_button);
 	}
@@ -576,7 +576,7 @@ static void _move_ctxpopup(Evas_Object *ctxpopup, Evas_Object *btn)
 
 static void _ctxpopup_dismissed_cb(void *data, Evas_Object *obj, void *event_info)
 {
-	Evas_Object* ctxpopup = (Evas_Object *)data;
+	Evas_Object *ctxpopup = (Evas_Object *)data;
 	evas_object_del(ctxpopup);
 	ctxpopup = NULL;
 }
@@ -593,8 +593,8 @@ _ctxpopup_more_button_cb(void *data, Evas_Object *obj, void *event_info)
 Elm_Object_Item *__create_navi_bar_bottom_buttons(char *title_str,
 												  char *lbutton_str,
 												  setting_call_back_func lbutton_click_cb,
-                                                  void *cb_data, Evas_Object *eo_view,/*any container obj */
-                                                  Evas_Object *navigate_bar)
+												  void *cb_data, Evas_Object *eo_view,/*any container obj */
+												  Evas_Object *navigate_bar)
 {
 	SETTING_TRACE_BEGIN;
 
@@ -603,12 +603,12 @@ Elm_Object_Item *__create_navi_bar_bottom_buttons(char *title_str,
 
 #define USE_BACK 0
 #if USE_BACK
-	/*  arrange buttons into  controlbar */
+	/*	arrange buttons into  controlbar */
 	if (0 == safeStrCmp(_(lbutton_str), _("IDS_ST_BUTTON_BACK"))) {
 		lbtn = setting_create_button(navigate_bar, _(lbutton_str),
-		                             NAVI_BACK_BUTTON_STYLE,
-		                             /*NULL, NULL); */
-		                             lbutton_click_cb, cb_data);
+									 NAVI_BACK_BUTTON_STYLE,
+									 /*NULL, NULL); */
+									 lbutton_click_cb, cb_data);
 		navi_it = elm_naviframe_item_push(navigate_bar, title_str, NULL, NULL, eo_view, NULL);	/* add new button */
 		elm_object_item_part_content_set(navi_it, "title_left_btn", lbtn);
 
@@ -617,18 +617,18 @@ Elm_Object_Item *__create_navi_bar_bottom_buttons(char *title_str,
 			elm_naviframe_item_pop_cb_set(navi_it, (Elm_Naviframe_Item_Pop_Cb)lbutton_click_cb, cb_data);
 		}
 
-		//----------------------
-		// CREATE TOOLBAR
-		//----------------------
+		/*---------------------- */
+		/* CREATE TOOLBAR */
+		/*---------------------- */
 	} else {
 #endif
-		// ARROW here back
+		/* ARROW here back */
 		lbtn = setting_create_button(navigate_bar, _(lbutton_str),
-		                             NAVI_BACK_ARROW_BUTTON_STYLE,
-		                             /*NULL, NULL); */
-		                             lbutton_click_cb, cb_data);
+									 NAVI_BACK_ARROW_BUTTON_STYLE,
+									 /*NULL, NULL); */
+									 lbutton_click_cb, cb_data);
 
-		// create naviframe with Arror button
+		/* create naviframe with Arror button */
 		navi_it = elm_naviframe_item_push(navigate_bar, title_str, lbtn, NULL, eo_view, NULL);	/* add new button */
 
 		if (lbutton_click_cb)
@@ -638,9 +638,9 @@ Elm_Object_Item *__create_navi_bar_bottom_buttons(char *title_str,
 			if (0 != safeStrCmp(title_str, dgettext(SETTING_PACKAGE, title_str)))
 				elm_object_item_domain_text_translatable_set(navi_it, SETTING_PACKAGE, EINA_TRUE);
 		}
-		//----------------------
-		// CREATE TOOLBAR
-		//----------------------
+		/*---------------------- */
+		/* CREATE TOOLBAR */
+		/*---------------------- */
 #if USE_BACK
 	}
 #endif
@@ -652,30 +652,30 @@ Elm_Object_Item *__create_navi_bar_bottom_buttons(char *title_str,
 * Create buttons on the specialized navigation bar
 *
 * @param[in] eo_view	navigation bar's content
-* @param[in] controlbar   title obj of navigation bar
+* @param[in] controlbar	  title obj of navigation bar
 *
 */
 EXPORT_PUBLIC
 void setting_create_navi_bar_buttons(char *title_str,
-									char *lbutton_str,
-									setting_call_back_func lbutton_click_cb,
-                                     void *cb_data, Evas_Object *eo_view,/*any container obj */
-                                     Evas_Object *navigate_bar,	/*the specialized navigation bar */
-                                     Evas_Object *titleobj)
+									 char *lbutton_str,
+									 setting_call_back_func lbutton_click_cb,
+									 void *cb_data, Evas_Object *eo_view,/*any container obj */
+									 Evas_Object *navigate_bar,	/*the specialized navigation bar */
+									 Evas_Object *titleobj)
 {
 	__create_navi_bar_bottom_buttons(title_str, lbutton_str,
-	                                 lbutton_click_cb,
-	                                 cb_data, eo_view,
-	                                 navigate_bar);
+									 lbutton_click_cb,
+									 cb_data, eo_view,
+									 navigate_bar);
 	return;
 }
 
 /**
 * The general API to create a layout with navigation bar,
-*   which contents any evas container object(@param[eo_view]) as its content
+*	which contents any evas container object(@param[eo_view]) as its content
 *
 * @param[in] eo_view	navigation bar's content
-* @param[out] titleobj   title obj of navigation bar
+* @param[out] titleobj	 title obj of navigation bar
 *
 * return main layout of UG or App..
 */
@@ -687,69 +687,69 @@ Evas_Object *setting_create_layout_navi_bar(Evas_Object *win_layout,
 											setting_call_back_func lbutton_click_cb,
 											void *cb_data,
 											Evas_Object *eo_view,	/*any container obj constructed on any evas obj */
-                                            Evas_Object **navi_bar,
-                                            Evas_Object **titleobj)
+											Evas_Object **navi_bar,
+											Evas_Object **titleobj)
 {
 
 	Evas_Object *layout = setting_create_win_layout(win_obj);
 	*navi_bar = setting_create_navi_bar(layout);
 
 	setting_create_navi_bar_buttons(title_str,
-	                                lbutton_str,
-	                                lbutton_click_cb,
-	                                cb_data, eo_view /*content */ ,
-	                                *navi_bar, NULL);
+									lbutton_str,
+									lbutton_click_cb,
+									cb_data, eo_view /*content */ ,
+									*navi_bar, NULL);
 	return layout;
 }
 
 /**
 * The API to create a layout with navigation bar,
-*   which contents a scroller object as its content
+*	which contents a scroller object as its content
 *
-* @param[out] scroller   navigation bar's content
+* @param[out] scroller	 navigation bar's content
 *
 * @return a layout with a special navigation bar and at most 2 buttons
 */
 EXPORT_PUBLIC
 Evas_Object *setting_create_layout_navi_bar_scroller(Evas_Object *win_layout,
-                                                     Evas_Object *win_obj,
-                                                     char *title_str,
-                                                     char *lbutton_str,
-                                                     char *rbutton_str,
-                                                     setting_call_back_func
-                                                     lbutton_click_cb,
-                                                     setting_call_back_func
-                                                     rbutton_click_cb,
-                                                     void *cb_data,
-                                                     Evas_Object **scroller,
-                                                     Evas_Object **navi_bar)
+													 Evas_Object *win_obj,
+													 char *title_str,
+													 char *lbutton_str,
+													 char *rbutton_str,
+													 setting_call_back_func
+													 lbutton_click_cb,
+													 setting_call_back_func
+													 rbutton_click_cb,
+													 void *cb_data,
+													 Evas_Object **scroller,
+													 Evas_Object **navi_bar)
 {
 
 	Evas_Object *layout = setting_create_win_layout(win_obj);
 	*navi_bar = setting_create_navi_bar(layout);
 
 	/*****/
-	/*  create scroller as CONTENT */
+	/*	create scroller as CONTENT */
 	Evas_Object *scrl = NULL;
 	/* Evas_Object *ret = NULL; */
 	if (scroller != NULL) {
 		/* scrl =*scroller = elm_scroller_add(win_layout); */
 		scrl = *scroller = elm_scroller_add(layout);
 		retvm_if(*scroller == NULL, NULL,
-		         "Cannot set scroller object as contento of layout");
+				 "Cannot set scroller object as contento of layout");
 		elm_scroller_bounce_set(*scroller, EINA_FALSE, EINA_TRUE);
 		elm_scroller_policy_set(*scroller, ELM_SCROLLER_POLICY_OFF,
-		                        ELM_SCROLLER_POLICY_AUTO);
+								ELM_SCROLLER_POLICY_AUTO);
 		evas_object_show(*scroller);
 	}
 
 	/*****/
 
 	setting_create_navi_bar_buttons(title_str,
-	                                lbutton_str,
-	                                lbutton_click_cb,
-	                                cb_data, scrl /*content */ ,
-	                                *navi_bar, NULL);
+									lbutton_str,
+									lbutton_click_cb,
+									cb_data, scrl /*content */ ,
+									*navi_bar, NULL);
 	return layout;
 }
 
@@ -761,112 +761,112 @@ Evas_Object *setting_create_layout_navi_bar_scroller(Evas_Object *win_layout,
 */
 EXPORT_PUBLIC
 Evas_Object *setting_create_layout_navi_bar_genlist(Evas_Object *win_layout,
-                                                    Evas_Object *win_obj,
-                                                    char *title_str,
-                                                    char *lbutton_str,
-                                                    char *rbutton_str, /* do nothing */
-                                                    setting_call_back_func lbutton_click_cb,
-                                                    setting_call_back_func rbutton_click_cb,/* do nothing */
-                                                    void *cb_data,
-                                                    Evas_Object **genlist,
-                                                    Evas_Object **navi_bar)
+													Evas_Object *win_obj,
+													char *title_str,
+													char *lbutton_str,
+													char *rbutton_str, /* do nothing */
+													setting_call_back_func lbutton_click_cb,
+													setting_call_back_func rbutton_click_cb,/* do nothing */
+													void *cb_data,
+													Evas_Object **genlist,
+													Evas_Object **navi_bar)
 {
-	/*  win_layout -> layout */
+	/*	win_layout -> layout */
 	Evas_Object *layout = setting_create_win_layout(win_obj);
 	*navi_bar = setting_create_navi_bar(layout);
 
 	*genlist = elm_genlist_add(*navi_bar);
 	retvm_if(*genlist == NULL, NULL,
-	         "Cannot set scroller object as contento of layout");
+			 "Cannot set scroller object as contento of layout");
 	elm_genlist_mode_set(*genlist, ELM_LIST_COMPRESS);
 	elm_genlist_clear(*genlist);	/* first to clear list */
 	evas_object_smart_callback_add(*genlist, "realized", __gl_realized_cb, NULL);
 
 	setting_create_navi_bar_buttons(title_str,
-	                                lbutton_str,
-	                                lbutton_click_cb,
-	                                cb_data, *genlist, *navi_bar,
-	                                NULL);
+									lbutton_str,
+									lbutton_click_cb,
+									cb_data, *genlist, *navi_bar,
+									NULL);
 	return layout;
 }
 
 /**
 * The general API to push any evas object(@param[eo_view]) to the specialized navi_bar,
-*   which contents at most 3 buttons
+*	which contents at most 3 buttons
 */
 EXPORT_PUBLIC
 Elm_Object_Item *
 setting_push_layout_navi_bar(char *title_str,
-                             char *lbutton_str, char *rbutton_str,
-                             char *mbutton_str,
-                             setting_call_back_func lbutton_click_cb,
-                             setting_call_back_func rbutton_click_cb,
-                             setting_call_back_func mbutton_click_cb,
-                             void *cb_data, Evas_Object *eo_view,
-                             Evas_Object *navi_bar, Evas_Object **titleobj)
+							 char *lbutton_str, char *rbutton_str,
+							 char *mbutton_str,
+							 setting_call_back_func lbutton_click_cb,
+							 setting_call_back_func rbutton_click_cb,
+							 setting_call_back_func mbutton_click_cb,
+							 void *cb_data, Evas_Object *eo_view,
+							 Evas_Object *navi_bar, Evas_Object **titleobj)
 {
 
 	return __create_navi_bar_bottom_buttons(title_str,
-	                                      lbutton_str,
-	                                      lbutton_click_cb,
-	                                      cb_data, eo_view, navi_bar);
+											lbutton_str,
+											lbutton_click_cb,
+											cb_data, eo_view, navi_bar);
 }
 
 /**
 * The API to push a scroller object(@param[scroller]) to the specialized navi_bar,
-*   which contents at most 2 buttons
+*	which contents at most 2 buttons
 */
 
 EXPORT_PUBLIC
 Elm_Object_Item *
 setting_push_layout_navi_bar_scroller(Evas_Object *win_main, char *title_str,
-                                      char *lbutton_str, char *rbutton_str,
-                                      setting_call_back_func lbutton_click_cb,
-                                      setting_call_back_func rbutton_click_cb,
-                                      void *cb_data,
-                                      Evas_Object **scroller,
-                                      Evas_Object *navi_bar)
+									  char *lbutton_str, char *rbutton_str,
+									  setting_call_back_func lbutton_click_cb,
+									  setting_call_back_func rbutton_click_cb,
+									  void *cb_data,
+									  Evas_Object **scroller,
+									  Evas_Object *navi_bar)
 {
-	/*  create scroller */
+	/*	create scroller */
 	Evas_Object *scrl = NULL;
 	if (scroller != NULL) {
 		scrl = *scroller = elm_scroller_add(navi_bar);
 		retvm_if(*scroller == NULL, NULL,
-		         "Cannot set scroller as contento of layout");
+				 "Cannot set scroller as contento of layout");
 		elm_scroller_bounce_set(*scroller, EINA_FALSE, EINA_TRUE);
 		elm_scroller_policy_set(*scroller, ELM_SCROLLER_POLICY_OFF,
-		                        ELM_SCROLLER_POLICY_AUTO);
+								ELM_SCROLLER_POLICY_AUTO);
 
 		evas_object_show(*scroller);
 	}
 
 	return setting_push_layout_navi_bar(title_str,
-	                                    lbutton_str, rbutton_str, NULL,
-	                                    lbutton_click_cb,
-	                                    rbutton_click_cb,
-	                                    NULL, cb_data, scrl, navi_bar, NULL);
+										lbutton_str, rbutton_str, NULL,
+										lbutton_click_cb,
+										rbutton_click_cb,
+										NULL, cb_data, scrl, navi_bar, NULL);
 }
 
 /**
 * @ The API to push a genlist object(@param[genlist]) to the specialized navi_bar,
-*   which contents at most 2 buttons
+*	which contents at most 2 buttons
 */
 EXPORT_PUBLIC
 Elm_Object_Item *
 setting_push_layout_navi_bar_genlist(Evas_Object *win_layout,
-                                     Evas_Object *win_obj, char *title_str,
-                                     char *lbutton_str, char *rbutton_str,
-                                     setting_call_back_func lbutton_click_cb,
-                                     setting_call_back_func rbutton_click_cb,
-                                     void *cb_data, Evas_Object **genlist,
-                                     Evas_Object *navi_bar)
+									 Evas_Object *win_obj, char *title_str,
+									 char *lbutton_str, char *rbutton_str,
+									 setting_call_back_func lbutton_click_cb,
+									 setting_call_back_func rbutton_click_cb,
+									 void *cb_data, Evas_Object **genlist,
+									 Evas_Object *navi_bar)
 {
-	/*  create scroller */
+	/*	create scroller */
 	Evas_Object *gl = NULL;
 	if (genlist != NULL) {
 		*genlist = elm_genlist_add(navi_bar);
 		retvm_if(*genlist == NULL, NULL,
-		         "Cannot set scroller object  as contento of layout");
+				 "Cannot set scroller object  as contento of layout");
 		elm_genlist_mode_set(*genlist, ELM_LIST_COMPRESS);
 
 		elm_genlist_homogeneous_set(*genlist, EINA_TRUE);
@@ -877,10 +877,10 @@ setting_push_layout_navi_bar_genlist(Evas_Object *win_layout,
 	}
 
 	return setting_push_layout_navi_bar(title_str,
-	                                    lbutton_str, rbutton_str, NULL,
-	                                    lbutton_click_cb,
-	                                    rbutton_click_cb,
-	                                    NULL, cb_data, gl, navi_bar, NULL);
+										lbutton_str, rbutton_str, NULL,
+										lbutton_click_cb,
+										rbutton_click_cb,
+										NULL, cb_data, gl, navi_bar, NULL);
 }
 
 EXPORT_PUBLIC

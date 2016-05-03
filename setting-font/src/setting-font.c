@@ -133,7 +133,7 @@ setting_view *__get_font_view_to_load(void *data, app_control_h service)
 
 	/* service OK, but there's no argument */
 	if ((ret == APP_CONTROL_ERROR_NONE)
-	    && (0 == safeStrCmp(output_url, "http://tizen.org/appcontrol/operation/default"))) {
+		&& (0 == safeStrCmp(output_url, "http://tizen.org/appcontrol/operation/default"))) {
 		FREE(output_url);
 		return __default_view_state(fontUG, service);
 
@@ -151,14 +151,14 @@ setting_view *__get_font_view_to_load(void *data, app_control_h service)
 }
 
 static void setting_font_ug_cb_resize(void *data, Evas *e, Evas_Object *obj,
-                                      void *event_info)
+									  void *event_info)
 {
 	SettingFontUG *ad = (SettingFontUG *) data;
 	setting_view_update(&setting_view_font_main, ad);
 }
 
 static void *setting_font_ug_on_create(ui_gadget_h ug, enum ug_mode mode,
-                                       app_control_h service, void *priv)
+									   app_control_h service, void *priv)
 {
 	setting_retvm_if((!priv), NULL, "!priv");
 	SettingFontUG *fontUG = priv;
@@ -172,7 +172,7 @@ static void *setting_font_ug_on_create(ui_gadget_h ug, enum ug_mode mode,
 	fontUG->evas = evas_object_evas_get(fontUG->win_main_layout);
 
 	setting_retvm_if(fontUG->win_main_layout == NULL, NULL,
-	                 "cannot get main window ");
+					 "cannot get main window ");
 
 	setting_create_Gendial_itc(SETTING_GENLIST_2LINE_STYLE, &(fontUG->itc_2text_3_parent));
 	setting_create_Gendial_itc(SETTING_GENLIST_2LINE_STYLE, &(fontUG->itc_1icon_1text_sub));
@@ -190,29 +190,29 @@ static void *setting_font_ug_on_create(ui_gadget_h ug, enum ug_mode mode,
 
 	elm_theme_extension_add(NULL, SETTING_5STEP_SLIDER_EDJ_NAME);
 
-	/*  creating a view. */
+	/*	creating a view. */
 	/*setting_view_create(&setting_view_font_main, (void *)fontUG); */
 	evas_object_event_callback_add(fontUG->win_main_layout, EVAS_CALLBACK_RESIZE, setting_font_ug_cb_resize, fontUG);
 	return fontUG->ly_main;
 }
 
 static void setting_font_ug_on_start(ui_gadget_h ug, app_control_h service,
-                                     void *priv)
+									 void *priv)
 {
 }
 
 static void setting_font_ug_on_pause(ui_gadget_h ug, app_control_h service,
-                                     void *priv)
+									 void *priv)
 {
 }
 
 static void setting_font_ug_on_resume(ui_gadget_h ug, app_control_h service,
-                                      void *priv)
+									  void *priv)
 {
 }
 
 static void setting_font_ug_on_destroy(ui_gadget_h ug, app_control_h service,
-                                       void *priv)
+									   void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	setting_retm_if((!priv), "!priv");
@@ -233,44 +233,44 @@ static void setting_font_ug_on_destroy(ui_gadget_h ug, app_control_h service,
 }
 
 static void setting_font_ug_on_message(ui_gadget_h ug, app_control_h msg,
-                                       app_control_h service, void *priv)
+									   app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 }
 
 
 static void setting_font_ug_on_event(ui_gadget_h ug, enum ug_event event,
-                                     app_control_h service, void *priv)
+									 app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	SettingFontUG *ad = (SettingFontUG *)priv;
 	setting_retm_if(NULL == ad, "ad is NULL");
 	switch (event) {
-		case UG_EVENT_LOW_MEMORY:
-			break;
-		case UG_EVENT_LOW_BATTERY:
-			break;
-		case UG_EVENT_LANG_CHANGE:
-			setting_navi_items_update(ad->navibar);
-			break;
-		case UG_EVENT_ROTATE_PORTRAIT:
-			break;
-		case UG_EVENT_ROTATE_PORTRAIT_UPSIDEDOWN:
-			break;
-		case UG_EVENT_ROTATE_LANDSCAPE:
-			break;
-		case UG_EVENT_ROTATE_LANDSCAPE_UPSIDEDOWN:
-			break;
-		case UG_EVENT_REGION_CHANGE:
-			break;
-		default:
-			break;
+	case UG_EVENT_LOW_MEMORY:
+		break;
+	case UG_EVENT_LOW_BATTERY:
+		break;
+	case UG_EVENT_LANG_CHANGE:
+		setting_navi_items_update(ad->navibar);
+		break;
+	case UG_EVENT_ROTATE_PORTRAIT:
+		break;
+	case UG_EVENT_ROTATE_PORTRAIT_UPSIDEDOWN:
+		break;
+	case UG_EVENT_ROTATE_LANDSCAPE:
+		break;
+	case UG_EVENT_ROTATE_LANDSCAPE_UPSIDEDOWN:
+		break;
+	case UG_EVENT_REGION_CHANGE:
+		break;
+	default:
+		break;
 	}
 }
 
 static void setting_font_ug_on_key_event(ui_gadget_h ug,
-                                         enum ug_key_event event, app_control_h service,
-                                         void *priv)
+										 enum ug_key_event event, app_control_h service,
+										 void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	if (!ug) {
@@ -278,11 +278,11 @@ static void setting_font_ug_on_key_event(ui_gadget_h ug,
 	}
 
 	switch (event) {
-		case UG_KEY_EVENT_END:
-			ug_destroy_me(ug);
-			break;
-		default:
-			break;
+	case UG_KEY_EVENT_END:
+		ug_destroy_me(ug);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -366,7 +366,7 @@ UG_MODULE_API int setting_plugin_search_init(app_control_h service, void *priv, 
 	int i;
 	int size = sizeof(s_cfg_node_array) / sizeof(s_cfg_node_array[0]);
 	for (i = 0; i < size; i++) {
-		Setting_Cfg_Node_T *node = setting_plugin_search_item_subindex_add(s_cfg_node_array[i].key_name, s_cfg_node_array[i].ug_args, IMG_Font, s_cfg_node_array[i].item_type,  s_cfg_node_array[i].data, "Font");
+		Setting_Cfg_Node_T *node = setting_plugin_search_item_subindex_add(s_cfg_node_array[i].key_name, s_cfg_node_array[i].ug_args, IMG_Font, s_cfg_node_array[i].item_type,	s_cfg_node_array[i].data, "Font");
 		*pplist = eina_list_append(*pplist, node);
 	}
 	return 0;

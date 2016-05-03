@@ -1502,7 +1502,7 @@ static char *get_timezone_displayname()
 	time_t t = time(0);
 	struct tm *pdata, data;
 
-	pdata= localtime_r(&t, &data);
+	pdata = localtime_r(&t, &data);
 
 	ICU_set_timezone(get_timezone_str());
 

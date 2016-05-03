@@ -41,7 +41,7 @@ struct _SettingApplicationsUG {
 	Evas_Object *win_main_layout;
 	Evas_Object *win_get;
 	Evas_Object *ly_main;
-	Evas_Object *navi_bar;	/*  for navigation effect */
+	Evas_Object *navi_bar;	/*	for navigation effect */
 	Ecore_Timer *event_freeze_timer;
 
 	/* genlist */

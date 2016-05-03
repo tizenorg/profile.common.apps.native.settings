@@ -43,8 +43,8 @@ static setting_view setting_view_storage_misc;
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-static Evas_Object* ctxpopup;
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+static Evas_Object *ctxpopup;
 
 static void
 ctxpopup_dismissed_cb(void *data, Evas_Object *obj, void *event_info)
@@ -68,16 +68,16 @@ move_more_ctxpopup(Evas_Object *ctxpopup)
 	pos = elm_win_rotation_get(win);
 
 	switch (pos) {
-		case 0:
-		case 180:
-			evas_object_move(ctxpopup, (w / 2), h);
-			break;
-		case 90:
-			evas_object_move(ctxpopup,  (h / 2), w);
-			break;
-		case 270:
-			evas_object_move(ctxpopup, (h / 2), w);
-			break;
+	case 0:
+	case 180:
+		evas_object_move(ctxpopup, (w / 2), h);
+		break;
+	case 90:
+		evas_object_move(ctxpopup, (h / 2), w);
+		break;
+	case 270:
+		evas_object_move(ctxpopup, (h / 2), w);
+		break;
 	}
 }
 
@@ -105,22 +105,21 @@ win_rotation_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	move_more_ctxpopup(ctxpopup);
 }
 
-//static inline void storageUg_misces_gl_remove_select_all_item(SettingStorageUG *ad);
+/*static inline void storageUg_misces_gl_remove_select_all_item(SettingStorageUG *ad); */
 static void _genlist_check_hide(SettingStorageUG *ad, bool hide)
 {
 	SETTING_TRACE_BEGIN;
 	int count = 0;
 	Evas_Object *gl = ad->gl_misces;
 	Elm_Object_Item *it = elm_genlist_first_item_get(gl);
-	while (it)
-	{
+	while (it) {
 		Setting_GenGroupItem_Data *sel = (Setting_GenGroupItem_Data *)elm_object_item_data_get(it);
-		//sel->isItemHideFlag = 0;
+		/*sel->isItemHideFlag = 0; */
 		sel->isItemHideFlag = hide;
 
-		// reset if check boxs get hidden
+		/* reset if check boxs get hidden */
 		if (hide == true) {
-			sel->chk_status = 0; 
+			sel->chk_status = 0;
 		}
 		SETTING_TRACE(" item_update %d ", count++);
 		elm_genlist_item_fields_update(it, "elm.swallow.end", ELM_GENLIST_ITEM_FIELD_CONTENT);
@@ -133,26 +132,25 @@ static void _genlist_check_hide(SettingStorageUG *ad, bool hide)
  */
 static void
 setting_storage_ctx_click_softkey_cb(void *data,
-                                                 Evas_Object *obj,
-                                                 void *event_info)
+									 Evas_Object *obj,
+									 void *event_info)
 {
 	SETTING_TRACE_BEGIN;
 	/* error check */
 	retm_if(data == NULL, "Data parameter is NULL");
 
-	SettingStorageUG  *ad = (SettingStorageUG*) data;
+	SettingStorageUG  *ad = (SettingStorageUG *) data;
 
-	//-------------------------------------------------------------------------------------------
-	// check genlist check box show/hide
-	//-------------------------------------------------------------------------------------------
+	/*------------------------------------------------------------------------------------------- */
+	/* check genlist check box show/hide */
+	/*------------------------------------------------------------------------------------------- */
 	ad->misces_ctx_popup_selected = true;
 
 #if 0
 	int count = 0;
 	Eina_List *l = elm_genlist_realized_items_get(ad->gl_misces);
 	Elm_Object_Item *it;
-	EINA_LIST_FREE(l, it)
-	{
+	EINA_LIST_FREE(l, it) {
 		Setting_GenGroupItem_Data *sel = (Setting_GenGroupItem_Data *)elm_object_item_data_get(it);
 
 		sel->isItemHideFlag = 0;
@@ -178,7 +176,7 @@ setting_storage_ctx_click_softkey_cb(void *data,
 static void create_ctxpopup_more_button_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	SETTING_TRACE_BEGIN;
-	SettingStorageUG  *ad = (SettingStorageUG*) data;
+	SettingStorageUG  *ad = (SettingStorageUG *) data;
 	Evas_Object *it_obj;
 	Evas_Object *nf = ad->navi;
 	Evas_Object *win;
@@ -198,12 +196,12 @@ static void create_ctxpopup_more_button_cb(void *data, Evas_Object *obj, void *e
 	evas_object_event_callback_add(nf, EVAS_CALLBACK_RESIZE, naviframe_resize_cb, ctxpopup);
 
 	/* We convince the top widget is a window */
-//	win = elm_object_top_widget_get(nf);
-//	evas_object_smart_callback_add(win, "rotation,changed", win_rotation_changed_cb, ctxpopup);
+	/*	win = elm_object_top_widget_get(nf); */
+	/*	evas_object_smart_callback_add(win, "rotation,changed", win_rotation_changed_cb, ctxpopup); */
 
-	//---------------------------------------------------------------------------------------------
+	/*--------------------------------------------------------------------------------------------- */
 	elm_ctxpopup_item_append(ctxpopup, _("IDS_ST_BODY_DELETE"), NULL, setting_storage_ctx_click_softkey_cb, ad);
-	//---------------------------------------------------------------------------------------------
+	/*--------------------------------------------------------------------------------------------- */
 
 
 
@@ -212,7 +210,7 @@ static void create_ctxpopup_more_button_cb(void *data, Evas_Object *obj, void *e
 	move_more_ctxpopup(ctxpopup);
 	evas_object_show(ctxpopup);
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 
 
 /**
@@ -246,7 +244,7 @@ static inline Evas_Object *_create_ly_misces_no_item(Evas_Object *parent)
 	elm_object_part_content_set(layout, "nocontents.image", icon);
 
 	elm_object_domain_translatable_part_text_set(layout, "elm.text", SETTING_PACKAGE,
-	                                             STORAGEUG_STR_NO_FILES);
+												 STORAGEUG_STR_NO_FILES);
 	elm_layout_signal_emit(layout, "text,disabled", "");
 
 	return layout;
@@ -412,7 +410,7 @@ static void storageUg_misces_handle_selecting(SettingStorageUG *ad)
 	else
 		ad->misces_is_select_all = EINA_FALSE;
 
-	/*  text set and timeout set */
+	/*	text set and timeout set */
 	if (0 < ad->misces_checked) {
 		char text[MAX_DISPLAY_NAME_LEN_ON_UI] = {0};
 
@@ -436,7 +434,7 @@ static int storageUg_compare_str(const void *data1, const void *data2)
 }
 
 static void storageUg_misces_handle_sel_list(SettingStorageUG *ad, char *id,
-                                             int checked)
+											 int checked)
 {
 	SETTING_TRACE_BEGIN;
 
@@ -450,7 +448,7 @@ static void storageUg_misces_handle_sel_list(SettingStorageUG *ad, char *id,
 
 		ad->misces_checked--;
 		found = eina_list_search_unsorted_list(ad->misces_sel_list, storageUg_compare_str,
-		                                       id);
+											   id);
 		free(eina_list_data_get(found));
 		ad->misces_sel_list = eina_list_remove_list(ad->misces_sel_list, found);
 	}
@@ -460,7 +458,7 @@ static void storageUg_misces_handle_sel_list(SettingStorageUG *ad, char *id,
 }
 
 static void storageUg_misces_genlist_sel(void *data, Evas_Object *obj,
-                                         void *event_info)
+										 void *event_info)
 {
 	SETTING_TRACE_BEGIN;
 	Node_Info *node;
@@ -499,7 +497,7 @@ static void storageUg_misces_genlist_sel(void *data, Evas_Object *obj,
 }
 
 static void storageUg_misces_genlist_chk_cb(void *data, Evas_Object *obj,
-                                            void *event_info)
+											void *event_info)
 {
 	SETTING_TRACE_BEGIN;
 
@@ -510,8 +508,7 @@ static void storageUg_misces_genlist_chk_cb(void *data, Evas_Object *obj,
 	ret_if(data == NULL);
 
 	node = d_item->userdata;
-	if (node)
-	{
+	if (node) {
 		ad = node->ad;
 		d_item->chk_status = elm_check_state_get(obj);
 
@@ -547,7 +544,7 @@ static inline void setting_storage_select_all_chk_btn_cb(void *data, Evas_Object
 	Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data;
 	SettingStorageUG *ad = (SettingStorageUG *)list_item->userdata;
 
-	list_item->chk_status = elm_check_state_get(obj);	/*  for genlist update status */
+	list_item->chk_status = elm_check_state_get(obj);	/*	for genlist update status */
 	ad->misces_is_select_all = elm_check_state_get(obj);
 
 	SETTING_TRACE_ERROR("1");
@@ -613,7 +610,7 @@ static inline void storageUg_misces_gl_remove_select_all_item(SettingStorageUG *
 
 	Elm_Object_Item *it = elm_genlist_first_item_get(gl);
 	if (it) {
-		elm_object_item_del	(it);
+		elm_object_item_del(it);
 	}
 }
 
@@ -627,14 +624,14 @@ static inline void storageUg_misces_gl_append_select_all_item(SettingStorageUG *
 	SETTING_TRACE_BEGIN;
 	int checked = 0;
 	Setting_GenGroupItem_Data *item_data = NULL;
-	//ad->gl_misces
+	/*ad->gl_misces */
 
 	evas_object_data_set(ad->gl_misces, "InsertType", "Prepend");
 
 	item_data = setting_create_Gendial_field_def(ad->gl_misces,
-		                                             &(itc_1text_1icon), storageUg_misces_sel_all_clicked, ad,
-		                                        	 SWALLOW_Type_1ICON_1RADIO, NULL, NULL, checked, _("IDS_ST_BODY_SELECT_ALL"), NULL,
-		                                             setting_storage_select_all_chk_btn_cb);
+												 &(itc_1text_1icon), storageUg_misces_sel_all_clicked, ad,
+												 SWALLOW_Type_1ICON_1RADIO, NULL, NULL, checked, _("IDS_ST_BODY_SELECT_ALL"), NULL,
+												 setting_storage_select_all_chk_btn_cb);
 
 	if (item_data) {
 		item_data->userdata = ad;
@@ -664,7 +661,7 @@ static inline void storageUg_misces_gl_append_items(SettingStorageUG *ad)
 			continue;
 
 		found = eina_list_search_unsorted_list(tmp_sel_list, storageUg_compare_str,
-		                                       node->id);
+											   node->id);
 		if (found) {
 			checked = 1;
 			storageUg_misces_handle_sel_list(ad, node->id, 1);
@@ -673,9 +670,9 @@ static inline void storageUg_misces_gl_append_items(SettingStorageUG *ad)
 		}
 
 		item_data = setting_create_Gendial_field_def(ad->gl_misces,
-		                                             &(itc_1text_1icon), storageUg_misces_genlist_sel, ad,
-		                                        	 SWALLOW_Type_1CHECK_RIGHT_INVISIBLE, NULL, NULL, checked, node->name, node->path,
-		                                             storageUg_misces_genlist_chk_cb);
+													 &(itc_1text_1icon), storageUg_misces_genlist_sel, ad,
+													 SWALLOW_Type_1CHECK_RIGHT_INVISIBLE, NULL, NULL, checked, node->name, node->path,
+													 storageUg_misces_genlist_chk_cb);
 
 		if (item_data) {
 			item_data->userdata = node;
@@ -729,8 +726,7 @@ static void storageUg_misces_delete_list(SettingStorageUG *ad)
 			if (item_data->chk_status) {
 				elm_object_item_del(item_data->item);
 				Node_Info *node = item_data->userdata;
-				if (node)
-				{
+				if (node) {
 					ad->misces_list = eina_list_remove(ad->misces_list, node);
 					FREE(node->id);
 					FREE(node->path);
@@ -846,7 +842,7 @@ void storageUg_misces_delete_files_cb(int fn_result, SettingStorageUG *ad)
 
 /**
  * [controller] delete actual files with ad->misces_list
- * 
+ *
  */
 static int storageUg_misces_delete_files(SettingStorageUG *ad)
 {
@@ -881,7 +877,7 @@ static int storageUg_misces_delete_files(SettingStorageUG *ad)
  * [UI] Done button -> create popup -> button handler
  */
 static void storageUg_misces_delete_resp(void *data, Evas_Object *obj,
-                                         void *event_info)
+										 void *event_info)
 {
 	int response_type;
 	SettingStorageUG *ad = data;
@@ -905,12 +901,12 @@ static void storageUg_misces_delete_resp(void *data, Evas_Object *obj,
 
 	if (ad->misces_checked) {
 		ad->popup = setting_create_popup_with_progressbar(ad, ad->win, PROGRESSBAR_STYLE,
-		                                                  NULL, NULL, storageUg_popup_del, 0, TRUE, TRUE, 0);
+														  NULL, NULL, storageUg_popup_del, 0, TRUE, TRUE, 0);
 
 		if (ad->del_worker)
 			storageUg_stop_async_worker(ad->del_worker);
 		ad->del_worker = storageUg_start_async_worker(storageUg_misces_delete_files,
-		                                              storageUg_misces_delete_files_cb, ad);
+													  storageUg_misces_delete_files_cb, ad);
 	} else {
 		ad->popup = setting_create_popup(ad, ad->win, NULL,
 										 STORAGEUG_STR_NO_SELECTED, storageUg_popup_del,
@@ -946,7 +942,7 @@ static void storageUg_misces_sel_all_clicked(void *data, Evas_Object *obj, void 
 	Evas_Object *toolbar;
 	Node_Info *node = NULL;
 	SettingStorageUG *ad = data;
-	//Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data;
+	/*Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) data; */
 
 	Setting_GenGroupItem_Data *item_data = NULL;
 
@@ -1010,20 +1006,20 @@ storageUg_misces_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 	setting_retm_if(data == NULL, "data is NULL");
 	SettingStorageUG *ad = data;
 
-	//ad->misces_ctx_popup_selected = true;
+	/*ad->misces_ctx_popup_selected = true; */
 	if (ad->misces_ctx_popup_selected) {
 
 		SETTING_TRACE_ERROR("ad->misces_ctx_popup_selected == true");
 
-		// change UI style
+		/* change UI style */
 		ad->misces_ctx_popup_selected = false;
 
-		// 1. remove 1st item of genlist
+		/* 1. remove 1st item of genlist */
 		storageUg_misces_gl_remove_select_all_item(ad);
-		// 2. remove all 'toggle' from all list
+		/* 2. remove all 'toggle' from all list */
 		_genlist_check_hide(ad, true);
 
-		// remove sub text of naviframe title
+		/* remove sub text of naviframe title */
 		elm_object_item_part_text_set(ad->misces_navi_it, "subtitle", "");
 		elm_object_item_signal_emit(ad->misces_navi_it, "elm,state,subtitle,hide", "elm");
 
@@ -1032,15 +1028,15 @@ storageUg_misces_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 		elm_object_item_disabled_set(elm_toolbar_last_item_get(toolbar), EINA_TRUE);
 		ad->misces_checked = 0;
 
-		#if 0
-		// delete all items
+#if 0
+		/* delete all items */
 		if (ad->misces_list) {
 			storageUg_misces_clear_list(ad->misces_list);
 			ad->misces_list = NULL;
 		}
-		#endif
+#endif
 
-		// change button style
+		/* change button style */
 		_update_navibar_buttons(ad);
 
 		SETTING_TRACE_ERROR("********** SET TO ZERO ad->misces_checked = 0");
@@ -1065,9 +1061,9 @@ setting_storage_click_softkey_delete_cb(void *data, Evas_Object *obj, void *even
 	return;
 }
 
-//--------------------------------------------------
-//	name: "storageview_layout";
-//--------------------------------------------------
+/*-------------------------------------------------- */
+/*	name: "storageview_layout"; */
+/*-------------------------------------------------- */
 static int storageUg_misces_create(void *data)
 {
 	SettingStorageUG *ad = data;
@@ -1082,17 +1078,17 @@ static int storageUg_misces_create(void *data)
 
 		/*misc file list*/
 		storageUg_misces_add_list(ad);
-		// focus a list
+		/* focus a list */
 		elm_object_focus_set(ad->gl_misces, EINA_TRUE);
 
-		// IDS_ST_BODY_MISCELLANEOUS_FILES
-		// STR_DELETE_ITEMS
+		/* IDS_ST_BODY_MISCELLANEOUS_FILES */
+		/* STR_DELETE_ITEMS */
 		ad->misces_navi_it = setting_push_layout_navi_bar(_(IDS_ST_BODY_MISCELLANEOUS_FILES),
-															NULL, NULL, NULL,
-															(setting_call_back_func)storageUg_misces_back_cb,
-															NULL,
-															NULL,
-															ad, NULL, ad->navi, NULL);
+														  NULL, NULL, NULL,
+														  (setting_call_back_func)storageUg_misces_back_cb,
+														  NULL,
+														  NULL,
+														  ad, NULL, ad->navi, NULL);
 
 		elm_object_item_part_content_set(ad->misces_navi_it, "elm.swallow.content", ad->gl_misces);
 
@@ -1108,13 +1104,13 @@ static int storageUg_misces_create(void *data)
 	} else {
 
 		ad->misces_navi_it = setting_push_layout_navi_bar(_(IDS_ST_BODY_MISCELLANEOUS_FILES),
-															NULL,
-															NULL,
-															NULL,
-															(setting_call_back_func)storageUg_misces_back_cb,
-															NULL,
-															NULL,
-															ad, NULL, ad->navi, NULL);
+														  NULL,
+														  NULL,
+														  NULL,
+														  (setting_call_back_func)storageUg_misces_back_cb,
+														  NULL,
+														  NULL,
+														  ad, NULL, ad->navi, NULL);
 
 		if (NULL == ad->misces_lo_noitem) {
 			ad->misces_lo_noitem = _create_ly_misces_no_item(ad->navi);
@@ -1130,8 +1126,8 @@ static int storageUg_misces_create(void *data)
 	}
 	elm_naviframe_item_pop_cb_set(ad->misces_navi_it, storageUg_misces_back_cb, ad);
 
-	// Add ctx popup handler
-	Evas_Object* btn = elm_button_add(ad->navi);
+	/* Add ctx popup handler */
+	Evas_Object *btn = elm_button_add(ad->navi);
 	elm_object_style_set(btn, "naviframe/more/default");
 	evas_object_smart_callback_add(btn, "clicked", create_ctxpopup_more_button_cb, ad);
 	elm_object_item_part_content_set(ad->misces_navi_it, "toolbar_more_btn", btn);
