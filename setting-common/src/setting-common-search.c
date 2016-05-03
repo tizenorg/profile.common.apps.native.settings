@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://floralicense.org/license/
+ *	   http://floralicense.org/license/
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an AS IS BASIS,
@@ -54,12 +54,12 @@ const Elm_Genlist_Item_Class itc_no_reult = {
 
 #define DEFINE_ITC2(style, name) \
 	EXPORT_PUBLIC const Elm_Genlist_Item_Class name = {\
-	                                                   .item_style = style,\
-	                                                   .func.text_get = __search_label_get,\
-	                                                   .func.content_get = __search_icon_get,\
-	                                                   .func.state_get = NULL,\
-	                                                   .func.del = __search_item_del,\
-	                                                  };
+													   .item_style = style,\
+													   .func.text_get = __search_label_get,\
+													   .func.content_get = __search_icon_get,\
+													   .func.state_get = NULL,\
+													   .func.del = __search_item_del,\
+													  };
 
 DEFINE_ITC2("dialogue/1text.1icon.3.tb", g_search_genlist_ts);
 DEFINE_ITC2("dialogue/newset.1text.2icon.4.tb", g_search_genlist_ts_toggle);
@@ -102,10 +102,10 @@ char *___add_tag_for_search(char *target, char *searcher)
 /**
  * Callback function used for get label as member in genlist item
  *
- * @param[in]  data   data used for this function
- * @param[in]  obj    object which caused this function
- * @param[in]  part   part name of the label member in genlist item
- * @return     pointer to content of label
+ * @param[in]  data	  data used for this function
+ * @param[in]  obj	  object which caused this function
+ * @param[in]  part	  part name of the label member in genlist item
+ * @return	   pointer to content of label
  */
 static
 char *__search_label_get(void *data, Evas_Object *obj, const char *part)
@@ -121,20 +121,20 @@ char *__search_label_get(void *data, Evas_Object *obj, const char *part)
 	retv_if(NULL == part, NULL);
 
 	if (!strcmp(part, "elm.text.1")) {
-		snprintf(buf, BUF_SIZE, "%s", "elm.text.1");        /* print out test message */
+		snprintf(buf, BUF_SIZE, "%s", "elm.text.1");		/* print out test message */
 	} else if (!strcmp(part, "elm.text.2")) {
-		snprintf(buf, BUF_SIZE, "%s", "elm.text.2");        /* print out test message */
+		snprintf(buf, BUF_SIZE, "%s", "elm.text.2");		/* print out test message */
 	} else if (!strcmp(part, "elm.text.3")) {
-		snprintf(buf, BUF_SIZE, "%s", "elm.text.3");        /* print out test message */
+		snprintf(buf, BUF_SIZE, "%s", "elm.text.3");		/* print out test message */
 	} else if (!strcmp(part, "elm.text")) {
 #if 0
 		/*snprintf(buf, BUF_SIZE, "[%s] - %s", item->type, item->title);   // print out "[type] - title" */
-		snprintf(buf, BUF_SIZE, "%s", item->title);   /* print out "[type] - title" */
+		snprintf(buf, BUF_SIZE, "%s", item->title);	  /* print out "[type] - title" */
 		return strdup(buf);
 #else
 		/*tag_str = ___add_tag_for_search(item->title, g_ad->search_text); */
 		tag_str = ___add_tag_for_search(item->title, "");
-		snprintf(buf, BUF_SIZE, "%s", tag_str);   /* print out "[type] - title" */
+		snprintf(buf, BUF_SIZE, "%s", tag_str);	  /* print out "[type] - title" */
 		FREE(tag_str);
 		return strdup(buf);
 #endif
@@ -165,7 +165,7 @@ static Evas_Object *__no_result_icon_get(void *data, Evas_Object *obj, const cha
 		int rot = elm_win_rotation_get(obj);
 		SETTING_TRACE_DEBUG("....change_ang:%d", rot);
 		if (APP_DEVICE_ORIENTATION_0 == rot
-		    || APP_DEVICE_ORIENTATION_180 == rot) {
+			|| APP_DEVICE_ORIENTATION_180 == rot) {
 			/*b.separator.. */
 			Evas_Object *separator = setting_create_blank_rect_customize(box, 1, 270);
 			elm_box_pack_end(box, separator);
@@ -189,12 +189,12 @@ static Evas_Object *__no_result_icon_get(void *data, Evas_Object *obj, const cha
 /**
  * Get icon of given part in genlist item
  *
- * @param[in]  data   Data used in this function
- * @param[in]  obj    Evas_Object who emit this event
- * @param[in]  part   Name of the part in genlist item
+ * @param[in]  data	  Data used in this function
+ * @param[in]  obj	  Evas_Object who emit this event
+ * @param[in]  part	  Name of the part in genlist item
  *
- * @return     NULL if meet error
- *             Pointer to new icon
+ * @return	   NULL if meet error
+ *			   Pointer to new icon
  */
 static
 Evas_Object *__search_icon_get(void *data, Evas_Object *obj, const char *part)
@@ -255,7 +255,7 @@ Evas_Object *__search_icon_get(void *data, Evas_Object *obj, const char *part)
 			/* if get_cfg_node_by_keystr returns NULL, search for UG's keyword */
 			int ret =  setting_search_get_module_item_state(item->title2, item->viewname, &state, NULL);
 			SETTING_TRACE("---------------------------------------");
-			SETTING_TRACE(" >>>  ret : %d, state : %d <<< ", ret, state);
+			SETTING_TRACE(" >>>	 ret : %d, state : %d <<< ", ret, state);
 			SETTING_TRACE("---------------------------------------");
 		}
 
@@ -302,7 +302,7 @@ void __search_item_del(void *data, Evas_Object *obj)
 static void sql_stmt(sqlite3 *db, const char *stmt)
 {
 	char *errmsg;
-	int   ret;
+	int	  ret;
 
 	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 	if (ret != SQLITE_OK) {
@@ -372,7 +372,7 @@ void setting_add_db_search_index(sqlite3 *db, char *locale, char *keystr, char *
 	/*snprintf(query, sizeof(query), "INSERT INTO setting_search VALUES (%Q, %Q, %Q, %d, NULL, %Q, %Q, %Q)", */
 	/*			locale, fieldname, viewname, data_type,	keystr,	infostr, icon_path); */
 	char *query = sqlite3_mprintf("INSERT INTO setting_search VALUES (%Q, %Q, %Q, %d, NULL, %Q, %Q, %Q)",
-	                              locale, fieldname, viewname, data_type, keystr, infostr, icon_path);
+								  locale, fieldname, viewname, data_type, keystr, infostr, icon_path);
 	sql_stmt(db, query);
 	sqlite3_free(query);
 	query = NULL;
@@ -418,7 +418,7 @@ int setting_invoke_search_db_function(char *ug_name, app_control_h service, void
 	}
 
 	if (search_plugin) {
-		ret = (*search_plugin)(service, ext, ppapplocale);    /*  CALL */
+		ret = (*search_plugin)(service, ext, ppapplocale);	  /*  CALL */
 		SETTING_TRACE(" after calling PLUGIN WITH -APP LOCALE ID = %s", *ppapplocale);
 	}
 	if (ret < 0) ret += UNDEFINED_LIB_SYMBOL;/*from -2 on */
@@ -470,8 +470,8 @@ int setting_search_set_module_item_state(char *keyword, char *ug_name, Cfg_Item_
 	if (query_ops && keyword) {
 		/* OPS RETURNS NULL, IT'S PROBLEM */
 		cfg_func_table *ops = NULL;
-		/*ret = (*query_ops) ("MOCK_STR_ID", &ops);   */
-		ret = (*query_ops)(keyword, (void **)&ops);   /*  CALL */
+		/*ret = (*query_ops) ("MOCK_STR_ID", &ops);	  */
+		ret = (*query_ops)(keyword, (void **)&ops);	  /*  CALL */
 		SETTING_TRACE(" ops = %x ", ops);
 		/*------------------------------------------------------------- */
 		/* ACTUAL PROCESSING */
@@ -531,8 +531,8 @@ int setting_search_get_module_item_state(char *keyword, char *ug_name, Cfg_Item_
 	if (query_ops && keyword) {
 		/* OPS RETURNS NULL, IT'S PROBLEM */
 		cfg_func_table *ops = NULL;
-		// ret = (*query_ops) ("MOCK_STR_ID", &ops);   /*  CALL * /
-		ret = (*query_ops)(keyword, (void **)&ops);   /*  CALL */
+		/* ret = (*query_ops) ("MOCK_STR_ID", &ops);   /*  CALL * / */
+		ret = (*query_ops)(keyword, (void **)&ops);	  /*  CALL */
 		SETTING_TRACE(" ops = %x ", ops);
 		/*------------------------------------------------------------- */
 		/* ACTUAL PROCESSING */
@@ -560,7 +560,7 @@ int __setting_init_search_index_module()
 	setting_searchdb_open(&db);
 	SETTING_TRACE("search db = %d", db);
 
-	char *backup_langset =  vconf_get_str(VCONFKEY_LANGSET);
+	char *backup_langset =	vconf_get_str(VCONFKEY_LANGSET);
 	char *ug_name_arr[] = {
 		"setting-display-efl",					/* finish */
 		"setting-profile-efl",					/* finish */
@@ -659,8 +659,8 @@ int __setting_init_search_index_module()
 #if 1
 		if (p) {
 			char *tempp;
-			domain_appname = strtok_r(domainname, ":",&tempp);
-			
+			domain_appname = strtok_r(domainname, ":", &tempp);
+
 			SETTING_TRACE("p1:appname : %s\n", domain_appname);
 			SETTING_TRACE("p2:localedir : %s\n", p + 1);
 			/* set */
@@ -763,7 +763,7 @@ int __setting_init_search_index_app()
 	SETTING_TRACE(" size of array : %d ", size);
 
 	char *locale = NULL;
-	char *backup_langset =  vconf_get_str(VCONFKEY_LANGSET);
+	char *backup_langset =	vconf_get_str(VCONFKEY_LANGSET);
 
 	/* get langlist // load language table from XML file */
 	Eina_List *elist = NULL;
@@ -788,10 +788,10 @@ int __setting_init_search_index_app()
 				setting_add_db_search_index(db, locale, _(pitem[i].key_name), pitem[i].ug_args, pitem[i].item_type/*title in Genlist*/, "", subindex, icon_path);
 
 			} else if (pitem[i].item_type == Cfg_Item_Ug_Node
-			           || pitem[i].item_type == Cfg_Item_Ug_Node_Toggle
-			           || pitem[i].item_type == Cfg_Item_AppLauncher_Node
-			           || pitem[i].item_type == Cfg_Item_AppLauncher_Node_Toggle
-			          ) {
+					   || pitem[i].item_type == Cfg_Item_Ug_Node_Toggle
+					   || pitem[i].item_type == Cfg_Item_AppLauncher_Node
+					   || pitem[i].item_type == Cfg_Item_AppLauncher_Node_Toggle
+					  ) {
 
 				if (pitem[i].key_name && _(pitem[i].key_name)) {
 					setting_add_db_search_index(db, locale, _(pitem[i].key_name), pitem[i].ug_args, pitem[i].item_type/*UG name*/, "", subindex, icon_path);
@@ -802,8 +802,8 @@ int __setting_init_search_index_app()
 					setting_add_db_search_index(db, locale, _(pitem[i].key_name), pitem[i].ug_args, pitem[i].item_type/*App Launching*/, "", subindex, icon_path);
 				}
 			} else if (pitem[i].item_type == Cfg_Item_Ui_Node
-			           || pitem[i].item_type == Cfg_Item_Ui_Node_Toggle
-			          ) {
+					   || pitem[i].item_type == Cfg_Item_Ui_Node_Toggle
+					  ) {
 
 				setting_add_db_search_index(db, locale, _(pitem[i].key_name), pitem[i].ug_args, pitem[i].item_type/*UI type*/, "", subindex, icon_path);
 			}

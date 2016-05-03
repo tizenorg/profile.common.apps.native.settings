@@ -38,19 +38,19 @@
 #define SETTING_LAYOUT_FOCUS_PART(bg) \
 	part { name: "focus_bg_left_top_padding";\
 	type: RECT;\
-		scale : 1;\
+		scale: 1;\
 	description { state: "default" 0.0;\
 			min: 2 2;\
 			align: 0.0 0.0;\
 			visible: 0;\
 			fixed: 1 1;\
-	rel1.to: bg;\
+	rel1.to : bg;\
 			rel2 {\
 				relative: 0.0 0.0;\
 	to: bg;\
-			}\
-		}\
-	}\
+			} \
+		} \
+	} \
 	part { name: "focus_bg_right_bottom_padding";\
 	type: RECT;\
 		scale: 1;\
@@ -62,10 +62,10 @@
 			rel1 {\
 				relative: 1.0 1.0;\
 	to: bg;\
-			}\
-	rel2.to: bg;\
-		}\
-	}\
+			} \
+	rel2.to : bg;\
+		} \
+	} \
 	part { name: "focus_bg";\
 	type: IMAGE;\
 	description { state: "default" 0.0;\
@@ -73,18 +73,18 @@
 			rel1 {\
 				relative: 1.0 1.0;\
 	to: "focus_bg_left_top_padding";\
-			}\
+			} \
 			rel2 {\
 				relative: 0.0 0.0;\
 	to: "focus_bg_right_bottom_padding";\
-			}\
-	image.normal: "org.tizen.setting.png";\
-			image.border: 13 13 13 13;\
-		}\
+			} \
+	image.normal : "org.tizen.setting.png";\
+			image.border : 13 13 13 13;\
+		} \
 	description { state: "enabled" 0.0;\
 	inherit: "default" 0.0;\
 			visible: 1;\
-		}\
+		} \
 	}
 
 #define SETTING_LAYOUT_FOCUS_PROGRAME \
@@ -93,13 +93,13 @@
 	source: "elm";\
 	action: STATE_SET "enabled" 0.0;\
 	target: "focus_bg";\
-	}\
+	} \
 	program { name: "focus_out";\
 	signal: "elm,action,focus_highlight,hide";\
 	source: "elm";\
 	action: STATE_SET "default" 0.0;\
 	target: "focus_bg";\
-	}\
+	} \
 
 
 #define ADD_PART_CLICKED_SOUND_HEADER \
@@ -107,7 +107,7 @@
 		sample {\
 	name: "touch_sound" AS_IS;\
 	source: "button-pressed.wav";\
-		}\
+		} \
 	}
 
 #define ADD_PART_CLICKED_SOUND(part)\

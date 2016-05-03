@@ -47,7 +47,7 @@
 
 /* launching */
 #ifdef LAUNCHING_DEBUG_LOG
-#define LAUNCH_SETTING_IN(fmt, arg...)  LOG(LOG_DEBUG, "LAUNCH", "[setting:Application:%s:IN]" fmt, __FUNCTION__, ##arg)
+#define LAUNCH_SETTING_IN(fmt, arg...)	LOG(LOG_DEBUG, "LAUNCH", "[setting:Application:%s:IN]" fmt, __FUNCTION__, ##arg)
 #define LAUNCH_SETTING_OUT(fmt, arg...) LOG(LOG_DEBUG, "LAUNCH", "[setting:Application:%s:OUT]" fmt, __FUNCTION__, ##arg)
 #else
 #define LAUNCH_SETTING_IN(fmt, arg...)
@@ -55,11 +55,11 @@
 #endif
 
 #if !defined(LOCALEDIR)
-#define LOCALEDIR 	_TZ_SYS_RO_APP"/org.tizen.setting/res/locale"
+#define LOCALEDIR	_TZ_SYS_RO_APP"/org.tizen.setting/res/locale"
 #endif
 
 #if !defined(EDJDIR)
-#define EDJDIR 	_TZ_SYS_RO_APP"/org.tizen.setting/res/edje"
+#define EDJDIR	_TZ_SYS_RO_APP"/org.tizen.setting/res/edje"
 #endif
 
 #define SUPPORT_BOTTOM_BTNS 1
@@ -68,9 +68,6 @@
 /*macros to control program flow*/
 
 /* Genlist Update is in progress. */
-#if 0
-#define OLD_GENLIST_STYLE
-#endif
 
 #define FUNCTION_SYSTEM_SETTING 1
 #define SETTING_SEARCH 1
@@ -83,15 +80,15 @@
 #define SUPPORT_ACCESSIBILITY			1
 
 #define SUPPORT_STORAGE				1
-#define SUPPORT_WIFI_DIRECT                     1
-#define SUPPORT_DATA_USAGE                      1
+#define SUPPORT_WIFI_DIRECT						1
+#define SUPPORT_DATA_USAGE						1
 #define SUPPORT_TETHERING	0
 
 /*#endif*/
 
 #define SUPPORT_APP_ROATION			1
 
-#define  LOW_BATTERY_DO_NOTHING			1	/**< 1 : turn the low batter handlding off */
+#define	 LOW_BATTERY_DO_NOTHING			1	/**< 1 : turn the low batter handlding off */
 
 
 #define SUPPORT_SIMLOCK 0
@@ -110,78 +107,78 @@
 #define SETTING_TRACE_SECURE_DEBUG(fmt, arg...) \
 	do {\
 		SECURE_LOGD("\033[0;32mDEBUG: " fmt "\033[0m\n", ##arg);\
-	}while(0);
+	} while (0);
 
 #define SETTING_TRACE_DEBUG(fmt, arg...) \
 	do {\
 		SECURE_LOGD("\033[0;32mDEBUG: " fmt "\033[0m\n", ##arg);\
-	}while(0);
+	} while (0);
 
 #define SETTING_TRACE(fmt, arg...) \
 	do {\
 		SECURE_LOGI("\033[0;36m" fmt "\033[0m\n", ##arg);\
-	}while(0);
+	} while (0);
 
 #define SETTING_TRACE_WARNING(fmt, arg...) \
 	do {\
 		SECURE_LOGI("\033[0;33mWARRING: " fmt "\033[0m\n", ##arg);\
-	}while(0);
+	} while (0);
 
 #define SETTING_TRACE_ERROR(fmt, arg...) \
 	do {\
 		SECURE_LOGE("\033[0;31mERROR: " fmt "\033[0m\n", ##arg);\
-	}while(0);
+	} while (0);
 #define SETTING_TRACE_BEGIN do {\
 		SECURE_LOGD("\033[0;35mENTER FUNCTION: %s. \033[0m\n", __FUNCTION__);\
-	}while(0);
+	} while (0);
 
 #define SETTING_TRACE_END  do {\
 		SECURE_LOGD("\033[0;35mEXIT FUNCTION: %s. \033[0m\n", __FUNCTION__);\
-	}while(0);
+	} while (0);
 #else
 #define SETTING_TRACE(fmt, arg...) \
 	do {\
 		printf("\n[SETTING]\033[0;36m" fmt "\033[0m\t%s:%d\n", \
-		       ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
-	}while(0);
+			   ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+	} while (0);
 
 #define SETTING_TRACE_SECURE_DEBUG(fmt, arg...) \
 	do {\
 		printf("\n[SETTING]\033[0;32mDEBUG: " fmt "\033[0m\t%s:%d\n", \
-		       ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
-	}while(0);
+			   ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+	} while (0);
 
 
 #define SETTING_TRACE_DEBUG(fmt, arg...) \
 	do {\
 		printf("\n[SETTING]\033[0;32mDEBUG: " fmt "\033[0m\t%s:%d\n", \
-		       ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
-	}while(0);
+			   ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+	} while (0);
 
 #define SETTING_TRACE_WARNING(fmt, arg...) \
 	do {\
 		{\
-			printf("[SETTING]\033[0;33mWARRING: " fmt "\033[0m\t%s:%d\n", ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);}\
-	}while(0);
+			printf("[SETTING]\033[0;33mWARRING: " fmt "\033[0m\t%s:%d\n", ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__); } \
+	} while (0);
 
 #define SETTING_TRACE_ERROR(fmt, arg...) \
 	do {\
-		{fprintf(stderr, "[SETTING]\033[0;31mERROR: " fmt "\033[0m\t%s:%d\n", ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__);}\
-	}while(0);
+		{fprintf(stderr, "[SETTING]\033[0;31mERROR: " fmt "\033[0m\t%s:%d\n", ##arg, (char*)(strrchr(__FILE__, '/')+1), __LINE__); } \
+	} while (0);
 
 #define SETTING_TRACE_BEGIN do {\
 		{\
 			printf("\n[SETTING]\033[0;35mENTER FUNCTION: %s. \033[0m\t%s:%d\n", \
-			       __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
-		}\
-	}while(0);
+				   __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+		} \
+	} while (0);
 
 #define SETTING_TRACE_END  do {\
 		{\
 			printf("\n[SETTING]\033[0;35mEXIT FUNCTION: %s. \033[0m\t%s:%d\n", \
-			       __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
-		}\
-	}while(0);
+				   __FUNCTION__, (char*)(strrchr(__FILE__, '/')+1), __LINE__);\
+		} \
+	} while (0);
 #endif
 #else
 #define SETTING_TRACE(fmt, arg...)
@@ -194,14 +191,14 @@
 #endif
 
 #define setting_retvm_if(expr, val, fmt, arg...) do { \
-		if(expr) { \
+		if (expr) { \
 			SETTING_TRACE_ERROR(fmt, ##arg); \
 			return (val); \
 		} \
 	} while (0);
 
 #define setting_retm_if(expr, fmt, arg...) do { \
-		if(expr) { \
+		 if (expr) { \
 			SETTING_TRACE_ERROR(fmt, ##arg); \
 			return; \
 		} \
@@ -216,7 +213,7 @@
 
 #ifndef retv_if
 #define retv_if(expr, val) do { \
-		if(expr) { \
+		 if (expr) { \
 			SETTING_TRACE_ERROR("(%s)", #expr); \
 			return (val); \
 		} \
@@ -225,7 +222,7 @@
 
 #ifndef ret_if
 #define ret_if(expr) do { \
-		if(expr) { \
+		 if (expr) { \
 			SETTING_TRACE_ERROR("(%s)", #expr); \
 			return ; \
 		} \
@@ -242,7 +239,7 @@
 
 
 #define __FREE(del, arg) do { \
-		if(arg) { \
+		if (arg) { \
 			del((void *)(arg)); /*cast any argument to (void*) to avoid build warring*/\
 			arg = NULL; \
 		} \
@@ -257,17 +254,15 @@
 /*to a same block memory(here is genlis item data via calloc), must use __BACK_POINTER_SET to */
 /*bind the Setting side point into the Genlist side pointer */
 #define __BACK_POINTER_SET(pData) do { \
-		if (pData)\
-		{\
+		if (pData) { \
 			pData->pBack = (void **)(&(pData));\
-		}\
+		} \
 	} while (0);
 
 #define __BACK_POINTER_UNSET(pData) do { \
-		if (pData && pData->pBack)/*release Setting side poniter handlers*/\
-		{\
+		if (pData && pData->pBack)/*release Setting side poniter handlers*/	{ \
 			*(pData->pBack) = NULL;\
-		}\
+		} \
 	} while (0);
 
 #define UNUSED __attribute__((unused))

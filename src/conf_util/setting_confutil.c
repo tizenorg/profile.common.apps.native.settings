@@ -3,9 +3,9 @@
  *
  *
  *
-	$ setting_confutil 				// create a cfg file in default
+	$ setting_confutil				// create a cfg file in default
 	$ setting_confutil export		// export current status to a xml file
-	$ setting_confutil timezone_init 	// timezone init
+	$ setting_confutil timezone_init	// timezone init
  */
 #include <stdio.h>
 
@@ -28,15 +28,15 @@ static char *get_timezone();
 static void get_gmt_offset(char *str_buf, int size)
 {
 	/* timezone string +/-<n> ex. +9, -1 */
-	time_t t = time(0); 	/* get unix time. sec. */
+	time_t t = time(0);		/* get unix time. sec. */
 
-	struct tm *pdata,data;
+	struct tm *pdata, data;
 	pdata = localtime_r(&t, &data);		/* save time as structure. */
 	setting_retm_if(!pdata, "data is NULL");
 	pdata->tm_isdst = 0;			/* summer time, not applied. */
 	time_t a = mktime(pdata);
 
-	pdata = gmtime_r(&a,&data);
+	pdata = gmtime_r(&a, &data);
 	setting_retm_if(!pdata, "data is NULL");
 	pdata->tm_isdst = 0;			/* summer time, not applied. */
 	time_t b = mktime(pdata);

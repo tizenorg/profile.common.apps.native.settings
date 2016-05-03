@@ -32,30 +32,30 @@
 
 #define _S(s)	dgettext("sys_string", s)
 
-#define SAFE_STRDUP(src) (src)?strdup(src):NULL
+#define SAFE_STRDUP(src) (src) ? strdup(src) : NULL
 
 #define FREEandSTRDUP(dest, src) \
-	do{ \
-		if (dest) { free(dest); dest=NULL; }\
+	do { \
+		if (dest) { free(dest); dest = NULL; } \
 		if (src || *src) dest = strdup(src); \
-	}while(false)
+	} while (false)
 
 enum {
-    APPMGRUG_TAB_NONE,
-    APPMGRUG_TAB_DOWNLOAD,
-    APPMGRUG_TAB_RUNNING,
-    APPMGRUG_TAB_ALL,
-    APPMGRUG_TAB_DISABLED,
-    APPMGRUG_TAB_MAX
+	APPMGRUG_TAB_NONE,
+	APPMGRUG_TAB_DOWNLOAD,
+	APPMGRUG_TAB_RUNNING,
+	APPMGRUG_TAB_ALL,
+	APPMGRUG_TAB_DISABLED,
+	APPMGRUG_TAB_MAX
 };
 
 enum {
-    APPMGRUG_PKG_REQUEST_NONE,
-    APPMGRUG_PKG_REQUEST_UNINSTALL,
-    APPMGRUG_PKG_REQUEST_MOVE,
-    APPMGRUG_PKG_REQUEST_DISABLE,
-    APPMGRUG_PKG_REQUEST_ENABLE,
-    APPMGRUG_PKG_REQUEST_RESET
+	APPMGRUG_PKG_REQUEST_NONE,
+	APPMGRUG_PKG_REQUEST_UNINSTALL,
+	APPMGRUG_PKG_REQUEST_MOVE,
+	APPMGRUG_PKG_REQUEST_DISABLE,
+	APPMGRUG_PKG_REQUEST_ENABLE,
+	APPMGRUG_PKG_REQUEST_RESET
 };
 
 typedef struct _appmgr_pkginfo {
@@ -179,7 +179,6 @@ typedef struct _SettingAppMgrUG {
 
 	Elm_Genlist_Item_Class itc_main;
 	Elm_Genlist_Item_Class info_itc;
-	Elm_Genlist_Item_Class itc_sep;
 	Elm_Genlist_Item_Class itc_1txt_1ic_2;
 	Elm_Genlist_Item_Class itc_1txt;
 	Elm_Genlist_Item_Class itc_priv;
@@ -203,7 +202,7 @@ typedef struct _SettingAppMgrUG {
 		gettimeofday(&tv, NULL); \
 		double now = tv.tv_sec * 1000 + (double)tv.tv_usec/1000; \
 		SETTING_TRACE_DEBUG(fmt" time = %f ms", ##arg, now); \
-	}while(0)
+	} while (0)
 
 
 extern setting_view setting_view_appmgr_pkginfo;

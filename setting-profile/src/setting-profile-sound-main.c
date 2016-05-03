@@ -64,13 +64,13 @@ setting_view setting_view_sound_main = {
 #define ADD_SOUND_SLIDER(item_data, genlist, item_style, l_img, r_img, value, keystr, data, sld_cb, sld_max, start_cb, stop_cb) \
 	{ \
 		item_data = setting_create_Gendial_field_def(genlist, &(item_style), NULL,\
-		                                             NULL, \
-		                                             SWALLOW_Type_LAYOUT_SLIDER,\
-		                                             l_img, r_img,\
-		                                             value,\
-		                                             keystr,\
-		                                             NULL,\
-		                                             sld_cb);\
+													 NULL, \
+													 SWALLOW_Type_LAYOUT_SLIDER,\
+													 l_img, r_img,\
+													 value,\
+													 keystr,\
+													 NULL,\
+													 sld_cb);\
 		if (item_data) {\
 			item_data->win_main = data->win_main_layout;\
 			item_data->evas = data->evas;\
@@ -136,12 +136,12 @@ static void __noti_slider_change_cb(void *data, Evas_Object *obj, void *event_in
 	/*
 	 * S5 concept:
 	 * On the volume popup,
-	 *  1) if user controls the slider, don't play any sounds£¬just change volume.
-	 *  2) if user controls the HW volume key for ringtone sound, the beep sound is supported
+	 *	1) if user controls the slider, don't play any sounds£¬just change volume.
+	 *	2) if user controls the HW volume key for ringtone sound, the beep sound is supported
 
 	 * On Setting > Sound
-	 *  1) if user controls the slider, change volume & play sound
-	 *  2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
+	 *	1) if user controls the slider, change volume & play sound
+	 *	2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
 	*/
 	if (0 == safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
 		return;
@@ -159,8 +159,8 @@ static void __noti_slider_change_cb(void *data, Evas_Object *obj, void *event_in
 				}
 			}
 			setting_sound_play_sound_origin(&(ad->mp_noti), ad, NULL,
-			                                pa_tone_path, (float)list_item->chk_status,
-			                                sound_type);
+											pa_tone_path, (float)list_item->chk_status,
+											sound_type);
 			FREE(pa_tone_path);
 		}
 	} else {
@@ -203,12 +203,12 @@ static void __media_slider_change_cb(void *data, Evas_Object *obj, void *event_i
 	/*
 	 * S5 concept:
 	 * On the volume popup,
-	 *  1) if user controls the slider, don't play any sounds£¬just change volume.
-	 *  2) if user controls the HW volume key for ringtone sound, the beep sound is supported
+	 *	1) if user controls the slider, don't play any sounds£¬just change volume.
+	 *	2) if user controls the HW volume key for ringtone sound, the beep sound is supported
 
 	 * On Setting > Sound
-	 *  1) if user controls the slider, change volume & play sound
-	 *  2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
+	 *	1) if user controls the slider, change volume & play sound
+	 *	2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
 	*/
 	if (0 == safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
 		return;
@@ -226,9 +226,9 @@ static void __media_slider_change_cb(void *data, Evas_Object *obj, void *event_i
 			sound_type_e type;
 			sound_manager_get_current_sound_type(&type);
 			setting_sound_play_sound_origin(&(ad->mp_media), ad, NULL,
-			                                pa_tone_path,
-			                                (float)list_item->chk_status,
-			                                sound_type);
+											pa_tone_path,
+											(float)list_item->chk_status,
+											sound_type);
 			FREE(pa_tone_path);
 		}
 	} else {
@@ -264,12 +264,12 @@ static void __sys_slider_change_cb(void *data, Evas_Object *obj, void *event_inf
 		/*
 		 * S5 concept:
 		 * On the volume popup,
-		 *  1) if user controls the slider, don't play any sounds£¬just change volume.
-		 *  2) if user controls the HW volume key for ringtone sound, the beep sound is supported
+		 *	1) if user controls the slider, don't play any sounds£¬just change volume.
+		 *	2) if user controls the HW volume key for ringtone sound, the beep sound is supported
 
 		 * On Setting > Sound
-		 *  1) if user controls the slider, change volume & play sound
-		 *  2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
+		 *	1) if user controls the slider, change volume & play sound
+		 *	2) if user controls the HW volume key, do nothing(DO NOT change volume,DO NoT play sound)
 		*/
 		if (0 != safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
 			/*Play Tap Sound,then stop at once */
@@ -318,21 +318,21 @@ static void __get_lite_main_list(void *data)
 	elm_genlist_homogeneous_set(genlist, 1);
 
 	if (vconf_get_bool(VCONFKEY_SETAPPL_SOUND_STATUS_BOOL, &sound_value) < 0)
-		sound_value = TRUE;	/*  default value of sound : on */
+		sound_value = TRUE;	/*	default value of sound : on */
 
 	Elm_Genlist_Item_Class *itc_slider = NULL;
 
 
-	//----------------------------------------------------------------------------
-	//----------------------------------------------------------------------------
-	//----------------------------------------------------------------------------
+	/*---------------------------------------------------------------------------- */
+	/*---------------------------------------------------------------------------- */
+	/*---------------------------------------------------------------------------- */
 	itc_slider = &(ad->itc_layout_1icon);
 
 	if (0 == safeStrCmp(ad->viewtype, VOLUME_APP_NAME))
 		itc_slider = &(ad->itc_layout);
-	//----------------------------------------------------------------------------
-	//----------------------------------------------------------------------------
-	//----------------------------------------------------------------------------
+	/*---------------------------------------------------------------------------- */
+	/*---------------------------------------------------------------------------- */
+	/*---------------------------------------------------------------------------- */
 
 	/* 1. Notification alert */
 	if (0 != safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
@@ -345,12 +345,12 @@ static void __get_lite_main_list(void *data)
 		}
 		sub_desc = setting_media_basename(pa_ringtone);
 		ad->data_msg_alert_tone =
-		    setting_create_Gendial_field_def(genlist, &itc_2text_2,
-		                                     setting_sound_main_mouse_up_Gendial_list_cb,
-		                                     ad, SWALLOW_Type_INVALID, NULL,
-		                                     NULL, 0,
-		                                     "IDS_ST_BODY_NOTIFICATION"/*SETTING_SOUND_TEXT_MSG_ALERT*/,
-		                                     sub_desc, NULL);
+			setting_create_Gendial_field_def(genlist, &itc_2text_2,
+											 setting_sound_main_mouse_up_Gendial_list_cb,
+											 ad, SWALLOW_Type_INVALID, NULL,
+											 NULL, 0,
+											 "IDS_ST_BODY_NOTIFICATION"/*SETTING_SOUND_TEXT_MSG_ALERT*/,
+											 sub_desc, NULL);
 		if (ad->data_msg_alert_tone) {
 			__BACK_POINTER_SET(ad->data_msg_alert_tone);
 			ad->data_msg_alert_tone->userdata = ad;
@@ -367,12 +367,12 @@ static void __get_lite_main_list(void *data)
 
 	left_icon = setting_sound_get_slider_icon(SND_SLIDER_NOTI, mm_value);
 	ADD_SOUND_SLIDER(ad->data_noti_volume, genlist,
-	                 (*itc_slider),
-	                 left_icon, NULL,
-	                 mm_value, "IDS_ST_BODY_NOTIFICATION", ad,
-	                 __noti_slider_change_cb,
-	                 SETTING_SOUND_VOL_MAX,
-	                 __start_change_cb, __stop_change_cb);
+					 (*itc_slider),
+					 left_icon, NULL,
+					 mm_value, "IDS_ST_BODY_NOTIFICATION", ad,
+					 __noti_slider_change_cb,
+					 SETTING_SOUND_VOL_MAX,
+					 __start_change_cb, __stop_change_cb);
 	__BACK_POINTER_SET(ad->data_noti_volume);
 
 	/* 3. media volume */
@@ -381,11 +381,11 @@ static void __get_lite_main_list(void *data)
 
 	left_icon = setting_sound_get_slider_icon(SND_SLIDER_MEDIA, mm_value);
 	ADD_SOUND_SLIDER(ad->data_media_volume, genlist, ad->itc_layout,
-	                 left_icon, NULL/*IMG_SLIDER_BTN_VOLUME02*/,
-	                 mm_value, "IDS_ST_BODY_MEDIA", ad,
-	                 __media_slider_change_cb,
-	                 SETTING_SOUND_VOL_MAX,
-	                 __start_change_cb, __stop_change_cb);
+					 left_icon, NULL/*IMG_SLIDER_BTN_VOLUME02*/,
+					 mm_value, "IDS_ST_BODY_MEDIA", ad,
+					 __media_slider_change_cb,
+					 SETTING_SOUND_VOL_MAX,
+					 __start_change_cb, __stop_change_cb);
 
 	__BACK_POINTER_SET(ad->data_media_volume);
 
@@ -399,11 +399,11 @@ static void __get_lite_main_list(void *data)
 
 	left_icon = setting_sound_get_slider_icon(SND_SLIDER_SYSTEM, mm_value);
 	ADD_SOUND_SLIDER(ad->data_touch_volume, genlist, ad->itc_layout,
-	                 left_icon, NULL/*IMG_SLIDER_BTN_SYSTEM_VOLUME*/,
-	                 mm_value, "IDS_ST_BODY_SYSTEM", ad,
-	                 __sys_slider_change_cb,
-	                 SETTING_SOUND_VOL_MAX,
-	                 __start_change_cb, __stop_change_cb);
+					 left_icon, NULL/*IMG_SLIDER_BTN_SYSTEM_VOLUME*/,
+					 mm_value, "IDS_ST_BODY_SYSTEM", ad,
+					 __sys_slider_change_cb,
+					 SETTING_SOUND_VOL_MAX,
+					 __start_change_cb, __stop_change_cb);
 
 	__BACK_POINTER_SET(ad->data_touch_volume);
 
@@ -412,11 +412,11 @@ static void __get_lite_main_list(void *data)
 		setting_create_Gendial_field_titleItem(genlist, &itc_group_item, _("IDS_ST_BODY_NOTIFICATIONS"), NULL);
 		/* 5. Notifications - App notifications */
 		setting_create_Gendial_field_def(genlist, &itc_2text_2,
-										setting_sound_main_mouse_up_Gendial_list_cb,
-										data, SWALLOW_Type_INVALID, NULL,
-										NULL, 0,
-										"IDS_ST_MBODY_APP_NOTIFICATIONS",
-										"IDS_ST_BODY_ALLOW_OR_BLOCK_NOTIFICATIONS_FROM_INDIVIDUAL_APPLICATIONS", NULL);
+										 setting_sound_main_mouse_up_Gendial_list_cb,
+										 data, SWALLOW_Type_INVALID, NULL,
+										 NULL, 0,
+										 "IDS_ST_MBODY_APP_NOTIFICATIONS",
+										 "IDS_ST_BODY_ALLOW_OR_BLOCK_NOTIFICATIONS_FROM_INDIVIDUAL_APPLICATIONS", NULL);
 
 		ad->gl_lite_main = genlist;
 
@@ -447,12 +447,12 @@ int vibration_state_reg_id;
 
 static Eina_Bool
 setting_soudn_main_click_softkey_back_cb(void *data, Evas_Object *obj,
-                                         void *event_info)
+										 void *event_info)
 {
 	SETTING_TRACE_BEGIN;
 	/* error check */
 	setting_retvm_if(data == NULL, EINA_FALSE,
-	                 "[Setting > Display] Data parameter is NULL");
+					 "[Setting > Display] Data parameter is NULL");
 
 	SettingProfileUG *ad = (SettingProfileUG *) data;
 
@@ -476,8 +476,8 @@ static int setting_sound_main_create(void *cb)
 	SETTING_TRACE("viewtype: %s", ad->viewtype);
 	if (!safeStrCmp(ad->viewtype, VOLUME_APP_NAME)) {
 		ad->ly_main = setting_create_popup_with_list(&ad->gl_lite_main, ad, ad->win_get,
-		                                             "IDS_ST_BODY_VOLUME", __volume_popup_del_cb,
-		                                             0 , false, false, 1, "IDS_ST_SK3_DONE");
+													 "IDS_ST_BODY_VOLUME", __volume_popup_del_cb,
+													 0 , false, false, 1, "IDS_ST_SK3_DONE");
 		__get_lite_main_list(ad);
 	} else {
 		ad->ly_main = setting_create_win_layout(ad->win_get);
@@ -488,21 +488,21 @@ static int setting_sound_main_create(void *cb)
 		__get_lite_main_list(ad);
 
 		Evas_Object *lbtn = setting_create_button(ad->navi_bar, _(NULL),
-		                                          NAVI_BACK_ARROW_BUTTON_STYLE,
-		                                          setting_soudn_main_click_softkey_back_cb, ad);
+												  NAVI_BACK_ARROW_BUTTON_STYLE,
+												  setting_soudn_main_click_softkey_back_cb, ad);
 
 
 		Elm_Object_Item *navi_it = elm_naviframe_item_push(ad->navi_bar, KeyStr_Sounds, lbtn, NULL, ad->gl_lite_main, NULL);
 		elm_naviframe_item_pop_cb_set(navi_it, (Elm_Naviframe_Item_Pop_Cb)setting_sound_main_click_softkey_cancel_cb, ad);
-		//elm_object_item_part_content_set(navi_it, "title_left_btn", lbtn);
+		/*elm_object_item_part_content_set(navi_it, "title_left_btn", lbtn); */
 		elm_object_item_domain_text_translatable_set(navi_it, SETTING_PACKAGE, EINA_TRUE);
 	}
 	setting_view_sound_main.is_create = TRUE;
 
 	/* eventsystem */
 	if (ES_R_OK != eventsystem_register_event(SYS_EVENT_VIBRATION_STATE,
-	                                          &vibration_state_reg_id,
-	                                          (eventsystem_handler)vibration_state_event_handler, cb)) {
+											  &vibration_state_reg_id,
+											  (eventsystem_handler)vibration_state_event_handler, cb)) {
 		SETTING_TRACE_ERROR("error");
 	}
 	SETTING_TRACE_END;
@@ -637,7 +637,7 @@ static void setting_sound_main_destroy_myfile_ug_cb(ui_gadget_h ug, void *priv)
 
 static void
 setting_sound_main_result_myfile_ug_cb(ui_gadget_h ug,
-                                       app_control_h result, void *priv)
+									   app_control_h result, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	ret_if(priv == NULL);
@@ -660,7 +660,7 @@ setting_sound_main_result_myfile_ug_cb(ui_gadget_h ug,
 		SETTING_TRACE("ringtone_file:%s", ringtone_file);
 
 		if (0 ==
-				safeStrCmp(ad->ringtone_type, "IDS_ST_BODY_NOTIFICATION")) {
+			safeStrCmp(ad->ringtone_type, "IDS_ST_BODY_NOTIFICATION")) {
 			if (vconf_set_str(VCONFKEY_SETAPPL_NOTI_MSG_RINGTONE_PATH_STR, ringtone_path) == 0) {
 				if (ad->data_msg_alert_tone) {
 					ad->data_msg_alert_tone->sub_desc = (char *)g_strdup(ringtone_file);
@@ -757,8 +757,8 @@ static void setting_sound_main_create_myfile_ug(SettingProfileUG *ad, char *titl
 
 static void
 setting_sound_main_mouse_up_Gendial_list_cb(void *data,
-                                            Evas_Object *obj,
-                                            void *event_info)
+											Evas_Object *obj,
+											void *event_info)
 {
 	/* error check */
 	ret_if(data == NULL);

@@ -39,13 +39,13 @@
 
 #define SETTING_DATA_DIR_PATH _TZ_SYS_RW_APP"/org.tizen.setting/data/"
 #define SETTING_CFG_JSON_FILE_PATH	SETTING_DATA_DIR_PATH"exported.json"
-#define EXPORT_FILE 		SETTING_DATA_DIR_PATH"setting_export.xml"
+#define EXPORT_FILE			SETTING_DATA_DIR_PATH"setting_export.xml"
 
 
 typedef enum {
-    eBOOL,
-    eINT,
-    eSTRING,
+	eBOOL,
+	eINT,
+	eSTRING,
 } vconftype;
 
 typedef union {
@@ -88,38 +88,38 @@ void export_default(VconfNode *node, void *root)
 		if (node->vconf_key == NULL) return; /* NO DOTHING IF null */
 		VconfNode result;
 		switch (node->type) {
-			case eBOOL:
-				SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.b);
-				/* call vconf_get */
+		case eBOOL:
+			SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.b);
+			/* call vconf_get */
 
-				get_vconf(*node, &result);
+			get_vconf(*node, &result);
 
-				val = "boolval";
-				type = "bool";
-				if (result.value.b)
-					val = "true";
-				else
-					val = "false";
+			val = "boolval";
+			type = "bool";
+			if (result.value.b)
+				val = "true";
+			else
+				val = "false";
 
-				break;
-			case eINT:
-				SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.i);
-				/* call vconf_get */
-				get_vconf(*node, &result);
-				type = "int";
+			break;
+		case eINT:
+			SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.i);
+			/* call vconf_get */
+			get_vconf(*node, &result);
+			type = "int";
 
-				SETTING_TRACE(">>(%d)<<", result.value.i);
-				snprintf(arr,1024, "%d", result.value.i);
-				/*node->value.i */
-				val = arr;
-				break;
-			case eSTRING:
-				SETTING_TRACE("EXPORTING key : %s : %d : %s", node->vconf_key, node->type, node->value.c);
-				/* call vconf_get */
-				get_vconf(*node, &result);
-				val = result.value.c;
-				type = "string";
-				break;
+			SETTING_TRACE(">>(%d)<<", result.value.i);
+			snprintf(arr, 1024, "%d", result.value.i);
+			/*node->value.i */
+			val = arr;
+			break;
+		case eSTRING:
+			SETTING_TRACE("EXPORTING key : %s : %d : %s", node->vconf_key, node->type, node->value.c);
+			/* call vconf_get */
+			get_vconf(*node, &result);
+			val = result.value.c;
+			type = "string";
+			break;
 		}
 
 		xmlNodePtr xmlnode = xmlNewChild(*root_node, NULL, BAD_CAST "config", BAD_CAST val);
@@ -145,38 +145,38 @@ void export_json(VconfNode *node, void *root)
 		if (node->vconf_key == NULL) return; /* NO DOTHING IF null */
 		VconfNode result;
 		switch (node->type) {
-			case eBOOL:
-				SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.b);
-				/* call vconf_get */
+		case eBOOL:
+			SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.b);
+			/* call vconf_get */
 
-				get_vconf(*node, &result);
+			get_vconf(*node, &result);
 
-				val = "boolval";
-				/*type = "bool"; */
-				if (result.value.b)
-					val = "true";
-				else
-					val = "false";
+			val = "boolval";
+			/*type = "bool"; */
+			if (result.value.b)
+				val = "true";
+			else
+				val = "false";
 
-				break;
-			case eINT:
-				SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.i);
-				/* call vconf_get */
-				get_vconf(*node, &result);
-				/*type = "int"; */
+			break;
+		case eINT:
+			SETTING_TRACE("EXPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value.i);
+			/* call vconf_get */
+			get_vconf(*node, &result);
+			/*type = "int"; */
 
-				SETTING_TRACE(">>(%d)<<", result.value.i);
-				snprintf(arr,1024, "%d", result.value.i);
-				/*node->value.i */
-				val = arr;
-				break;
-			case eSTRING:
-				SETTING_TRACE("EXPORTING key : %s : %d : %s", node->vconf_key, node->type, node->value.c);
-				/* call vconf_get */
-				get_vconf(*node, &result);
-				val = result.value.c;
-				/*type = "string"; */
-				break;
+			SETTING_TRACE(">>(%d)<<", result.value.i);
+			snprintf(arr, 1024, "%d", result.value.i);
+			/*node->value.i */
+			val = arr;
+			break;
+		case eSTRING:
+			SETTING_TRACE("EXPORTING key : %s : %d : %s", node->vconf_key, node->type, node->value.c);
+			/* call vconf_get */
+			get_vconf(*node, &result);
+			val = result.value.c;
+			/*type = "string"; */
+			break;
 		}
 
 		JsonNode *item = json_node_new(JSON_NODE_OBJECT);
@@ -197,15 +197,15 @@ void import_default(VconfNode *node, void *data)
 	/*xmlNodePtr* root_node =(xmlNodePtr*)data; */
 
 	switch (node->type) {
-		case eBOOL:
-			SETTING_TRACE("IMPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value);
-			break;
-		case eINT:
-			SETTING_TRACE("IMPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value);
-			break;
-		case eSTRING:
-			SETTING_TRACE("IMPORTING key : %s : %d : %s", node->vconf_key, node->type, node->value);
-			break;
+	case eBOOL:
+		SETTING_TRACE("IMPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value);
+		break;
+	case eINT:
+		SETTING_TRACE("IMPORTING key : %s : %d : %d", node->vconf_key, node->type, node->value);
+		break;
+	case eSTRING:
+		SETTING_TRACE("IMPORTING key : %s : %d : %s", node->vconf_key, node->type, node->value);
+		break;
 	}
 }
 
@@ -380,9 +380,9 @@ void __foreach_attr(JsonObject *object, const gchar *public_key, JsonNode *membe
 		/*SETTING_TRACE(" >> public_key : %s",public_key ); */
 
 		if (g_sortedarr[i].public_groupkey &&
-		    safeStrCmp(g_sortedarr[i].public_groupkey, public_groupname) == 0 &&
-		    g_sortedarr[i].public_key &&
-		    safeStrCmp(g_sortedarr[i].public_key, public_key) == 0) {
+			safeStrCmp(g_sortedarr[i].public_groupkey, public_groupname) == 0 &&
+			g_sortedarr[i].public_key &&
+			safeStrCmp(g_sortedarr[i].public_key, public_key) == 0) {
 			ncount += 1;
 			SETTING_TRACE(" FOUND ---> group name %s : public key %s --- vconf key (%s) - type (%d) -- strval : [%s] ", g_sortedarr[i].public_groupkey, g_sortedarr[i].public_key, g_sortedarr[i].vconf_key, g_sortedarr[i].type, retstr);
 
@@ -390,31 +390,31 @@ void __foreach_attr(JsonObject *object, const gchar *public_key, JsonNode *membe
 			/* retstr */
 			VconfNode result;
 			switch (g_sortedarr[i].type) {
-				case eBOOL:
-					/* "true"  --> 1  "false" --> 0 */
-					if (retstr && safeStrCmp(retstr, "true") == 0) {
-						g_sortedarr[i].value.b = 1;
-					}	else if (retstr && safeStrCmp(retstr, "false") == 0) {
-						g_sortedarr[i].value.b = 0;
-					}
-					break;
+			case eBOOL:
+				/* "true"  --> 1  "false" --> 0 */
+				if (retstr && safeStrCmp(retstr, "true") == 0) {
+					g_sortedarr[i].value.b = 1;
+				}	else if (retstr && safeStrCmp(retstr, "false") == 0) {
+					g_sortedarr[i].value.b = 0;
+				}
+				break;
 
-				case eINT: {
-						int num = -1;
-						/* "111" --> 1111 */
-						if (retstr)
-							num = atoi(retstr);
-						g_sortedarr[i].value.i = num;
-					}
-					break;
-
-				case eSTRING:
-					/* "hello world"  --> "hello world" */
+			case eINT: {
+					int num = -1;
+					/* "111" --> 1111 */
 					if (retstr)
-						g_sortedarr[i].value.c = retstr;
-					else
-						g_sortedarr[i].value.c = "";	/* error handler */
-					break;
+						num = atoi(retstr);
+					g_sortedarr[i].value.i = num;
+				}
+				break;
+
+			case eSTRING:
+				/* "hello world"  --> "hello world" */
+				if (retstr)
+					g_sortedarr[i].value.c = retstr;
+				else
+					g_sortedarr[i].value.c = "";	/* error handler */
+				break;
 
 			}
 
@@ -492,7 +492,7 @@ void setting_import_json(status_handler_fp fp, void *data)
 	if (json_object_has_member(obj1, "value")) {
 		JsonNode *node = json_object_get_member(obj1, "value");
 		JsonObject *object2 = json_node_get_object(node);
-		json_object_foreach_member(object2, __func_cb, NULL); 	/* with g_sortedarr */
+		json_object_foreach_member(object2, __func_cb, NULL);	/* with g_sortedarr */
 	}
 	g_object_unref(parser);
 
@@ -560,26 +560,26 @@ char *setting_export_json(status_handler_fp fp, void *data)
 			char arr[1024];
 			VconfNode result;
 			switch (arr3[i].type) {
-				case eBOOL:
-					get_vconf(arr3[i], &result);
-					if (result.value.b)
-						val = "true";
-					else
-						val = "false";
-					break;
-				case eINT:
-					get_vconf(arr3[i], &result);
-					snprintf(arr, 1024, "%d", result.value.i);
-					val = arr;
-					/*if (val == NULL) val = "-100"; */
-					break;
-				case eSTRING:
-					get_vconf(arr3[i], &result);
-					val = result.value.c;
-					if (val == NULL) val = "";
-					break;
-				default:
-					val = "error";
+			case eBOOL:
+				get_vconf(arr3[i], &result);
+				if (result.value.b)
+					val = "true";
+				else
+					val = "false";
+				break;
+			case eINT:
+				get_vconf(arr3[i], &result);
+				snprintf(arr, 1024, "%d", result.value.i);
+				val = arr;
+				/*if (val == NULL) val = "-100"; */
+				break;
+			case eSTRING:
+				get_vconf(arr3[i], &result);
+				val = result.value.c;
+				if (val == NULL) val = "";
+				break;
+			default:
+				val = "error";
 			}
 
 			json_object_set_string_member(obj, arr3[i].public_key, val);
@@ -594,7 +594,7 @@ char *setting_export_json(status_handler_fp fp, void *data)
 	gsize len;
 	char *buf = (char *)json_generator_to_data(generator, &len);
 
-	g_object_set(generator, "pretty", TRUE, NULL);   /*write file in indent format */
+	g_object_set(generator, "pretty", TRUE, NULL);	 /*write file in indent format */
 	gboolean ret = json_generator_to_file(generator, SETTING_CFG_JSON_FILE_PATH, &error);
 	g_object_unref(generator);
 
@@ -617,31 +617,31 @@ int set_vconf(VconfNode node, VconfNode *result)
 	/*node.vconf_key */
 	*result = node;
 	switch (node.type) {
-		case eBOOL:
-			/*SETTING_TRACE("begin case eBOOL[%s=\"%d\"]", node.vconf_key, node.value.b); */
-			ret = vconf_set_bool(node.vconf_key, node.value.b);
-			result->type = eBOOL;
-			result->value.b = node.value.b;
-			break;
-		case eINT:
-			/*SETTING_TRACE("begin case eINT[%s=\"%d\"]", node.vconf_key, node.value.i); */
-			ret = vconf_set_int(node.vconf_key, node.value.i);
-			result->type = eINT;
-			result->value.i = node.value.i;
-			break;
-		case eSTRING:
-			if (node.key == STR_SLP_LIST_PHONE_PASSWORD) {
-				ret = setting_store_init_password(node.value.c);
-			} else {
-				/*SETTING_TRACE("begin case eSTRING[%s=\"%s\"]", node.vconf_key, node.value.c); */
-				ret = vconf_set_str(node.vconf_key, node.value.c);
-			}
-			result->type = eSTRING;
-			result->value.c = node.value.c;
-			break;
-		default:
-			SETTING_TRACE_ERROR(">>>>>>>>>> node.type is NOT DEFINED");
-			break;
+	case eBOOL:
+		/*SETTING_TRACE("begin case eBOOL[%s=\"%d\"]", node.vconf_key, node.value.b); */
+		ret = vconf_set_bool(node.vconf_key, node.value.b);
+		result->type = eBOOL;
+		result->value.b = node.value.b;
+		break;
+	case eINT:
+		/*SETTING_TRACE("begin case eINT[%s=\"%d\"]", node.vconf_key, node.value.i); */
+		ret = vconf_set_int(node.vconf_key, node.value.i);
+		result->type = eINT;
+		result->value.i = node.value.i;
+		break;
+	case eSTRING:
+		if (node.key == STR_SLP_LIST_PHONE_PASSWORD) {
+			ret = setting_store_init_password(node.value.c);
+		} else {
+			/*SETTING_TRACE("begin case eSTRING[%s=\"%s\"]", node.vconf_key, node.value.c); */
+			ret = vconf_set_str(node.vconf_key, node.value.c);
+		}
+		result->type = eSTRING;
+		result->value.c = node.value.c;
+		break;
+	default:
+		SETTING_TRACE_ERROR(">>>>>>>>>> node.type is NOT DEFINED");
+		break;
 	}
 
 	if (0 != ret) {
@@ -663,48 +663,48 @@ int get_vconf(VconfNode node, VconfNode *result)
 	*result = node;
 
 	switch (node.type) {
-		case eBOOL:
-			ret = vconf_get_bool(node.vconf_key, (int *)(&(node.value.b)));
-			result->type = eBOOL;
-			result->value.b = node.value.b;
-			break;
-		case eINT:
-			ret = vconf_get_int(node.vconf_key, &(node.value.i));
-			result->type = eINT;
-			result->value.i = node.value.i;
-			break;
-		case eSTRING:
-			if (node.key == STR_SLP_LIST_PHONE_PASSWORD) {
-				node.value.c = (char *)malloc(sizeof(char)*SHA256_DIGEST_LENGTH);
-				if (node.value.c) {
-					memset(node.value.c, 0x0, SHA256_DIGEST_LENGTH);
-				} else {
-					SETTING_TRACE_ERROR(" malloc filed : eSTRING, node.value.c ");
-					ret = SETTING_RETURN_FAIL;
-					goto endtag;
-				}
-
-				if (setting_read_password(md_result) == 0) {
-					safeCopyStr(node.value.c, md_result, SHA256_DIGEST_LENGTH); /*  un-safe */
-
-					result->type = eSTRING;
-					result->value.c = node.value.c;
-					ret = SETTING_RETURN_SUCCESS;
-				} else {
-					/*do nothing */
-					ret = SETTING_RETURN_FAIL;
-					goto endtag;
-				}
+	case eBOOL:
+		ret = vconf_get_bool(node.vconf_key, (int *)(&(node.value.b)));
+		result->type = eBOOL;
+		result->value.b = node.value.b;
+		break;
+	case eINT:
+		ret = vconf_get_int(node.vconf_key, &(node.value.i));
+		result->type = eINT;
+		result->value.i = node.value.i;
+		break;
+	case eSTRING:
+		if (node.key == STR_SLP_LIST_PHONE_PASSWORD) {
+			node.value.c = (char *)malloc(sizeof(char)*SHA256_DIGEST_LENGTH);
+			if (node.value.c) {
+				memset(node.value.c, 0x0, SHA256_DIGEST_LENGTH);
 			} else {
-				node.value.c = vconf_get_str(node.vconf_key);
-				SETTING_TRACE("string type ---> %s ", node.value.c);
+				SETTING_TRACE_ERROR(" malloc filed : eSTRING, node.value.c ");
+				ret = SETTING_RETURN_FAIL;
+				goto endtag;
+			}
+
+			if (setting_read_password(md_result) == 0) {
+				safeCopyStr(node.value.c, md_result, SHA256_DIGEST_LENGTH); /*	un-safe */
+
 				result->type = eSTRING;
 				result->value.c = node.value.c;
 				ret = SETTING_RETURN_SUCCESS;
+			} else {
+				/*do nothing */
+				ret = SETTING_RETURN_FAIL;
+				goto endtag;
 			}
-			break;
-		default:
-			SETTING_TRACE_ERROR(">>>>>>>>>>>>>>>>>>>>>>> get vconf ERROR : %s ", node.vconf_key);
+		} else {
+			node.value.c = vconf_get_str(node.vconf_key);
+			SETTING_TRACE("string type ---> %s ", node.value.c);
+			result->type = eSTRING;
+			result->value.c = node.value.c;
+			ret = SETTING_RETURN_SUCCESS;
+		}
+		break;
+	default:
+		SETTING_TRACE_ERROR(">>>>>>>>>>>>>>>>>>>>>>> get vconf ERROR : %s ", node.vconf_key);
 	}
 endtag:
 	return ret;
@@ -770,7 +770,7 @@ int setting_set_int_slp_key(setting_int_slp_list key, int value, int *err)
 	return ret;
 }
 
-/* return -1: fail  cannot use err to check the result, return value instead*/
+/* return -1: fail	cannot use err to check the result, return value instead*/
 EXPORT_PUBLIC
 int setting_get_int_slp_key(setting_int_slp_list key, int *value, int *err)
 {
@@ -842,22 +842,22 @@ int setting_set_string_slp_key(setting_str_slp_list key, char *value, int *err)
 
 /** @todo don't use i18n string directly. */
 static const setting_lang_entry lang_table[] = {
-	{  	"auto", 		"Automatic"},
-	{ 	"ko_KR.UTF-8", 	"한국어"},
-	{ 	"en_US.UTF-8", 	"English"},
-	{  	"zh_CN.UTF-8", 	"简体中文"},
-	{ 	"zh_HK.UTF-8", 	"繁體中文(香港)"},
-	{  	"zh_TW.UTF-8",	"繁體中文(台灣)"},
-	{  	"de_DE.UTF-8",	"Deutsch"},
-	{  	"nl_NL.UTF-8",	"Nederlands"},
-	{  	"es_ES.UTF-8",	"Español"},
-	{  	"pt_PT.UTF-8",	"Português"},
-	{  	"el_GR.UTF-8", 	"Eλληνικά"},
-	{  	"it_IT.UTF-8", 	"Italiano"},
-	{  	"fr_FR.UTF-8", 	"Français"},
-	{  	"tr_TR.UTF-8",	"Türkçe"},
-	{  	"ja_JP.UTF-8", 	"にほんご"},
-	{ 	"ru_RU.UTF-8",	"Россию"},
+	{	"auto",			"Automatic"},
+	{	"ko_KR.UTF-8",	"한국어"},
+	{	"en_US.UTF-8",	"English"},
+	{	"zh_CN.UTF-8",	"简体中文"},
+	{	"zh_HK.UTF-8",	"繁體中文(香港)"},
+	{	"zh_TW.UTF-8",	"繁體中文(台灣)"},
+	{	"de_DE.UTF-8",	"Deutsch"},
+	{	"nl_NL.UTF-8",	"Nederlands"},
+	{	"es_ES.UTF-8",	"Español"},
+	{	"pt_PT.UTF-8",	"Português"},
+	{	"el_GR.UTF-8",	"Eλληνικά"},
+	{	"it_IT.UTF-8",	"Italiano"},
+	{	"fr_FR.UTF-8",	"Français"},
+	{	"tr_TR.UTF-8",	"Türkçe"},
+	{	"ja_JP.UTF-8",	"にほんご"},
+	{	"ru_RU.UTF-8",	"Россию"},
 };
 
 setting_lang_entry *setting_get_language_table()
@@ -923,7 +923,7 @@ int _langlist_destroy()
 		}
 		li = eina_list_next(li);
 	}
-	s_langlist = eina_list_free(s_langlist); 		/* returns NULL */
+	s_langlist = eina_list_free(s_langlist);		/* returns NULL */
 
 	return 0;
 }
@@ -956,7 +956,7 @@ static void _parseLangListXML(char *docname)
 
 	/*SETTING_TRACE("ROOT NODE : %s ", cur->name); */
 	/* make sure root node is "settings" */
-	if (xmlStrcmp(cur->name, (const xmlChar*) "langlist")) {
+	if (xmlStrcmp(cur->name, (const xmlChar *) "langlist")) {
 		SETTING_TRACE("document of the wrong type, root node != settings");
 		xmlFreeDoc(doc);
 		return;
@@ -987,10 +987,10 @@ static void __tree_walk_langlist(xmlNodePtr cur)
 		if (cur_node->type == XML_ELEMENT_NODE) {
 
 			/*SETTING_TRACE(" name=%s title=%s \n", xmlGetProp(cur_node, (const xmlChar *)"id"), xmlGetProp(cur_node, (const xmlChar *)"string")); */
-			id = (char *)g_strdup((char *)xmlGetProp(cur_node, (const xmlChar*)"id"));
-			string = (char *)g_strdup((char *) xmlGetProp(cur_node, (const xmlChar*)"string"));
+			id = (char *)g_strdup((char *)xmlGetProp(cur_node, (const xmlChar *)"id"));
+			string = (char *)g_strdup((char *) xmlGetProp(cur_node, (const xmlChar *)"string"));
 			/*SETTING_TRACE_DEBUG("lang: %s", xmlGetProp(cur_node, (const xmlChar *)"lang")); */
-			mcc = (char *)g_strdup((char *) xmlGetProp(cur_node, (const xmlChar*)"mcc"));
+			mcc = (char *)g_strdup((char *) xmlGetProp(cur_node, (const xmlChar *)"mcc"));
 			/*number = atoi((char*) xmlGetProp(cur_node, (const xmlChar *)"no")); */
 
 			setting_lang_entry *pitem = (setting_lang_entry *)calloc(1, sizeof(setting_lang_entry));
@@ -1032,8 +1032,8 @@ int setting_store_init_password(char *in)
 	SETTING_TRACE("]\n");
 #endif
 
-	/*  create a file or store a data */
-	/*  store_password */
+	/*	create a file or store a data */
+	/*	store_password */
 	FILE *fp = NULL;
 	int ret_fw = 0;
 	fp = fopen(PWD_FILE, "w+");

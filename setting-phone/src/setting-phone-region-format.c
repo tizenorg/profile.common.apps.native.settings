@@ -211,50 +211,50 @@ static int setting_phone_region_format_get_region_fmt(char *list[],
 		loc_list = uloc_getAvailable(i);
 		setting_retvm_if(NULL == loc_list, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER, "loc_list is NULL");
 
-		char* e = strchr(loc_list, '_');
-		const char* result;
+		char *e = strchr(loc_list, '_');
+		const char *result;
 		if (e) {
 			int index = (int)(e-loc_list);
 			result = substring(loc_list, 0, index);
-			//SETTING_TRACE("lang code : %s", result);
+			/*SETTING_TRACE("lang code : %s", result); */
 		} else {
-			//SETTING_TRACE("lang code itself : %s", loc_list);
+			/*SETTING_TRACE("lang code itself : %s", loc_list); */
 			result = loc_list;
 		}
 
-		//****************************************************************************
-		//****************************************************************************
-		//****************************************************************************
-		// current font doesn't support the font
-		// filter out if result == 'bo'
+		/***************************************************************************** */
+		/***************************************************************************** */
+		/***************************************************************************** */
+		/* current font doesn't support the font */
+		/* filter out if result == 'bo' */
 		if (0 == safeStrCmp(result, "bo")
-			|| 0 == safeStrCmp(result, "dz") ) continue;
-		//****************************************************************************
-		//****************************************************************************
-		//****************************************************************************
+			|| 0 == safeStrCmp(result, "dz")) continue;
+		/***************************************************************************** */
+		/***************************************************************************** */
+		/***************************************************************************** */
 
 		uloc_getDisplayLanguage(loc_list, localeID, lang, LANGUAGE_STR_LEN, &language_status);
 		if (U_FAILURE(language_status)) {
 			SETTING_TRACE_ERROR("language_status got an error %s:%d ", language_status, language_status);
-			language_status = U_ZERO_ERROR;   /* set the value to the initial value */
+			language_status = U_ZERO_ERROR;	  /* set the value to the initial value */
 		}
 
 		uloc_getDisplayCountry(loc_list, localeID, country, COUNTRY_STR_LEN, &country_status);
 		if (U_FAILURE(country_status)) {
 			SETTING_TRACE_ERROR("country_status got an error %s:%d ", country, country_status);
-			country_status = U_ZERO_ERROR; 	/* set the value to the initial value */
+			country_status = U_ZERO_ERROR;	/* set the value to the initial value */
 		}
 
 		uloc_getDisplayVariant(loc_list, localeID, variant, SETTING_STR_SLP_LEN, &variant_status);
 		if (U_FAILURE(variant_status)) {
 			SETTING_TRACE_ERROR("variant_status got an error %s:%d ", variant, variant_status);
-			variant_status = U_ZERO_ERROR; 	/* set the value to the initial value */
+			variant_status = U_ZERO_ERROR;	/* set the value to the initial value */
 		}
 
 		uloc_getDisplayName(loc_list, localeID, displayname, SETTING_STR_SLP_LEN, &displayname_status);
 		if (U_FAILURE(displayname_status)) {
 			SETTING_TRACE_ERROR("displayname_status got an error %s:%d ", displayname, displayname_status);
-			displayname_status = U_ZERO_ERROR; 	/* set the value to the initial value */
+			displayname_status = U_ZERO_ERROR;	/* set the value to the initial value */
 		}
 		UErrorCode errcode;
 		u_strToUpper(displayname, 1, displayname, 1, "", &errcode);
@@ -263,10 +263,10 @@ static int setting_phone_region_format_get_region_fmt(char *list[],
 		str_variant = setting_phone_lang_str_to_utf8(variant);
 		str_displayname = setting_phone_lang_str_to_utf8(displayname);
 
-		//SETTING_TRACE(" lang : %s, country : %s ---> str_displayname : %s ", str_lang, str_country, str_displayname);
+		/*SETTING_TRACE(" lang : %s, country : %s ---> str_displayname : %s ", str_lang, str_country, str_displayname); */
 
 		if (0 == safeStrCmp(str_lang, result)) {
-			//SETTING_TRACE(" str_lang is equal to result %s %s ", str_lang, result);
+			/*SETTING_TRACE(" str_lang is equal to result %s %s ", str_lang, result); */
 			FREE(str_lang);
 			FREE(str_country);
 			FREE(str_variant);
@@ -276,14 +276,14 @@ static int setting_phone_region_format_get_region_fmt(char *list[],
 		}
 
 		if (str_lang == NULL) {
-			//SETTING_TRACE(" str_lang is NULL. ");
+			/*SETTING_TRACE(" str_lang is NULL. "); */
 			FREE(str_lang);
 			FREE(str_country);
 			FREE(str_variant);
 			FREE(str_displayname);
 			continue;
 		} else if (0 == safeStrCmp(str_lang, "")) {
-			//SETTING_TRACE(" str_lang is Empty string. ");
+			/*SETTING_TRACE(" str_lang is Empty string. "); */
 			FREE(str_lang);
 			FREE(str_country);
 			FREE(str_variant);
@@ -291,7 +291,7 @@ static int setting_phone_region_format_get_region_fmt(char *list[],
 			continue;
 		}
 
-		/*  filter which has variant */
+		/*	filter which has variant */
 		if (str_lang != NULL && str_country != NULL
 			&& safeStrLen(str_country) > 1 && safeStrLen(str_variant) == 0) {
 			Setting_Region_Table *item_data = (Setting_Region_Table *) calloc(1, sizeof(Setting_Region_Table));
@@ -393,7 +393,7 @@ EXPORT_PUBLIC int setting_phone_region_format_set_dateformat(const char *region,
 	int len = safeStrLen(bestPatternString);
 	char region_format[4] = {0, };
 	int ymd[3] = {0, };
-	/*  only save 'y', 'M', 'd' charactor */
+	/*	only save 'y', 'M', 'd' charactor */
 	for (; i < len; i++) {
 		if (bestPatternString[i] == 'y' && ymd[0] == 0) {
 			region_format[j++] = bestPatternString[i];
@@ -412,7 +412,7 @@ EXPORT_PUBLIC int setting_phone_region_format_set_dateformat(const char *region,
 	char *date_format_str[DATA_FORMAT_CATEGORY_NUM] = {
 		"dMy", "Mdy", "yMd", "ydM"
 	};
-	int date_format_vconf_value = DATA_FORMAT_DEFAULT;	/*  default is "Mdy" */
+	int date_format_vconf_value = DATA_FORMAT_DEFAULT;	/*	default is "Mdy" */
 	for (i = 0; i < DATA_FORMAT_CATEGORY_NUM; i++) {
 		if (!safeStrCmp(region_format, date_format_str[i])) {
 			date_format_vconf_value = i;
@@ -460,7 +460,7 @@ static char *__region_format_vconf_str_get()
 			str_region = (char *)g_strdup(tempstr);
 			SETTING_TRACE_ERROR("region format vconf stored error");
 		}
-	} else  {
+	} else	{
 		str_region = (char *)g_strdup("en_US");
 	}
 
@@ -548,28 +548,23 @@ static Eina_Bool __region_genlist_update(void *data)
 	}
 
 	if (search_count > 1) {
-		//? Setting_GenGroupItem_Data *last_item = (Setting_GenGroupItem_Data *)
+		/*? Setting_GenGroupItem_Data *last_item = (Setting_GenGroupItem_Data *) */
 		elm_object_item_data_get(elm_genlist_last_item_get(ad->gl_region));
 	}
 
 	if (search_count == 0) {
-		if(!ad->nocontents)
-		{
+		if (!ad->nocontents) {
 			ad->nocontents = elm_layout_add(ad->win_get);
 			elm_layout_theme_set(ad->nocontents, "layout", "nocontents", "search");
 			elm_object_part_text_set(ad->nocontents, "elm.text", _("IDS_ST_BODY_NO_RESULTS_FOUND"));
 		}
-		if (ad->nocontents != elm_object_part_content_get(ad->ly_sub_region, "elm.swallow.content"))
-		{
+		if (ad->nocontents != elm_object_part_content_get(ad->ly_sub_region, "elm.swallow.content")) {
 			ad->gl_region = elm_object_part_content_unset(ad->ly_sub_region, "elm.swallow.content");
 			evas_object_hide(ad->gl_region);
 			elm_object_part_content_set(ad->ly_sub_region, "elm.swallow.content", ad->nocontents);
 		}
-	}
-	else
-	{
-		if (ad->gl_region != elm_object_part_content_get(ad->ly_sub_region, "elm.swallow.content"))
-		{
+	} else {
+		if (ad->gl_region != elm_object_part_content_get(ad->ly_sub_region, "elm.swallow.content")) {
 			ad->nocontents = elm_object_part_content_unset(ad->ly_sub_region, "elm.swallow.content");
 			evas_object_hide(ad->nocontents);
 			elm_object_part_content_set(ad->ly_sub_region, "elm.swallow.content", ad->gl_region);
@@ -579,7 +574,7 @@ static Eina_Bool __region_genlist_update(void *data)
 #if 0
 	int automatic_select = 0;
 	vconf_get_bool(VCONFKEY_SETAPPL_REGION_AUTOMATIC_BOOL, &automatic_select);
-	if(automatic_select){
+	if (automatic_select) {
 		ad->selected_region_idx = 0;
 	}
 
@@ -752,8 +747,8 @@ static Eina_Bool __region_animator_cb(void *data)
 	SettingPhoneUG *ad = (SettingPhoneUG *) data;
 
 	Setting_GenGroupItem_Data *item_data = NULL;
-	if (ad->gl_region_cur_index >=  ad->region_num) {
-		//? Setting_GenGroupItem_Data *last_item = (Setting_GenGroupItem_Data *)
+	if (ad->gl_region_cur_index >=	ad->region_num) {
+		/*? Setting_GenGroupItem_Data *last_item = (Setting_GenGroupItem_Data *) */
 		elm_object_item_data_get(elm_genlist_last_item_get(ad->gl_region));
 
 		if (ad->animator) {
@@ -929,7 +924,7 @@ static void __region_genlist_create(void *data)
 	} else { /*had finished adding items */
 		SETTING_TRACE("had finished adding items");
 
-		//? Setting_GenGroupItem_Data *last_item = (Setting_GenGroupItem_Data *)
+		/*? Setting_GenGroupItem_Data *last_item = (Setting_GenGroupItem_Data *) */
 		elm_object_item_data_get(elm_genlist_last_item_get(ad->gl_region));
 	}
 }
@@ -984,7 +979,7 @@ static Eina_Bool setting_phone_region_format_caller_exist_right_cb(void *data, E
 	setting_retvm_if(data == NULL, EINA_FALSE, "Data parameter is NULL");
 
 	SettingPhoneUG *ad = (SettingPhoneUG *) data;
-	/*  Create Bundle and send message */
+	/*	Create Bundle and send message */
 	app_control_h svc;
 	if (app_control_create(&svc)) {
 		return EINA_FALSE;
@@ -1068,7 +1063,7 @@ static int setting_phone_region_format_create(void *cb)
 	elm_genlist_clear(ad->gl_region);	/* first to clear list */
 
 	retvm_if(ad->gl_region == NULL, SETTING_DRAW_ERR_FAIL_SCROLLER, "ad->gl_region is NULL");
-	//evas_object_smart_callback_add(ad->gl_region, "realized", __gl_realized_cb, NULL);
+	/*evas_object_smart_callback_add(ad->gl_region, "realized", __gl_realized_cb, NULL); */
 
 	ad->chk_region = elm_radio_add(ad->gl_region);
 	elm_radio_state_value_set(ad->chk_region, -1);
@@ -1133,7 +1128,7 @@ static int setting_phone_region_format_destroy(void *cb)
 	/*Apply new SIP concept */
 	evas_object_data_set(ad->navi_bar, "sip.naviframe.title_obj", NULL);
 
-	/*  FIXED : destroy only if it was created. */
+	/*	FIXED : destroy only if it was created. */
 	if (setting_view_phone_region_format.is_create) {
 		if (ad->region_search_id) {
 			FREE(ad->region_search_id);
