@@ -343,7 +343,7 @@ int storageUg_get_internal_detail(SettingStorageUG *ad)
 {
 	int ret;
 	const char *cond;
-	char cond_str[1024];
+	const char *cond_misc;
 	struct _calculated_sizes sizes = {0.0, 0.0, 0.0};
 
 	retv_if(NULL == ad, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
@@ -351,16 +351,14 @@ int storageUg_get_internal_detail(SettingStorageUG *ad)
 	storageUG_STOP_POINT;
 
 	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
-	cond = "(MEDIA_TYPE < 4) and MEDIA_PATH LIKE \'/opt/usr/%%\'";
+	cond = "((MEDIA_TYPE < 4) AND (MEDIA_STORAGE_TYPE=0))";
 	ret = storageUG_get_media_info(cond, storageUg_get_media_item, &sizes);
 	warn_if(MEDIA_CONTENT_ERROR_NONE != ret, "storageUG_get_media_info() Fail(%d)", ret);
 
 	storageUG_STOP_POINT;
 
-	snprintf(cond_str, 1024, "(MEDIA_TYPE = 4) and MEDIA_PATH LIKE \'%s/%%\'", tzplatform_getenv(TZ_USER_CONTENT));
-	/*cond = "(MEDIA_TYPE = 4) and MEDIA_PATH LIKE \'"_TZ_USER_CONTENT"/%%\'"; */
-	/*ret = storageUG_get_media_info(cond, storageUg_get_misces_item, &sizes); */
-	ret = storageUG_get_media_info(cond_str, storageUg_get_misces_item, &sizes);
+	cond_misc = "((MEDIA_TYPE=4) AND (MEDIA_STORAGE_TYPE=0))";
+	ret = storageUG_get_media_info(cond_misc, storageUg_get_misces_item, &sizes);
 	warn_if(MEDIA_CONTENT_ERROR_NONE != ret, "storageUG_get_media_info() Fail(%d)", ret);
 
 	storageUG_STOP_POINT;
@@ -394,7 +392,7 @@ void storageUG_update_cache_info(SettingStorageUG *ad)
 	warn_if(ret, "pkgmgr_client_get_total_package_size_info() Fail(%d)", ret);
 }
 
-static int storageUg_get_apps_info(int req_id, const char *pkg_type,
+static int storageUg_get_apps_info(uid_t target_uid, int req_id, const char *pkg_type,
 								   const char *pkgid, const char *key, const char *val, const void *pmsg, void *data)
 {
 	SettingStorageUG *ad = data;
@@ -425,7 +423,7 @@ void storageUG_update_apps_info(SettingStorageUG *ad)
 		return;
 	}
 
-	ret = pkgmgr_client_get_size(ad->pc, "get", PM_GET_ALL_PKGS, storageUg_get_apps_info,
+	ret = pkgmgr_client_get_size(ad->pc, "get", PM_GET_ALL_PKGS, &storageUg_get_apps_info,
 								 ad);
 	warn_if(ret, "pkgmgr_client_get_size() Fail(%d)", ret);
 }

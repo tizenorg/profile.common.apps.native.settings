@@ -171,6 +171,8 @@ struct _SettingStorageUG {
 	Evas_Object *title_right_btn;
 
 	int mmc_status;
+
+	int current_rotation;
 };
 
 #endif /*__SETTING_STORAGE_H__ */
