@@ -47,29 +47,7 @@
 #include <unicode/ucol.h>
 
 /* Choose default programe*/
-#define Display_APP_Full_Name 1
-#define MAX_APP_NAME 1024
-#define IMAGES_MIME_TYPE "image/png"	/* temporary implement */
-#define SOUNDS_MIME_TYPE "audio/mpeg"	/* temporary implement */
-#define VIDEOS_MIME_TYPE "video/3gpp"	/* temporary implement */
-#define OTHERS_MIME_TYPE "application/pdf"	/* temporary implement */
-#define TBL_NAME "menu"
-#define MIME_FIELD_NAME "mimetype"
-#define NAME_BUF_LEN (128)
-
 #define REGION_ITEM_MAX 300
-
-#define SETTING_PHONE_REGION_RECT_SIZE_W		((int)720 * WIDGET_SCALE_FACTOR)
-#define SETTING_PHONE_REGION_RECT_SIZE_H		((int)1280 * WIDGET_SCALE_FACTOR)
-
-#define ASK_DEREG_PHONE "<linesize=44>Your phone is<br>already registered.<br> Are you sure you<br>wish to deregister?"
-#define REGISTRATION_GET_FAILED _("IDS_ST_POP_REGISTRATION_CODE_NOT_FOUND")
-#define REGISTRATION_INDICATOT "IDS_ST_BODY_YOUR_DEVICE_REGISTRATION_CODE_C_PS"
-#define REGISTRATION_AT "IDS_ST_BODY_REGISTER_AT"
-#define DEREGISTRATION_INDICATOT "<br><br>Your device<br>deregistration code:<br><br>"
-#define EREGISTRATION_AT "<br><br><br>Deregister at"
-#define TRANSFER_INFO "IDS_ST_BODY_EXPLANATION_FOR_TRANSACTION_TRACKING_MENU_VODA"
-
 #define REGION_FORMAT_LOWER "IDS_ST_BODY_REGION"
 
 typedef struct _SettingPhoneUG SettingPhoneUG;

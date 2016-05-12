@@ -42,21 +42,21 @@
 #define SUPPORT_PLAYER_ASYNC 1
 
 /*Call ringtone:3 icon status */
-#define ICON_CALL_VIB		SETTING_ICON_PATH_CFG"B04_slider_icon_vibrate.png"
-#define ICON_CALL_NORMAL	SETTING_ICON_PATH_CFG"B04_slider_icon_ring.png"
-#define ICON_CALL_MUTE		SETTING_ICON_PATH_CFG"B04_volume_icon_mute.png"
+#define ICON_CALL_VIB       SETTING_SOUND_ICON_PATH_CFG"B04_slider_icon_vibrate.png"
+#define ICON_CALL_NORMAL    SETTING_SOUND_ICON_PATH_CFG"B04_slider_icon_ring.png"
+#define ICON_CALL_MUTE      SETTING_SOUND_ICON_PATH_CFG"B04_volume_icon_mute.png"
 
 /*Notification: 2 icon status */
-#define ICON_NOTI_MUTE		SETTING_ICON_PATH_CFG"B04_slider_icon_notification_mute.png"
-#define ICON_NOTI_NORMAL	SETTING_ICON_PATH_CFG"B04_slider_icon_notification.png"
+#define ICON_NOTI_MUTE      SETTING_SOUND_ICON_PATH_CFG"B04_slider_icon_notification_mute.png"
+#define ICON_NOTI_NORMAL    SETTING_SOUND_ICON_PATH_CFG"B04_slider_icon_notification.png"
 
 /*Media: 2 icon status */
-#define ICON_MEDIA_MUTE		SETTING_ICON_PATH_CFG"B04_volume_icon_mute.png"
-#define ICON_MEDIA_NORMAL	SETTING_ICON_PATH_CFG"00_volume_icon.png"
+#define ICON_MEDIA_MUTE     SETTING_SOUND_ICON_PATH_CFG"B04_volume_icon_mute.png"
+#define ICON_MEDIA_NORMAL   SETTING_SOUND_ICON_PATH_CFG"00_volume_icon.png"
 
 /*System:2 icon status */
-#define ICON_SYSTEM_MUTE	SETTING_ICON_PATH_CFG"B04_slider_icon_system_mute.png"
-#define ICON_SYSTEM_NORMAL	SETTING_ICON_PATH_CFG"B04_slider_icon_system.png"
+#define ICON_SYSTEM_MUTE    SETTING_SOUND_ICON_PATH_CFG"B04_slider_icon_system_mute.png"
+#define ICON_SYSTEM_NORMAL  SETTING_SOUND_ICON_PATH_CFG"B04_slider_icon_system.png"
 
 
 typedef enum {

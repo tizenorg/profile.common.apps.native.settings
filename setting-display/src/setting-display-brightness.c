@@ -25,8 +25,6 @@
 
 #define BRIGHTNESS_MAX 100
 #define BRIGHTNESS_MIN 1
-#define BRIGHTNESS_AUTO_MAX_LEVEL 5
-#define BRIGHTNESS_AUTO_MIN_LEVEL -5
 
 static int setting_display_brightness_create(void *cb);
 static int setting_display_brightness_destroy(void *cb);
@@ -35,9 +33,7 @@ static int setting_display_brightness_cleanup(void *cb);
 
 static void setting_display_brightness_click_softkey_cancel_cb(void *data, Evas_Object *obj, void *event_info);
 static void setting_display_birghtness_bright_slider_value_change_cb(void *data, Evas_Object *obj, void *event_info);
-
 void setting_display_update_slider_icon(Setting_GenGroupItem_Data *item_data, int value);
-
 static void setting_display_set_slider_value(void *data, Evas_Object *obj, double value);
 
 setting_view setting_view_display_brightness = {

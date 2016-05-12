@@ -28,7 +28,6 @@ SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=/usr/lib")
 ADD_LIBRARY(${SETTING_DISPLAY_UG} SHARED
 	./src/setting-display.c
 	./src/setting-display-main.c
-	./src/setting-display-backlight.c
 	./src/setting-display-brightness.c
 	)
 

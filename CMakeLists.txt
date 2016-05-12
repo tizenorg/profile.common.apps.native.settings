@@ -76,14 +76,12 @@ ADD_SUBDIRECTORY(resource/po)
 
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/org.tizen.setting.xml.in ${CMAKE_SOURCE_DIR}/org.tizen.setting.xml @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/org.tizen.setting.xml.ref.in ${CMAKE_SOURCE_DIR}/org.tizen.setting.xml.ref @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/resource/langlist_all.xml.in ${CMAKE_SOURCE_DIR}/resource/langlist_all.xml @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/resource/ug-setting-shortcut-efl.xml.in ${CMAKE_SOURCE_DIR}/resource/ug-setting-shortcut-efl.xml @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/resource/langlist.india.xml.in ${CMAKE_SOURCE_DIR}/resource/langlist.india.xml @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/resource/langlist.xml.in ${CMAKE_SOURCE_DIR}/resource/langlist.xml @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/resource/changeable/org.tizen.setting.xml.in ${CMAKE_SOURCE_DIR}/resource/changeable/org.tizen.setting.xml @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/resource/changeable/org.tizen.setting_font-lite.xml.in ${CMAKE_SOURCE_DIR}/resource/changeable/org.tizen.setting_font-lite.xml @ONLY)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/mime.setting.xml.in ${CMAKE_SOURCE_DIR}/mime.setting.xml @ONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/setting-common-internal.pc.in ${CMAKE_SOURCE_DIR}/src/setting-common-internal.pc @ONLY)
 
 
