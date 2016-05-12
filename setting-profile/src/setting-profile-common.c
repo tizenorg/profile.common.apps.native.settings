@@ -1006,19 +1006,11 @@ Evas_Object *setting_sound_init(void *data)
 
 	setting_create_Gendial_itc(SETTING_GENLIST_LEFT_ICON_CONTENT_ICON_STYLE, &(ad->itc_layout));
 
-#ifdef OLD_GENLIST_STYLE
-	ad->itc_layout.func.content_get = __sound_slider_icon_get;
-#else
 	ad->itc_layout.func.content_get = __sound_slider_new_icon_get;
-#endif
 
 	setting_create_Gendial_itc(SETTING_GENLIST_LEFT_ICON_CONTENT_ICON_STYLE, &(ad->itc_layout_1icon));
 
-#ifdef OLD_GENLIST_STYLE
-	ad->itc_layout_1icon.func.content_get = __sound_slider_icon_get;
-#else
 	ad->itc_layout_1icon.func.content_get = __sound_slider_new_icon_get;
-#endif
 
 	/* register view node table */
 	setting_view_node_table_intialize();

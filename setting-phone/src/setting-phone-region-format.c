@@ -326,7 +326,7 @@ static int setting_phone_region_format_get_region_fmt(char *list[],
 	i = 0;
 	EINA_LIST_FOREACH(region_list, iter, item_data) {
 		if (item_data) {
-			list[i] = (char *)g_strdup(item_data->desc);
+			list[i] = elm_entry_utf8_to_markup(item_data->desc);
 			item_idx[i] = i;
 			region_keyStr[i] = (char *)g_strdup(item_data->key);
 			free(item_data);
@@ -758,10 +758,6 @@ static Eina_Bool __region_animator_cb(void *data)
 		elm_radio_value_set(ad->chk_region, ad->selected_region_idx);
 		ad->prev_region = ad->selected_region_idx;
 
-		Elm_Object_Item *item = NULL;
-		item = elm_genlist_item_append(ad->gl_region, &itc_bottom_seperator, NULL, NULL,
-									   ELM_GENLIST_ITEM_NONE, NULL, NULL);
-		elm_genlist_item_select_mode_set(item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 		return ECORE_CALLBACK_CANCEL;
 	}
 

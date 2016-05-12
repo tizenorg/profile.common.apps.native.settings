@@ -44,8 +44,6 @@
 #define POPUP_INTERVAL 2.0
 
 extern const Elm_Genlist_Item_Class itc_seperator;
-extern const Elm_Genlist_Item_Class itc_bottom_seperator;
-extern const Elm_Genlist_Item_Class itc_sep_line;
 
 extern const Elm_Genlist_Item_Class itc_1text;
 extern const Elm_Genlist_Item_Class itc_1text_1icon_2;
@@ -74,24 +72,16 @@ extern const Elm_Genlist_Item_Class itc_1text_1icon_3_tb;
 extern const Elm_Genlist_Item_Class itc_cm_1text_1icon_2;
 extern const Elm_Genlist_Item_Class itc_bg_1icon;
 extern const Elm_Genlist_Item_Class itc_1icon_with_no_line;
-extern const Elm_Genlist_Item_Class itc_1icon_with_no_padding;
 extern const Elm_Genlist_Item_Class itc_group_item;
 extern const Elm_Genlist_Item_Class itc_multiline_1text_1icon;
-extern const Elm_Genlist_Item_Class itc_1text_2icon_divider;
-extern const Elm_Genlist_Item_Class itc_no_group_1text_1icon_2;
 
 extern const Elm_Genlist_Item_Class itc_editfield;
 extern const Elm_Genlist_Item_Class itc_multiline_2text;
 extern const Elm_Genlist_Item_Class itc_1text_1icon_divider;
-extern const Elm_Genlist_Item_Class itc_normal_1text;
-extern const Elm_Genlist_Item_Class itc_bottom_line;
-
 
 #define ADD_GL_LABLE(scroller, str) \
 	{\
 		if (str) {\
-			Elm_Object_Item *item = elm_genlist_item_append(scroller, &(itc_bottom_seperator), NULL, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);\
-			elm_genlist_item_select_mode_set(item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);\
 			Setting_GenGroupItem_Data *item_data = setting_create_Gendial_field_def(scroller, &itc_multiline_text,\
 																					NULL,\
 																					NULL,\
@@ -115,20 +105,6 @@ extern const Elm_Genlist_Item_Class itc_bottom_line;
 		} \
 	}
 
-#ifdef OLD_GENLIST_STYLE
-#define ADD_GL_HELP_NO_SEP(scroller, str) \
-	{\
-		if (str) {\
-			Setting_GenGroupItem_Data *item_data = setting_create_Gendial_field_def(scroller, &itc_multiline_text,\
-																					NULL,\
-																					NULL,\
-																					SWALLOW_Type_LAYOUT_SPECIALIZTION_X,\
-																					NULL, NULL, 0, str, NULL, NULL);\
-			setting_retvm_if(NULL == item_data, NULL, "item_data is NULL");\
-			elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);\
-		} \
-	}
-#else
 #define ADD_GL_HELP_NO_SEP(scroller, str) \
 	{\
 		if (str) {\
@@ -141,8 +117,6 @@ extern const Elm_Genlist_Item_Class itc_bottom_line;
 			elm_genlist_item_select_mode_set(item_data->item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);\
 		} \
 	}
-#endif
-
 
 #define ADD_GL_BUTTON(scroller, btn_str, btn_cb, cb_data) \
 	{\

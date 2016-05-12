@@ -28,76 +28,21 @@
 
 #define DEF_BUF_SIZE 32
 
-#ifdef OLD_GENLIST_STYLE
-static Evas_Object *_gl_Gendial_content_get(void *data, Evas_Object *obj, const char *part);
-#endif
-
 static char *_gl_Gendial_text_get(void *data, Evas_Object *obj, const char *part);
 
-static Evas_Object *_gl_Gendial_new_content_get(void *data, Evas_Object *obj, const char *part);
+static Evas_Object *_gl_Gendial_content_get(void *data, Evas_Object *obj, const char *part);
 static char *_gl_Gendial_new_text_get(void *data, Evas_Object *obj, const char *part);
-
-#if 0
-static char *_gl_Gendial_text2_get(void *data, Evas_Object *obj, const char *part);
-#endif
 
 static void _gl_Gendial_del(void *data, Evas_Object *obj);
 
-EXPORT_PUBLIC
-const Elm_Genlist_Item_Class itc_seperator = {
-	.item_style = "dialogue/separator.transparent.2",
-	.func.text_get = NULL,
-	.func.content_get = NULL,
-	.func.state_get = NULL,
-	.func.del = NULL,
-};
-
-EXPORT_PUBLIC
-const Elm_Genlist_Item_Class itc_bottom_seperator = {
-	.item_style = NULL,
-	.func.text_get = NULL,
-	.func.content_get = NULL,
-	.func.state_get = NULL,
-	.func.del = NULL,
-};
-
-EXPORT_PUBLIC
-const Elm_Genlist_Item_Class itc_sep_line = {
-	.item_style = "dialogue/separator.transparent.2",
-	.func.text_get = _gl_Gendial_text_get,
-	.func.content_get = NULL,
-	.func.state_get = NULL,
-	.func.del = NULL,
-};
-
-EXPORT_PUBLIC
-const Elm_Genlist_Item_Class itc_bottom_line = {
-	.item_style = "bottom_line",
-	.func.text_get = NULL,
-	.func.content_get = NULL,
-	.func.state_get = NULL,
-	.func.del = NULL,
-};
-
-#ifdef OLD_GENLIST_STYLE
-#define DEFINE_ITC1(style, name) \
-	EXPORT_PUBLIC const Elm_Genlist_Item_Class name = {\
-													   .item_style = style,\
-													   .func.text_get = _gl_Gendial_text_get,\
-													   .func.content_get = _gl_Gendial_content_get,\
-													   .func.state_get = NULL,\
-													   .func.del = _gl_Gendial_del,\
-													  };
-#else
 #define DEFINE_ITC1(style, name) \
 	EXPORT_PUBLIC const Elm_Genlist_Item_Class name = {\
 													   .item_style = style,\
 													   .func.text_get = _gl_Gendial_new_text_get,\
-													   .func.content_get = _gl_Gendial_new_content_get,\
+													   .func.content_get = _gl_Gendial_content_get,\
 													   .func.state_get = NULL,\
 													   .func.del = _gl_Gendial_del,\
 													  };
-#endif
 
 DEFINE_ITC1(SETTING_GENLIST_ICON_1LINE_STYLE, itc_1text);
 DEFINE_ITC1(SETTING_GENLIST_ICON_1LINE_STYLE, itc_1text_1icon_2);
@@ -115,7 +60,6 @@ DEFINE_ITC1(SETTING_GENLIST_ICON_1LINE_STYLE, itc_multiline_1text_1icon);
 
 DEFINE_ITC1("1icon", itc_bg_1icon);
 DEFINE_ITC1("1icon", itc_1icon_with_no_line);
-DEFINE_ITC1("1icon", itc_1icon_with_no_padding);
 DEFINE_ITC1("1icon", itc_1icon);
 
 DEFINE_ITC1("1text", itc_normal_1text);
@@ -138,7 +82,7 @@ DEFINE_ITC1(SETTING_GENLIST_2LINE_STYLE, itc_2text_3_parent);
 DEFINE_ITC1(SETTING_GENLIST_MULTILINE_STYLE, itc_multiline_text);
 
 DEFINE_ITC1(SETTING_GENLIST_GROUP_INDEX_STYLE, itc_group_item);
-DEFINE_ITC1("entry.main", itc_editfield);
+DEFINE_ITC1("elm/genlist/item/entry.main/default", itc_editfield);
 
 typedef struct _tagParamData {
 	Setting_GenGroupItem_Data *item_data;
@@ -196,46 +140,6 @@ static void __entry_changed(void *data, Evas_Object *obj, void *event_info)
 			}
 		}
 	}
-}
-
-static void __entry_unfocused(void *data, Evas_Object *obj, void *event_info) /* Unfocused callback will show guidetext and hide X marked button. */
-{
-	ret_if(!data);
-	SETTING_TRACE_BEGIN;
-	Evas_Object *entry_container = data;
-	/*whe entry unfocused, its guidetext will becomes "Input here" */
-
-	if (elm_entry_is_empty(obj)) {
-		elm_object_part_text_set(entry_container, "elm.guidetext", _("IDS_ST_BODY_TAP_TO_INSERT"));
-		elm_object_signal_emit(entry_container, "elm,state,guidetext,show", "elm");
-	}
-	elm_object_signal_emit(entry_container, "elm,state,eraser,hide", "elm");
-}
-
-static void __entry_focused(void *data, Evas_Object *obj, void *event_info) /* Focused callback will show X marked button and hide guidetext. */
-{
-	ret_if(!data);
-	SETTING_TRACE_BEGIN;
-	Evas_Object *entry_container = data;
-	/*whe entry focused, its guidetext will becomes "Input here" */
-
-	if (!elm_entry_is_empty(obj)) {
-		elm_object_signal_emit(entry_container, "elm,state,eraser,show", "elm");
-	} else {
-		elm_object_part_text_set(entry_container, "elm.guidetext", _("IDS_ST_BODY_TAP_TO_INSERT"));
-	}
-	elm_object_signal_emit(entry_container, "elm,state,guidetext,hide", "elm");
-
-	Ecore_IMF_Context *imf_context = (Ecore_IMF_Context *)elm_entry_imf_context_get(obj);
-	if (imf_context) ecore_imf_context_input_panel_show(imf_context);
-}
-
-static void __eraser_clicked(void *data, Evas_Object *obj, const char *emission, const char *source) /* When X marked button is clicked, empty entry's contents. */
-{
-	ret_if(!data);
-	Evas_Object *entry = data;
-	elm_entry_entry_set(entry, "");
-	elm_object_focus_set(entry, EINA_TRUE);
 }
 
 static void __chk_changed(void *data, Evas_Object *obj, void *event_info)
@@ -446,7 +350,6 @@ static char *_gl_Gendial_new_text_get(void *data, Evas_Object *obj,
 				ret_str = (char *)g_strdup(_(item_data->sub_desc));
 			}
 		}
-#if 1
 		else if (!safeStrCmp(part, "elm.text.main") || !safeStrCmp(part, "elm.text.main.left") || !safeStrCmp(part, "elm.text.main.left.top")) {	/* title */
 			if (item_data->keyStr) {
 				ret_str = (char *)g_strdup(_(item_data->keyStr));	/* use item_data->keyStr */
@@ -462,7 +365,6 @@ static char *_gl_Gendial_new_text_get(void *data, Evas_Object *obj,
 				ret_str = (char *)g_strdup(_(item_data->keyStr));
 			}
 		}
-#endif
 		else {
 			FREE(ret_str);
 			return NULL;
@@ -504,42 +406,13 @@ static char *_gl_Gendial_text_get(void *data, Evas_Object *obj,
 	return ret_str;
 }
 
-#if 0
-static char *_gl_Gendial_text2_get(void *data, Evas_Object *obj,
-								   const char *part)
-{
-	/*SETTING_TRACE_BEGIN; */
-	Setting_GenGroupItem_Data *item_data =
-		(Setting_GenGroupItem_Data *) data;
-	/* SETTING_TRACE("part:%s", part); */
-
-	char *ret_str = NULL;
-	/*SETTING_TRACE("part:[%s], text:[%s] ", part, _(item_data->keyStr)); */
-	if (!safeStrCmp(part, "elm.text")) {	/* title */
-		if (item_data->keyStr) {
-			ret_str = (char *)g_strdup(_(item_data->keyStr));	/* use item_data->keyStr */
-		}
-	} else if (!safeStrCmp(part, "elm.text.multiline")) {	/* bottom or right */
-		if (item_data->sub_desc) {
-			ret_str = (char *)g_strdup(_(item_data->sub_desc));
-		}
-	} else {
-		FREE(ret_str);
-		return NULL;
-	}
-
-	return ret_str;
-}
-#endif
-
 static Evas_Object *__add_check_invisible(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
 {
 	retv_if(!item_data || !parent, NULL);
 
 	if (item_data->isItemHideFlag) return NULL;
 
-	Evas_Object *content = elm_layout_add(parent);
-	Evas_Object *check = elm_check_add(content);
+	Evas_Object *check = elm_check_add(parent);
 
 	/* To fix check button flicker issue when rotate the screen*/
 	if (item_data->isItemDisableFlag)
@@ -561,11 +434,7 @@ static Evas_Object *__add_check_invisible(Setting_GenGroupItem_Data *item_data, 
 	}
 	evas_object_show(check);
 
-	/*"list/B/type.3" */
-	elm_layout_theme_set(content, "layout", "list/B/type.4", "default");
-	elm_layout_content_set(content, "elm.swallow.content", check);
-
-	return content;
+	return check;
 }
 
 
@@ -573,8 +442,8 @@ static Evas_Object *__add_check_invisible(Setting_GenGroupItem_Data *item_data, 
 static Evas_Object *__add_check(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
 {
 	retv_if(!item_data || !parent, NULL);
-	Evas_Object *content = elm_layout_add(parent);
-	Evas_Object *check = elm_check_add(content);
+
+	Evas_Object *check = elm_check_add(parent);
 
 	/* To fix check button flicker issue when rotate the screen*/
 	if (item_data->isItemDisableFlag)
@@ -602,10 +471,7 @@ static Evas_Object *__add_check(Setting_GenGroupItem_Data *item_data, Evas_Objec
 	}
 	evas_object_show(check);
 
-	/*"list/B/type.3" */
-	elm_layout_theme_set(content, "layout", "list/B/type.4", "default");
-	elm_layout_content_set(content, "elm.swallow.content", check);
-	return content;
+	return check;
 }
 
 static Evas_Object *__add_toggle(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
@@ -658,9 +524,9 @@ static Evas_Object *__add_radio(Setting_GenGroupItem_Data *item_data, Evas_Objec
 		item_data->rgd = elm_radio_add(parent);
 		elm_radio_state_value_set(item_data->rgd, -1);
 	}
-	Evas_Object *ly_radio = elm_layout_add(parent);
-	elm_layout_theme_set(ly_radio, "layout", "list/B/type.4", "default");
-	Evas_Object *radio = elm_radio_add(ly_radio);
+
+	Evas_Object *radio = elm_radio_add(parent);
+
 	evas_object_propagate_events_set(radio, EINA_FALSE);
 	evas_object_repeat_events_set(radio, EINA_TRUE);
 	elm_radio_state_value_set(radio,
@@ -679,9 +545,8 @@ static Evas_Object *__add_radio(Setting_GenGroupItem_Data *item_data, Evas_Objec
 									   __radio_changed,
 									   item_data);
 	}
-	elm_layout_content_set(ly_radio, "elm.swallow.content", radio);
-	/*return check; */
-	return ly_radio;
+
+	return radio;
 }
 
 
@@ -696,15 +561,10 @@ static Evas_Object *__add_radio_right_propagate_events_set(Setting_GenGroupItem_
 		item_data->rgd = elm_radio_add(parent);
 		elm_radio_state_value_set(item_data->rgd, -1);
 	}
-	Evas_Object *ly_radio = elm_layout_add(parent);
 
-	elm_layout_theme_set(ly_radio, "layout", "list/C/type.2", "default");
-	Evas_Object *radio = elm_radio_add(ly_radio);
+	Evas_Object *radio = elm_radio_add(parent);
 
-#if 1
-	evas_object_propagate_events_set(ly_radio, EINA_FALSE);
 	evas_object_propagate_events_set(radio, EINA_FALSE);
-#endif
 	elm_radio_state_value_set(radio,
 							  item_data->chk_status);
 	elm_radio_group_add(radio, item_data->rgd);
@@ -721,9 +581,8 @@ static Evas_Object *__add_radio_right_propagate_events_set(Setting_GenGroupItem_
 									   __radio_changed,
 									   item_data);
 	}
-	elm_layout_content_set(ly_radio, "elm.swallow.content", radio);
 
-	return ly_radio;
+	return radio;
 }
 
 static Evas_Object *__add_radio_right(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
@@ -832,16 +691,6 @@ static Evas_Object *__add_gif(Setting_GenGroupItem_Data *item_data, Evas_Object 
 
 	return image;
 }
-
-#if 0
-static Evas_Object *__add_image(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
-{
-	retv_if(!item_data || !parent || !item_data->l_swallow_path, NULL);
-	Evas_Object *image = NULL;
-	image = setting_create_image(parent, item_data->l_swallow_path);
-	return image;
-}
-#endif
 
 static void __entry_without_layout_focused_cb(void *data, Evas_Object *obj, void *ei) /* Focused callback will show X marked button and hide guidetext. */
 {
@@ -1055,116 +904,6 @@ static Evas_Object *__add_entry_padding(Setting_GenGroupItem_Data *item_data, Ev
 	return layout;
 }
 
-#if 0
-static Evas_Object *__add_entry(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
-{
-	retv_if(!item_data || !parent, NULL);
-	elm_genlist_mode_set(parent, ELM_LIST_COMPRESS);	/* resolve abnormal height issue */
-	Evas_Object *ed_name =
-		setting_create_editfiled(parent, _(item_data->keyStr),
-								 item_data->sub_desc, item_data->guide_text);
-	evas_object_pass_events_set(ed_name, 1);
-	evas_object_propagate_events_set(ed_name, 0);
-	Evas_Object *entry = elm_object_part_content_get(ed_name, "elm.swallow.content");
-	item_data->eo_check = entry;
-	elm_entry_input_panel_layout_set(entry,
-									 item_data->input_type);
-
-	if (item_data->isSinglelineFlag) {
-		elm_entry_scrollable_set(entry, EINA_TRUE);
-		elm_entry_single_line_set(entry, EINA_TRUE);
-	}
-
-	if (item_data->isPasswordFlag) {
-		elm_entry_single_line_set(entry, EINA_TRUE);
-		elm_entry_password_set(entry, EINA_TRUE);
-	}
-
-	if (item_data->limit_filter_data) {
-		elm_entry_markup_filter_append
-		(entry,
-		 elm_entry_filter_limit_size,
-		 item_data->limit_filter_data);
-
-		if (item_data->maxlength_reached_cb) {
-			evas_object_smart_callback_add(entry,
-										   "maxlength,reached",
-										   item_data->maxlength_reached_cb,
-										   item_data);
-		} else {
-			evas_object_smart_callback_add(entry,
-										   "maxlength,reached",
-										   __max_len_reached,
-										   item_data);
-		}
-	}
-	if (item_data->stop_change_cb) {/*invoked when stop focusing on */
-		evas_object_smart_callback_add(entry,
-									   "unfocused",
-									   item_data->stop_change_cb,
-									   item_data);
-	} else {
-		evas_object_smart_callback_add(entry,
-									   "unfocused",
-									   __entry_unfocused,
-									   ed_name);
-	}
-	if (item_data->digits_filter_data) {
-		elm_entry_markup_filter_append(entry,
-									   elm_entry_filter_accept_set,
-									   item_data->digits_filter_data);
-	}
-
-	/* for Setting App, All the entrys's context popup shouldn't be able */
-	/* to insert images, text is the only one can be inserted. */
-	elm_entry_cnp_mode_set(entry, ELM_CNP_MODE_PLAINTEXT);
-
-	if (item_data->chk_change_cb) {
-		evas_object_smart_callback_add(entry,
-									   "changed",
-									   item_data->chk_change_cb,
-									   item_data);
-	} else {
-		/*default handle */
-		evas_object_smart_callback_add(entry, "changed", __entry_changed, item_data);
-	}
-
-	/* callback for handling enter key */
-	if (item_data->activated_cb) {
-		evas_object_smart_callback_add(entry,
-									   "activated",
-									   item_data->activated_cb,
-									   item_data);
-	}
-
-	if (item_data->focus_cb) {
-		evas_object_smart_callback_add(entry, "focused", item_data->focus_cb, item_data);
-	} else {
-		evas_object_smart_callback_add(entry, "focused", __entry_focused, ed_name);
-	}
-
-	elm_object_signal_callback_add(ed_name, "elm,eraser,clicked", "elm", __eraser_clicked, entry);
-
-	if (item_data->start_change_cb) {
-		evas_object_event_callback_add(entry, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)(item_data->start_change_cb), item_data->userdata);
-	} else {
-		evas_object_event_callback_add(entry, EVAS_CALLBACK_KEY_DOWN, __entry_keydown, item_data);
-	}
-
-	Ecore_IMF_Context *imf_context = (Ecore_IMF_Context *)elm_entry_imf_context_get(entry);
-	if (imf_context) {
-		ecore_imf_context_input_panel_event_callback_add(imf_context,
-														 ECORE_IMF_INPUT_PANEL_STATE_EVENT,
-														 item_data->x_callback_cb,
-														 item_data->userdata);
-	}
-	if (item_data->input_panel_disable_flag) {
-		elm_entry_input_panel_enabled_set(entry, EINA_FALSE);
-	}
-	return ed_name;
-}
-#endif
-
 static Evas_Object *__add_5step_slider(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
 {
 	SETTING_TRACE_BEGIN;
@@ -1207,22 +946,6 @@ static Evas_Object *__add_slider(Setting_GenGroupItem_Data *item_data, Evas_Obje
 	item_data->eo_check = li_slider;
 	return li_slider;
 }
-
-#if 0
-static Evas_Object *__add_layout(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
-{
-	retv_if(!item_data || !parent, NULL);
-	Evas_Object *layout = elm_layout_add(parent);
-	evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	setting_retvm_if(layout == NULL, FALSE, "layout == NULL");
-	elm_layout_theme_set(layout, "layout", "application", "default");
-	int w = item_data->chk_status;
-	int h = item_data->chk_status;
-	elm_object_part_content_set(layout, "elm.swallow.bg", setting_create_blank_rect_customize(parent, w, h));
-	/*elm_object_part_content_set(layout, "elm.swallow.content", navi); */
-	return layout;
-}
-#endif
 
 static void __picker_popup_cancel_btn_clicked_cb(void *data, Evas_Object *obj, void *event_info)
 {
@@ -1306,9 +1029,7 @@ static void _datefield_date_btn_clicked_cb(void *data, Evas_Object *obj, void *e
 	Evas_Object *datetime = elm_datetime_add(param->parent);
 	elm_object_style_set(datetime, "date_layout");
 	elm_datetime_format_set(datetime, "%d/%b/%Y");
-#if 1
 	_datefield_set_min_max(datetime);
-#endif
 	evas_object_data_set(datetime, "popup", popup);
 
 	/*--------------------------------------- */
@@ -1332,9 +1053,7 @@ static void _datefield_time_btn_clicked_cb(void *data, Evas_Object *obj, void *e
 	Datefield_Paramdata	 *param = (Datefield_Paramdata *)data;
 
 	Evas_Object *datetime = elm_datetime_add(param->parent);
-#if 1
 	_datefield_set_min_max(datetime);
-#endif
 
 	elm_object_style_set(datetime, "date_layout");
 
@@ -1472,10 +1191,8 @@ static Evas_Object *__add_datefield_new(Setting_GenGroupItem_Data *item_data, Ev
 	evas_object_smart_callback_add(btn_right, "clicked", _datefield_time_btn_clicked_cb , param);
 	evas_object_show(btn_right);
 
-#if 1
 	param->item_data->btn_left = btn_left;
 	param->item_data->btn_right = btn_right;
-#endif
 	Evas_Object *box = elm_box_add(parent);
 	evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1511,33 +1228,6 @@ static Evas_Object *__add_datefield_new(Setting_GenGroupItem_Data *item_data, Ev
 	return box;
 }
 
-#if 0
-static Evas_Object *__add_process(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
-{
-	retv_if(!item_data || !parent, NULL);
-	Evas_Object *progressbar = elm_progressbar_add(parent);
-	elm_object_style_set(progressbar, PROGRESSBAR_STYLE);
-	evas_object_size_hint_align_set(progressbar,
-									EVAS_HINT_FILL, 0.5);
-	evas_object_size_hint_weight_set(progressbar,
-									 EVAS_HINT_EXPAND,
-									 EVAS_HINT_EXPAND);
-	elm_progressbar_pulse(progressbar, EINA_TRUE);
-	evas_object_show(progressbar);
-	return progressbar;
-}
-
-static Evas_Object *__add_radio_lable(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
-{
-	retv_if(!item_data || !parent, NULL);
-
-	/*a.radio.. */
-	Evas_Object *radio = __add_radio(item_data, parent);
-
-	return radio;
-}
-#endif
-
 static Evas_Object *__add_left_default(Setting_GenGroupItem_Data *item_data, Evas_Object *parent)
 {
 	if (!item_data || !parent || !item_data->l_swallow_path) {
@@ -1552,32 +1242,18 @@ static Evas_Object *__add_left_default(Setting_GenGroupItem_Data *item_data, Eva
 		evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 		return icon;
 	} else if (SWALLOW_Type_1ICON_SMALL_ICON == item_data->swallow_type) {
-		/*Evas_Object *ic = NULL; */
-		/*ic = elm_layout_add(parent); */
-		Evas_Object *c = NULL;
-
-		/*elm_layout_theme_set(ic, "layout", "list/B/type.4", "default"); */
-		c = elm_image_add(parent);
+		Evas_Object *c = elm_image_add(parent);
 		elm_image_file_set(c, item_data->l_swallow_path, NULL);
 		evas_object_size_hint_align_set(c, EVAS_HINT_FILL, EVAS_HINT_FILL);
 		evas_object_size_hint_weight_set(c, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-		/*elm_layout_content_set(ic, "elm.swallow.content", c); */
-		/*return ic; */
 		return c;
 	} else {
-		Evas_Object *ic = NULL;
-		ic = elm_layout_add(parent);
-		Evas_Object *c = NULL;
-
-		elm_layout_theme_set(ic, "layout", "list/B/type.4", "default");
-		c = elm_image_add(parent);
+		Evas_Object *c = elm_image_add(parent);
 		elm_image_file_set(c, item_data->l_swallow_path, NULL);
 		setting_decorate_image_RGBA(c, 14, 41, 73, 255);
 		evas_object_size_hint_align_set(c, EVAS_HINT_FILL, EVAS_HINT_FILL);
 		evas_object_size_hint_weight_set(c, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-		elm_layout_content_set(ic, "elm.swallow.content", c);
-
-		return ic;
+		return c;
 	}
 
 }
@@ -1588,20 +1264,8 @@ static Evas_Object *__add_right_default(Setting_GenGroupItem_Data *item_data, Ev
 		return NULL;
 	}
 
-#if 0
-	Evas_Object *icon = elm_icon_add(parent);
-	elm_image_file_set(icon, item_data->r_swallow_path, NULL);
-	evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	if (!safeStrCmp(item_data->r_swallow_path, SETTING_IMAGE_PATH_CFG"00_list_button_expand_closed.png"))
-		else if (!safeStrCmp(item_data->r_swallow_path, SETTING_IMAGE_PATH_CFG"00_list_button_expand_opened.png"))
-			return icon;
-#else
-	Evas_Object *ic = NULL;
-	ic = elm_layout_add(parent);
-	Evas_Object *icon = NULL;
+	Evas_Object *icon = elm_image_add(parent);
 
-	elm_layout_theme_set(ic, "layout", "list/C/type.3", "default");
-	icon = elm_image_add(parent);
 	if (!safeStrCmp(item_data->r_swallow_path, SETTING_IMAGE_PATH_CFG"00_list_button_expand_closed.png"))
 		setting_decorate_image_RGBA(icon, 14, 41, 73, 255);
 	else if (!safeStrCmp(item_data->r_swallow_path, SETTING_IMAGE_PATH_CFG"00_list_button_expand_opened.png"))
@@ -1609,10 +1273,9 @@ static Evas_Object *__add_right_default(Setting_GenGroupItem_Data *item_data, Ev
 	elm_image_file_set(icon, item_data->r_swallow_path, NULL);
 	evas_object_size_hint_align_set(icon, 0.0, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(icon, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	elm_layout_content_set(ic, "elm.swallow.content", icon);
-	return ic;
 
-#endif
+	return icon;
+
 }
 
 /* draw handler */
@@ -1665,8 +1328,8 @@ static void __multiline_eraser_clicked(void *data, Evas_Object *obj, void *event
 	elm_entry_entry_set(entry, "");
 }
 
-static Evas_Object *_gl_Gendial_new_content_get(void *data, Evas_Object *obj,
-												const char *part)
+static Evas_Object *_gl_Gendial_content_get(void *data, Evas_Object *obj,
+						const char *part)
 {
 	retv_if(!data, NULL);
 	Setting_GenGroupItem_Data *item_data = data;
@@ -1738,73 +1401,6 @@ static Evas_Object *_gl_Gendial_new_content_get(void *data, Evas_Object *obj,
 }
 
 
-#ifdef OLD_GENLIST_STYLE
-static Evas_Object *_gl_Gendial_content_get(void *data, Evas_Object *obj,
-											const char *part)
-{
-	retv_if(!data, NULL);
-	Setting_GenGroupItem_Data *item_data = data;
-	retv_if(!data, NULL);
-	__Content_Drawer *cd_list = NULL;
-	__drawer_fp fp = NULL;
-	/*SETTING_TRACE("content get [%s]",part); */
-
-
-	if (!safeStrCmp(part, "elm.icon.1")) { /* LEFT AREA */
-		if (item_data->swallow_type == SWALLOW_Type_LAYOUT_EDITFIELD
-			&& item_data->isPasswordFlag == TRUE)
-			return NULL;
-		fp = __add_left_default; /*hold default drawer */
-		cd_list = __cd_left;
-	} else if (!safeStrCmp(part, "elm.icon.2")) { /* RIGHT AREA */
-		if (item_data->swallow_type == SWALLOW_Type_LAYOUT_EDITFIELD
-			&& item_data->isPasswordFlag == TRUE)
-			return NULL;
-		fp = __add_right_default; /*hold default drawer */
-		cd_list = __cd_right;
-	} else if (!safeStrCmp(part, "elm.icon")) { /* CENTER WHOLE */
-		fp = __add_left_default; /*hold default drawer */
-		cd_list = __cd_left;
-	} else if (!safeStrCmp(part, "elm.swallow.end")) {
-		/*the default value of fp is NULL here */
-		cd_list = __cd_end;
-	}
-	/* To do : add code for editfield */
-	else if (!safeStrCmp(part, "elm.icon.entry")) {
-		if (item_data->swallow_type == SWALLOW_Type_LAYOUT_DATEFIELD) {
-			/*fp = __add_datefield; */
-			fp = __add_datefield_new;
-		} else {
-			/*fp = __add_entry_without_layout; */
-			fp = __add_entry_padding;
-		}
-	} else if (!safeStrCmp(part, "elm.icon.eraser")) {
-		/*fp = __add_button_eraser; */
-		Evas_Object *btn = elm_button_add(obj);
-		elm_object_style_set(btn, "editfield_clear"); /*Make "X" marked button by changing style. */
-		evas_object_smart_callback_add(btn, "clicked", __multiline_eraser_clicked, item_data);
-		return btn;
-	} else if (!safeStrCmp(part, "elm.icon.edit")) {
-		Evas_Object *btn = elm_button_add(obj);
-		elm_object_style_set(btn, "minus");
-		evas_object_propagate_events_set(btn, EINA_FALSE);
-		return btn;
-	}
-	/* End. */
-
-	if (cd_list) {
-		int idx = 0;
-		for (; idx < SWALLOW_Type_MAX; idx++) {
-			if (item_data->swallow_type == cd_list[idx].type) { /*match using swallow type */
-				fp = cd_list[idx].draw;
-				break;
-			}
-		}
-	}
-	return fp ? fp(item_data, obj) : NULL;
-}
-#endif	/* OLD_GENLIST_STYLE */
-
 static void _gl_Gendial_del(void *data, Evas_Object *obj)
 {
 	/* SETTING_TRACE_BEGIN; */
@@ -1846,21 +1442,12 @@ EXPORT_PUBLIC
 bool setting_create_Gendial_itc(const char *item_style,
 								Elm_Genlist_Item_Class *itc)
 {
-#ifdef OLD_GENLIST_STYLE
 	itc->item_style = item_style;
-	itc->func.text_get = _gl_Gendial_text_get;
+	itc->func.text_get = _gl_Gendial_new_text_get;
 	itc->func.content_get = _gl_Gendial_content_get;
 	itc->func.state_get = NULL;
 	itc->func.del = _gl_Gendial_del;	/* _gl_Gendial_del; */
 	return TRUE;
-#else
-	itc->item_style = item_style;
-	itc->func.text_get = _gl_Gendial_new_text_get;
-	itc->func.content_get = _gl_Gendial_new_content_get;
-	itc->func.state_get = NULL;
-	itc->func.del = _gl_Gendial_del;	/* _gl_Gendial_del; */
-	return TRUE;
-#endif
 }
 
 /**
@@ -2524,51 +2111,6 @@ void setting_genlist_item_disabled_set(Setting_GenGroupItem_Data *item_data, int
 	}
 }
 
-
-EXPORT_PUBLIC
-void setting_check_genlist_item_bottom_line(Elm_Object_Item *item)
-{
-#if 0
-	/*SETTING_TRACE_BEGIN; */
-	ret_if(!item);
-	const Elm_Genlist_Item_Class *itc = elm_genlist_item_item_class_get(item);
-	if (itc && itc->item_style) {
-		/*SETTING_TRACE("itc->item_style:%s", itc->item_style); */
-		if (0 == safeStrCmp(itc->item_style, "groupindex")
-			|| 0 == safeStrNCmp(itc->item_style, "dialogue/separator", safeStrLen("dialogue/separator"))
-			|| 0 == safeStrNCmp(itc->item_style, "bottom_line", safeStrLen("bottom_line"))
-			|| 0 == safeStrNCmp(itc->item_style, "multiline_sub", safeStrLen("multiline_sub"))
-			|| 0 == safeStrNCmp(itc->item_style, "1icon", safeStrLen("1icon"))
-		   ) {
-			if (0 == safeStrCmp(itc->item_style, "groupindex")) {
-				Elm_Object_Item *prev_item = elm_genlist_item_prev_get(item);
-				if (prev_item) {
-					const Elm_Genlist_Item_Class *itc2 = elm_genlist_item_item_class_get(prev_item);
-					if (itc2 && !safeStrCmp(itc2->item_style, "bottom_line")) {
-						elm_object_item_del(prev_item);
-					}
-				}
-			}
-			return;
-		} else {
-
-			/*SETTING_TRACE("Adding[prev_item:%p, next_item:%p].....", prev_item, next_item); */
-			Evas_Object *scroller = elm_object_item_widget_get(item);
-			Elm_Object_Item *parent = elm_genlist_item_parent_get(item);
-			/*SETTING_TRACE("parent:%p", parent); */
-			if (parent) { /*expandable */
-				Elm_Object_Item *it = elm_genlist_item_insert_before(scroller, &(itc_bottom_line), NULL, parent,
-																	 item, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-				elm_genlist_item_select_mode_set(it, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-				Evas_Object *real_obj = elm_object_item_edje_get(item);
-				setting_decorate_image_RGBA(real_obj, 0, 0, 85, 255);
-			}
-
-		}
-	}
-#endif
-}
-
 EXPORT_PUBLIC
 void __gl_realized_cb(void *data, Evas_Object *obj, void *event_info)
 {
@@ -2578,9 +2120,6 @@ void __gl_realized_cb(void *data, Evas_Object *obj, void *event_info)
 
 	/*? Setting_GenGroupItem_Data *list_item = (Setting_GenGroupItem_Data *) */
 	elm_object_item_data_get(item);
-
-	/*/ #if SUPPORT_TTS */
-	setting_check_genlist_item_bottom_line(item);
 }
 
 /*for check,radio,slider etc.. */

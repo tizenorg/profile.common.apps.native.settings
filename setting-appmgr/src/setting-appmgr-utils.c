@@ -244,17 +244,6 @@ Evas_Object *appmgrUg_loading_item(Evas_Object *parent, const char *text,
 	return layout;
 }
 
-Elm_Object_Item *appmgrUg_append_separator(Evas_Object *genlist,
-										   SettingAppMgrUG *ad)
-{
-	Elm_Object_Item *item = NULL;
-
-	item = elm_genlist_item_append(genlist, &ad->itc_sep, NULL, NULL,
-								   ELM_GENLIST_ITEM_NONE, NULL, NULL);
-	elm_genlist_item_select_mode_set(item, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
-	return item;
-}
-
 char *appmgrUg_get_defualt_icon(pkgmgrinfo_appinfo_h handle)
 {
 	int ret;
@@ -666,13 +655,8 @@ Evas_Object *appmgrUg_info_title_gl_icon_get(void *data, Evas_Object *obj,
 	evas_object_size_hint_weight_set(icon, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(icon, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-	lay = elm_layout_add(obj);
-	elm_layout_theme_set(lay, "layout", "list/B/type.2", "default");
-	elm_layout_content_set(lay, "elm.swallow.content", icon);
-
 	evas_object_show(icon);
-
-	return lay;
+	return icon;
 }
 
 void appmgrUg_pkg_disable_enable_cb(void *data, Evas_Object *obj,

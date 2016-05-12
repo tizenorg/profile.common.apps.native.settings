@@ -27,15 +27,10 @@
 #include "setting-storage-utils.h"
 #include "setting-storage-async-worker.h"
 #include "setting-storage-main.h"
-#if 0
-#define SETTING_STORAGE_PIE_RECT_WIDTH (432 * WIDGET_SCALE_FACTOR)
-#define SETTING_STORAGE_PIE_RECT_HEIGHT (414 * WIDGET_SCALE_FACTOR)
-#define SETTING_STORAGE_PIE_CYCLE_SIZE (294 * WIDGET_SCALE_FACTOR)
-#else
+
 #define SETTING_STORAGE_PIE_RECT_WIDTH (ELM_SCALE_SIZE(432))
 #define SETTING_STORAGE_PIE_RECT_HEIGHT (ELM_SCALE_SIZE(414))
-#define SETTING_STORAGE_PIE_CYCLE_SIZE (ELM_SCALE_SIZE(294))
-#endif
+#define SETTING_STORAGE_PIE_CYCLE_SIZE (ELM_SCALE_SIZE(123))
 
 
 
@@ -233,13 +228,13 @@ Evas_Object *storageUg_main_pie_item_get_icon(void *data, Evas_Object *obj,
 
 	retv_if(NULL == obj, NULL);
 	retv_if(NULL == data, NULL);
-	retvm_if(safeStrCmp(part, "elm.icon"), NULL, "part(%s) Invaild", part);
+	retvm_if(safeStrCmp(part, "elm.swallow.content"), NULL, "part(%s) Invaild", part);
 
 	layout_w = SETTING_STORAGE_PIE_RECT_WIDTH;
 	layout_h = SETTING_STORAGE_PIE_RECT_HEIGHT;
 
 	layout = elm_layout_add(obj);
-	elm_layout_file_set(layout, SETTING_THEME_EDJ_NAME, "storage_pie");
+	Eina_Bool res = elm_layout_file_set(layout, SETTING_THEME_EDJ_NAME, "storage_pie");
 
 	evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
@@ -260,7 +255,6 @@ Evas_Object *storageUg_main_pie_item_get_icon(void *data, Evas_Object *obj,
 
 	/*pie */
 	storageUg_main_part_pie_graph_set(layout, "pie_rect", ad);
-	/*setting_resize_object(layout, layout_w, layout_h); */
 	evas_object_show(layout);
 
 	return layout;
