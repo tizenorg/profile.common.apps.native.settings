@@ -37,6 +37,8 @@
 
 #define SETTING_DISPLAY_ICON_PATH 12
 
+typedef struct _SettingDisplayUG SettingDisplayUG;
+
 /**
  * Setting Display UG context
  * all UG function has void* as an agument. this is casted back to SettingDisplayUG
