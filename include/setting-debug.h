@@ -198,7 +198,7 @@
 	} while (0);
 
 #define setting_retm_if(expr, fmt, arg...) do { \
-		 if (expr) { \
+		if (expr) { \
 			SETTING_TRACE_ERROR(fmt, ##arg); \
 			return; \
 		} \
@@ -213,7 +213,7 @@
 
 #ifndef retv_if
 #define retv_if(expr, val) do { \
-		 if (expr) { \
+		if (expr) { \
 			SETTING_TRACE_ERROR("(%s)", #expr); \
 			return (val); \
 		} \
@@ -222,7 +222,7 @@
 
 #ifndef ret_if
 #define ret_if(expr) do { \
-		 if (expr) { \
+		if (expr) { \
 			SETTING_TRACE_ERROR("(%s)", #expr); \
 			return ; \
 		} \

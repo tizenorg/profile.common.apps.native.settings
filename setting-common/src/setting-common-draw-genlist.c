@@ -349,8 +349,7 @@ static char *_gl_Gendial_new_text_get(void *data, Evas_Object *obj,
 			if (item_data->sub_desc) {
 				ret_str = (char *)g_strdup(_(item_data->sub_desc));
 			}
-		}
-		else if (!safeStrCmp(part, "elm.text.main") || !safeStrCmp(part, "elm.text.main.left") || !safeStrCmp(part, "elm.text.main.left.top")) {	/* title */
+		} else if (!safeStrCmp(part, "elm.text.main") || !safeStrCmp(part, "elm.text.main.left") || !safeStrCmp(part, "elm.text.main.left.top")) {	/* title */
 			if (item_data->keyStr) {
 				ret_str = (char *)g_strdup(_(item_data->keyStr));	/* use item_data->keyStr */
 			}
@@ -364,8 +363,7 @@ static char *_gl_Gendial_new_text_get(void *data, Evas_Object *obj,
 			if (item_data->keyStr) {
 				ret_str = (char *)g_strdup(_(item_data->keyStr));
 			}
-		}
-		else {
+		} else {
 			FREE(ret_str);
 			return NULL;
 		}
@@ -1329,7 +1327,7 @@ static void __multiline_eraser_clicked(void *data, Evas_Object *obj, void *event
 }
 
 static Evas_Object *_gl_Gendial_content_get(void *data, Evas_Object *obj,
-						const char *part)
+											const char *part)
 {
 	retv_if(!data, NULL);
 	Setting_GenGroupItem_Data *item_data = data;

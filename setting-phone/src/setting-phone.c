@@ -520,7 +520,7 @@ static void _rot_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	SETTING_TRACE_BEGIN;
 	SettingPhoneUG *phoneUG = (SettingPhoneUG *)data;
-	if (phoneUG  == NULL || phoneUG ->win_get == NULL) {
+	if (phoneUG	 == NULL || phoneUG->win_get == NULL) {
 		return;
 	}
 	int change_ang = elm_win_rotation_get(phoneUG->win_get);
