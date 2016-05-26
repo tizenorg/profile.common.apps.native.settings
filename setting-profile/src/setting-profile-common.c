@@ -131,109 +131,49 @@ char *setting_media_basename(char *path)
 /* | elm.swallow.icon |----------------------------------------------------| elm.swallow.end | */
 /* |				  |			elm.text.sub		  | elm.text.sub.end   |				 | */
 /* ------------------------------------------------------------------------------------------- */
-static Evas_Object *__sound_slider_new_icon_get(void *data, Evas_Object *obj, const char *part)
+static Evas_Object *__sound_slider_icon_get(void *data, Evas_Object *obj, const char *part)
 {
 	SETTING_TRACE_BEGIN;
 	/*appcore_measure_start(); */
 	retv_if(data == NULL, NULL);
 
 	SETTING_TRACE(" -----------------> EDC part [%s]", part);
-	if (!safeStrCmp(part, "elm.swallow.content")) {
-
-		Evas_Object *layout;
-		/* Set custom layout style */
-		layout = elm_layout_add(obj);
-
-		Setting_GenGroupItem_Data *item_data = (Setting_GenGroupItem_Data *)data;
-		Evas_Object *slider = setting_create_slider(obj, item_data->evas,
-													item_data->l_swallow_path,
-													item_data->r_swallow_path,
-													item_data->chk_status,
-													item_data->isIndicatorVisible,
-													item_data->slider_min,
-													item_data->slider_max,
-													item_data->chk_change_cb,
-													item_data->start_change_cb,
-													item_data->stop_change_cb,
-													item_data);
-
-		if (slider == NULL)
-			return NULL;
-
-		char *gl_style = "gl_custom_item";
-		elm_layout_file_set(layout, SETTING_THEME_EDJ_NAME, gl_style);
-		evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-		evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
-		if (0 == safeStrCmp(item_data->keyStr, "IDS_ST_BODY_MEDIA")) {
-			elm_object_style_set(slider, "warning");
-
-			Edje_Message_Float_Set *msg = alloca(sizeof(Edje_Message_Float_Set) + (sizeof(double)));
-			msg->count = 1;
-			/* Warning area point has to be calculated considering rounding off.
-			 * For example, value 10's area will be 9.5~10.4.
-			 * So, if warning area has to be started at 10, we need to calculate the start point with 9.5.
-			 * Warning start point = (Warning min value - 0.5) / (Max_Value - Min_Value) */
-			msg->val[0] = 0.633333;
-			edje_object_message_send(_EDJ(slider), EDJE_MESSAGE_FLOAT_SET, 0, msg);
-			elm_slider_indicator_format_set(slider, "%1.0f");
-			elm_slider_indicator_show_set(slider, 1);
-		}
-
-		item_data->eo_check = slider;
-
-		evas_object_pass_events_set(slider, EINA_TRUE);
-		evas_object_propagate_events_set(slider, EINA_FALSE);
-
-		if (item_data->userdata == NULL)
-			return NULL;
-
-		/* Set text into layout */
-		/*if (0 == safeStrCmp(item_data->keyStr, "IDS_ST_BODY_MEDIA") */
-		/*	|| 0 == safeStrCmp(item_data->keyStr, "IDS_ST_BODY_SYSTEM")) { */
-		elm_object_part_text_set(layout, "elm.text", _(item_data->keyStr));
-		/*} */
-		elm_object_part_content_set(layout, "elm.swallow.content", slider);
-		return layout;
-	}
-	return NULL;
-}
-
-
-
-static Evas_Object *__sound_slider_icon_get(void *data, Evas_Object *obj, const char *part)
-{
-	/*SETTING_TRACE_BEGIN; */
-	/*appcore_measure_start(); */
-	retv_if(data == NULL, NULL);
-
-	if (safeStrCmp(part, "elm.icon")) {
-		/*SETTING_TRACE("EDC part [%s]", part); */
+	if (safeStrCmp(part, "elm.swallow.content"))
 		return NULL;
-	}
 
-	Setting_GenGroupItem_Data *item_data = (Setting_GenGroupItem_Data *)data;
-	Evas_Object *slider = setting_create_slider(obj, item_data->evas,
-												item_data->l_swallow_path,
-												item_data->r_swallow_path,
-												item_data->chk_status,
-												item_data->isIndicatorVisible,
-												item_data->slider_min,
-												item_data->slider_max,
-												item_data->chk_change_cb,
-												item_data->start_change_cb,
-												item_data->stop_change_cb,
-												item_data);
+	Evas_Object *layout;
+	/* Set custom layout style */
+	layout = elm_layout_add(obj);
+
+	Setting_GenGroupItem_Data *item_data =
+		(Setting_GenGroupItem_Data *)data;
+	Evas_Object *slider = setting_create_slider(obj, item_data);
 
 	if (slider == NULL)
 		return NULL;
+
+	char *gl_style = "gl_custom_item";
+	elm_layout_file_set(layout, SETTING_THEME_EDJ_NAME, gl_style);
+	evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
+									 EVAS_HINT_EXPAND);
+
 	if (0 == safeStrCmp(item_data->keyStr, "IDS_ST_BODY_MEDIA")) {
 		elm_object_style_set(slider, "warning");
 
-		Edje_Message_Float_Set *msg = alloca(sizeof(Edje_Message_Float_Set) + (sizeof(double)));
+		Edje_Message_Float_Set *msg =
+			alloca(sizeof(Edje_Message_Float_Set)
+				   + (sizeof(double)));
 		msg->count = 1;
-		msg->val[0] = 0.66667;
-		edje_object_message_send(_EDJ(slider), EDJE_MESSAGE_FLOAT_SET, 0, msg);
+		/* Warning area point has to be calculated considering rounding
+		 * off. For example, value 10's area will be 9.5~10.4.
+		 * So, if warning area has to be started at 10, we need to
+		 * calculate the start point with 9.5.
+		 * Warning start point = (Warning min value - 0.5) /
+		 *				(Max_Value - Min_Value) */
+		msg->val[0] = 0.633333;
+		edje_object_message_send(
+			_EDJ(slider), EDJE_MESSAGE_FLOAT_SET, 0, msg);
 		elm_slider_indicator_format_set(slider, "%1.0f");
 		elm_slider_indicator_show_set(slider, 1);
 	}
@@ -246,7 +186,14 @@ static Evas_Object *__sound_slider_icon_get(void *data, Evas_Object *obj, const 
 	if (item_data->userdata == NULL)
 		return NULL;
 
-	return slider;
+	/* Set text into layout */
+	/*if (0 == safeStrCmp(item_data->keyStr, "IDS_ST_BODY_MEDIA") */
+	/*	|| 0 == safeStrCmp(item_data->keyStr, "IDS_ST_BODY_SYSTEM"))
+	 * { */
+	elm_object_part_text_set(layout, "elm.text", _(item_data->keyStr));
+	/*} */
+	elm_object_part_content_set(layout, "elm.swallow.content", slider);
+	return layout;
 }
 
 /* ***************************************************
@@ -1006,11 +953,11 @@ Evas_Object *setting_sound_init(void *data)
 
 	setting_create_Gendial_itc(SETTING_GENLIST_LEFT_ICON_CONTENT_ICON_STYLE, &(ad->itc_layout));
 
-	ad->itc_layout.func.content_get = __sound_slider_new_icon_get;
+	ad->itc_layout.func.content_get = __sound_slider_icon_get;
 
 	setting_create_Gendial_itc(SETTING_GENLIST_LEFT_ICON_CONTENT_ICON_STYLE, &(ad->itc_layout_1icon));
 
-	ad->itc_layout_1icon.func.content_get = __sound_slider_new_icon_get;
+	ad->itc_layout_1icon.func.content_get = __sound_slider_icon_get;
 
 	/* register view node table */
 	setting_view_node_table_intialize();

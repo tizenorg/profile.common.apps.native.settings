@@ -75,7 +75,7 @@
 		SETTING_TRACE_ERROR("incorrect button number for popup");\
 		return NULL;\
 	} \
-
+	 
 #define ADD_POPUP_MULTI_LANGUAGE_AUTO_UPDATE(popup, title, text, button1_str, button2_str, button3_str) \
 	evas_object_data_set(popup, "title", title);\
 	evas_object_data_set(popup, "text", text);\

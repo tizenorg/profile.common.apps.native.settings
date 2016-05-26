@@ -760,16 +760,17 @@ Evas_Object *setting_create_layout_navi_bar_scroller(Evas_Object *win_layout,
 * @return a layout with a special navigation bar and at most 2 buttons
 */
 EXPORT_PUBLIC
-Evas_Object *setting_create_layout_navi_bar_genlist(Evas_Object *win_layout,
-													Evas_Object *win_obj,
-													char *title_str,
-													char *lbutton_str,
-													char *rbutton_str, /* do nothing */
-													setting_call_back_func lbutton_click_cb,
-													setting_call_back_func rbutton_click_cb,/* do nothing */
-													void *cb_data,
-													Evas_Object **genlist,
-													Evas_Object **navi_bar)
+Evas_Object *setting_create_layout_navi_bar_genlist(
+	Evas_Object *win_layout,
+	Evas_Object *win_obj,
+	char *title_str,
+	char *lbutton_str,
+	char *rbutton_str, /* do nothing */
+	void *lbutton_click_cb,
+	void *rbutton_click_cb,/* do nothing */
+	void *cb_data,
+	Evas_Object **genlist,
+	Evas_Object **navi_bar)
 {
 	/*	win_layout -> layout */
 	Evas_Object *layout = setting_create_win_layout(win_obj);
@@ -796,14 +797,15 @@ Evas_Object *setting_create_layout_navi_bar_genlist(Evas_Object *win_layout,
 */
 EXPORT_PUBLIC
 Elm_Object_Item *
-setting_push_layout_navi_bar(char *title_str,
-							 char *lbutton_str, char *rbutton_str,
-							 char *mbutton_str,
-							 setting_call_back_func lbutton_click_cb,
-							 setting_call_back_func rbutton_click_cb,
-							 setting_call_back_func mbutton_click_cb,
-							 void *cb_data, Evas_Object *eo_view,
-							 Evas_Object *navi_bar, Evas_Object **titleobj)
+setting_push_layout_navi_bar(
+	char *title_str,
+	char *lbutton_str, char *rbutton_str,
+	char *mbutton_str,
+	void *lbutton_click_cb,
+	void *rbutton_click_cb,
+	void *mbutton_click_cb,
+	void *cb_data, Evas_Object *eo_view,
+	Evas_Object *navi_bar, Evas_Object **titleobj)
 {
 
 	return __create_navi_bar_bottom_buttons(title_str,
@@ -853,13 +855,14 @@ setting_push_layout_navi_bar_scroller(Evas_Object *win_main, char *title_str,
 */
 EXPORT_PUBLIC
 Elm_Object_Item *
-setting_push_layout_navi_bar_genlist(Evas_Object *win_layout,
-									 Evas_Object *win_obj, char *title_str,
-									 char *lbutton_str, char *rbutton_str,
-									 setting_call_back_func lbutton_click_cb,
-									 setting_call_back_func rbutton_click_cb,
-									 void *cb_data, Evas_Object **genlist,
-									 Evas_Object *navi_bar)
+setting_push_layout_navi_bar_genlist(
+	Evas_Object *win_layout,
+	Evas_Object *win_obj, char *title_str,
+	char *lbutton_str, char *rbutton_str,
+	void *lbutton_click_cb,
+	void *rbutton_click_cb,
+	void *cb_data, Evas_Object **genlist,
+	Evas_Object *navi_bar)
 {
 	/*	create scroller */
 	Evas_Object *gl = NULL;

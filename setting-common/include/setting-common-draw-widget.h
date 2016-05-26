@@ -406,19 +406,8 @@ extern void setting_enable_expandable_genlist(Evas_Object *genlist, void *data,
  * To create slider object of a genlist item
  * @return a slider container object
  */
-extern Evas_Object *setting_create_slider(Evas_Object *win_main, Evas *evas,
-										  const char *l_swallow_path,
-										  const char *r_swallow_path,
-										  double value,
-										  bool indicator,
-										  double slider_min,
-										  double slider_max,
-										  setting_call_back_func
-										  slider_change_cb,
-										  setting_call_back_func
-										  slider_start_change_cb,
-										  setting_call_back_func
-										  slider_stop_change_cb, void *cb_data);
+extern Evas_Object *setting_create_slider(
+	Evas_Object *win_main, Setting_GenGroupItem_Data *item_data);
 
 /**
  * To create slider object of a genlist item
@@ -594,10 +583,11 @@ extern Elm_Object_Item *setting_create_guild_layout2(Evas_Object *navi_bar,
 * The API to Create a button
 * @return a button
 */
-extern Evas_Object *setting_create_button(Evas_Object *parent, const char *btn_str,
-										  const char *btn_style,
-										  setting_call_back_func btn_click_cb,
-										  void *cb_data);
+extern Evas_Object *setting_create_button(
+	Evas_Object *parent, const char *btn_str,
+	const char *btn_style,
+	void *btn_click_cb,
+	void *cb_data);
 
 extern void setting_nf_check_del_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 extern void setting_nf_check_change_cb(void *data, Evas_Object *obj, void *event_info);
@@ -703,31 +693,33 @@ extern Evas_Object *setting_create_layout_navi_bar_scroller(Evas_Object *win_lay
 *
 * @return a layout with a special navigation bar and at most 2 buttons
 */
-extern Evas_Object *setting_create_layout_navi_bar_genlist(Evas_Object *win_layout,
-														   Evas_Object *win_obj,
-														   char *title_str,
-														   char *lbutton_str,
-														   char *rbutton_str,
-														   setting_call_back_func lbutton_click_cb,
-														   setting_call_back_func rbutton_click_cb,
-														   void *cb_data,
-														   Evas_Object **genlist,
-														   Evas_Object **navi_bar);
+extern Evas_Object *setting_create_layout_navi_bar_genlist(
+	Evas_Object *win_layout,
+	Evas_Object *win_obj,
+	char *title_str,
+	char *lbutton_str,
+	char *rbutton_str,
+	void *lbutton_click_cb,
+	void *rbutton_click_cb,
+	void *cb_data,
+	Evas_Object **genlist,
+	Evas_Object **navi_bar);
 
 /**
 * The general API to push any evas object(@param[in][eo_view]) to the specialized navi_bar,
 *	which contents at most 3 buttons
 */
-extern Elm_Object_Item *setting_push_layout_navi_bar(char *title_str,
-													 char *lbutton_str, char *rbutton_str,
-													 char *mbutton_str,
-													 setting_call_back_func lbutton_click_cb,
-													 setting_call_back_func rbutton_click_cb,
-													 setting_call_back_func mbutton_click_cb,
-													 void *cb_data,
-													 Evas_Object *eo_view,
-													 Evas_Object *navi_bar,
-													 Evas_Object **titleobj);
+extern Elm_Object_Item *setting_push_layout_navi_bar(
+	char *title_str,
+	char *lbutton_str, char *rbutton_str,
+	char *mbutton_str,
+	void *lbutton_click_cb,
+	void *rbutton_click_cb,
+	void *mbutton_click_cb,
+	void *cb_data,
+	Evas_Object *eo_view,
+	Evas_Object *navi_bar,
+	Evas_Object **titleobj);
 
 /**
 * The API to push a scroller object(@param[in][scroller]) to the specialized navi_bar,
@@ -748,16 +740,17 @@ extern Elm_Object_Item *setting_push_layout_navi_bar_scroller(Evas_Object *win_m
 *	which contents at most 2 buttons
 */
 extern Elm_Object_Item *
-setting_push_layout_navi_bar_genlist(Evas_Object *win_layout,
-									 Evas_Object *win_obj,
-									 char *title_str,
-									 char *lbutton_str,
-									 char *rbutton_str,
-									 setting_call_back_func lbutton_click_cb,
-									 setting_call_back_func rbutton_click_cb,
-									 void *cb_data,
-									 Evas_Object **genlist,
-									 Evas_Object *navi_bar);
+setting_push_layout_navi_bar_genlist(
+	Evas_Object *win_layout,
+	Evas_Object *win_obj,
+	char *title_str,
+	char *lbutton_str,
+	char *rbutton_str,
+	void *lbutton_click_cb,
+	void *rbutton_click_cb,
+	void *cb_data,
+	Evas_Object **genlist,
+	Evas_Object *navi_bar);
 
 /**
 * Create a text box, which cannot be edited

@@ -64,6 +64,11 @@ static void setting_ringtone_done_click_cb(void *data, Evas_Object *obj, void *e
 		}
 		SETTING_TRACE("is_def_seleted: %d", is_def_seleted);
 
+		if (ad->sel_item_data && !safeStrCmp(ad->sel_item_data->keyStr,
+											 "IDS_ST_BODY_PHONEPROFILES_SILENT")) {
+			vconf_set_bool(VCONFKEY_SETAPPL_SOUND_STATUS_BOOL, FALSE);
+		}
+
 		if (is_def_seleted) {
 			/*if default item is seleted, return "default" */
 			ad->rlt_file_path = strdup("default");
@@ -132,7 +137,7 @@ static void _ringtone_gl_del(void *data, Evas_Object *obj)
 static inline void appmgrUg_init_itcs(SettingRingtoneUG *ad)
 {
 	SETTING_TRACE_BEGIN;
-	ad->itc_ring.item_style = "1line";
+	ad->itc_ring.item_style = "type1";
 	ad->itc_ring.func.text_get = _ringtone_gl_label_get;
 	ad->itc_ring.func.content_get = _ringtone_gl_icon_get;
 	ad->itc_ring.func.state_get = NULL;
@@ -171,8 +176,8 @@ static void ringtone_item_sel(void *data, Evas_Object *obj, void *event_info)
 
 static int _compare_cb(const void *d1, const void *d2)
 {
-	fileNodeInfo *pNode1 = d1;
-	fileNodeInfo *pNode2 = d2;
+	fileNodeInfo *pNode1 = (fileNodeInfo *) d1;
+	fileNodeInfo *pNode2 = (fileNodeInfo *) d2;
 
 	return safeStrCmp(pNode1->media_name, pNode2->media_name);
 }

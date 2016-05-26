@@ -505,17 +505,6 @@ const char *__display_brightness_get_vconf_need_save()
 	}
 }
 
-static double _step_size_calculate(Evas_Object *obj, double min, double max)
-{
-	double step = 0.0;
-	int steps = 0;
-
-	steps = max - min;
-	if (steps) step = (1.0 / steps);
-
-	return step;
-}
-
 static char *_setting_display_brightness_indicator_format(double val)
 {
 	char buf[16] = {0,};
@@ -535,67 +524,75 @@ static void _indicator_free(char *str)
 
 static Evas_Object *__setting_brightness_add_slider(void *data, Evas_Object *obj, const char *part)
 {
-	Setting_GenGroupItem_Data *item_data = (Setting_GenGroupItem_Data *) data;
-	Eina_List *items = NULL;
-
 	SETTING_TRACE_BEGIN;
+	Setting_GenGroupItem_Data *item_data =
+		(Setting_GenGroupItem_Data *) data;
+	Eina_List *items = NULL;
+	Evas_Object *layout = NULL;
+	Evas_Object *slider = NULL;
+	int auto_value = SETTING_BRIGHTNESS_AUTOMATIC_ON;
+	int err, ret;
 
-	setting_retvm_if(!data || !obj, NULL, "!data || !obj");
-	retv_if(!data, NULL);
+	setting_retvm_if(!data || !obj || !part, NULL, "!data||!obj||!part");
+	if (safeStrCmp(part, "elm.swallow.content"))
+		return NULL;
 
-	if (!safeStrCmp(part, "elm.swallow.content")) {
+	/* Set custom layout style */
+	layout = elm_layout_add(obj);
+	elm_layout_file_set(layout, SETTING_THEME_EDJ_NAME,
+						"gl_custom_item");
+	evas_object_size_hint_align_set(layout, EVAS_HINT_FILL,
+									EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND,
+									 EVAS_HINT_EXPAND);
 
-		Evas_Object *layout;
+	/* "elm/slider/horizontal/default" */
+	slider = setting_create_slider(obj, item_data);
+	retv_if(slider == NULL, NULL);
 
-		/* Set custom layout style */
-		layout = elm_layout_add(obj);
-		elm_layout_file_set(layout, SETTING_SLIDER_EDJ_NAME, "gl_custom_item");
-		evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-		evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
-		Evas_Object *slider = elm_slider_add(obj);	/*	"elm/slider/horizontal/default" */
-		retv_if(slider == NULL, NULL);
-
-		elm_layout_signal_emit(item_data->eo_check, "elm,state,val,hide", "");
-
-		elm_slider_min_max_set(slider, BRIGHTNESS_MIN, BRIGHTNESS_MAX);
-		evas_object_size_hint_weight_set(slider, EVAS_HINT_EXPAND, 0.0);
-		evas_object_size_hint_align_set(slider, EVAS_HINT_FILL, 0.5);
-
-		if (item_data->chk_change_cb)
-			evas_object_smart_callback_add(slider, "changed", item_data->chk_change_cb, item_data);
-
-		if (item_data->stop_change_cb)
-			evas_object_smart_callback_add(slider, "slider,drag,stop", item_data->stop_change_cb, item_data);
-
-		if (item_data->start_change_cb)
-			evas_object_smart_callback_add(slider, "slider,drag,start", item_data->start_change_cb, item_data);
-
-		evas_object_event_callback_add(slider, EVAS_CALLBACK_MOUSE_DOWN, _brightness_slider_mouse_down_cb, item_data);
-		evas_object_event_callback_add(slider, EVAS_CALLBACK_MOUSE_UP, _brightness_slider_mouse_up_cb, item_data);
-		evas_object_smart_callback_add(slider, "delay,changed", _brightness_slider_delayed_changed_cb, item_data);
-
-		Evas_Object *icon1 = elm_icon_add(slider);
-		elm_image_file_set(icon1, item_data->l_swallow_path, NULL);
-		evas_object_size_hint_aspect_set(icon1, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-		elm_object_content_set(slider, icon1);
-
-		elm_slider_value_set(slider, item_data->chk_status);
-		evas_object_pass_events_set(slider, 1);
-		evas_object_propagate_events_set(slider, 0);
-		item_data->eo_check = slider;
-
-		if (item_data->item) {
-			/* convey highlight to its content */
-			items = eina_list_append(items, slider);
-			elm_object_item_access_order_set(item_data->item, items);
-		}
-
-		elm_object_part_content_set(layout, "elm.swallow.content", slider);
-		return layout;
+	/* if get failed,to hold value SETTING_BRIGHTNESS_AUTOMATIC_ON */
+	ret = setting_get_int_slp_key(
+			  INT_SLP_SETTING_AUTOMATIC_BRIGHTNESS,
+			  &auto_value, &err);
+	elm_layout_signal_emit(item_data->eo_check,
+						   "elm,state,val,hide", "");
+	/*add error handle,due to different target env.. */
+	if (ret != 0) {
+		SETTING_TRACE_ERROR(
+			"Failed to get value of [%s]",
+			VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT);
 	}
 
-	return NULL;
+	if (auto_value) {
+		elm_slider_indicator_format_function_set(
+			slider,
+			_setting_display_brightness_indicator_format,
+			_indicator_free);
+		elm_object_style_set(slider, "center_point");
+	}
+	evas_object_event_callback_add(slider, EVAS_CALLBACK_MOUSE_DOWN,
+								   _brightness_slider_mouse_down_cb, item_data);
+	evas_object_event_callback_add(slider, EVAS_CALLBACK_MOUSE_UP,
+								   _brightness_slider_mouse_up_cb, item_data);
+	evas_object_smart_callback_add(slider, "delay,changed",
+								   _brightness_slider_delayed_changed_cb,
+								   item_data);
+
+	evas_object_pass_events_set(slider, EINA_TRUE);
+	evas_object_propagate_events_set(slider, EINA_FALSE);
+	item_data->eo_check = slider;
+
+	if (item_data->item) {
+		/* convey highlight to its content */
+		items = eina_list_append(items, slider);
+		elm_object_item_access_order_set(item_data->item, items);
+	}
+	/* Set text into layout */
+	elm_object_part_text_set(layout, "elm.text",
+							 _("IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING"));
+	elm_object_part_content_set(layout, "elm.swallow.content", slider);
+
+	return layout;
 }
 
 void construct_brightness(void *data, Evas_Object *genlist)

@@ -343,9 +343,11 @@ static inline void appmgrUg_pkg_get_pkg_size(appmgr_pkginfo *info)
 		SETTING_TRACE_ERROR("pkgmgr_client_new() Fail");
 		return;
 	}
-
-	ret = pkgmgr_client_get_size(info->pc_size, info->pkgid, PM_GET_TOTAL_SIZE,
-								 (pkgmgr_handler)appmgrUg_pkg_get_pkg_size, info);
+	/*
+	@FIX ME add correct callback handler for this pkgmgr call
+		ret = pkgmgr_client_get_size(info->pc_size, info->pkgid, PM_GET_TOTAL_SIZE,
+									 NULL, info);
+	*/
 	warn_if(ret, "pkgmgr_client_get_size(%s) Fail(%d)", info->pkgid, ret);
 }
 
@@ -357,16 +359,21 @@ static void _get_cache_cb(const char *package_id, const package_size_info_h size
 	appmgr_pkginfo *info = ad->pkginfo;
 	retm_if(info == NULL, "info == NULL");
 
-#if 0
-	info->sz_cache = (int)size_info->cache_size;
-	SETTING_TRACE("cache size: %lld", size_info->cache_size);
-#else
-	long long cachesize = 0;
-	package_size_info_get_cache_size(size_info, &cachesize);
-	SETTING_TRACE("cache size: %lld", cachesize);
-	info->sz_cache = cachesize;
-#endif
+	long long size = 0;
+	package_size_info_get_cache_size(size_info, &size);
+	SETTING_TRACE("cache size: %lld", size);
+	info->sz_cache = size;
+
+	package_size_info_get_data_size(size_info, &size);
+	SETTING_TRACE("data size: %lld", size);
+	info->sz_data = (int)size;
+
+	package_size_info_get_app_size(size_info, &size);
+	SETTING_TRACE("app size: %lld", size);
+	info->sz_total = info->sz_data + (int)size;
+
 	appmgrUg_pkg_update_cache_size(ad);
+	appmgrUg_pkg_update_size(info);
 }
 
 static Eina_Bool __get_pkg_size_on_time(void *data)
@@ -388,15 +395,6 @@ static Eina_Bool __get_pkg_size_on_time(void *data)
 		if (ret != 0) {
 			SETTING_TRACE_ERROR("failed to invoke ret = %d", ret);
 		}
-	}
-
-	/*get pkg total & data size */
-	if (ad->sel_total < 0 || ad->sel_data_size < 0) {
-		appmgrUg_pkg_get_pkg_size(info);
-	} else {
-		info->sz_total = ad->sel_total;
-		info->sz_data = ad->sel_data_size;
-		appmgrUg_pkg_update_size(info);
 	}
 
 	ad->pkginfo_getsize_timer = NULL;
