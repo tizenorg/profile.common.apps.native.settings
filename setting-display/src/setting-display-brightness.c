@@ -623,12 +623,6 @@ void construct_brightness(void *data, Evas_Object *genlist)
 	left_icon = setting_brightness_get_slider_icon(value);
 
 	/* [UI] Slider control for Bightness */
-
-	setting_create_Gendial_field_def(genlist, &(ad->itc_1text),
-									 NULL,
-									 NULL, SWALLOW_Type_INVALID,
-									 NULL, NULL, 0, "IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING",
-									 NULL, NULL);
 	ad->data_br_sli =
 		setting_create_Gendial_field_def(genlist, &(ad->itc_1icon), NULL,
 										 NULL, SWALLOW_Type_LAYOUT_SLIDER,

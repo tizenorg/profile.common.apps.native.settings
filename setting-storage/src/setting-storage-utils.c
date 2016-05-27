@@ -403,7 +403,7 @@ static int storageUg_get_apps_info(uid_t target_uid, int req_id, const char *pkg
 	ad->sz_apps = atof(val);
 
 	storageug_genlist_text_update(ad->apps, ad->sz_apps);
-	setting_retvm_if(!ad->pie_it, 0, "!ad->pie_it")
+	setting_retvm_if(!ad->pie_it, 0, "!ad->pie_it");
 	elm_genlist_item_update(ad->pie_it);
 	return 0;
 }

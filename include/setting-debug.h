@@ -181,13 +181,15 @@
 	} while (0);
 #endif
 #else
-#define SETTING_TRACE(fmt, arg...)
-#define SETTING_TRACE_SECURE_DEBUG(fmt, arg...)
-#define SETTING_TRACE_DEBUG(fmt, arg...)
-#define SETTING_TRACE_WARNING(fmt, arg...)
-#define SETTING_TRACE_ERROR(fmt, arg...)
-#define SETTING_TRACE_BEGIN
-#define SETTING_TRACE_END
+
+#define SETTING_TRACE(fmt, arg...) do {} while (0)
+#define SETTING_TRACE_SECURE_DEBUG(fmt, arg...) do {} while (0)
+#define SETTING_TRACE_DEBUG(fmt, arg...) do {} while (0)
+#define SETTING_TRACE_WARNING(fmt, arg...) do {} while (0)
+#define SETTING_TRACE_ERROR(fmt, arg...) do {} while (0)
+#define SETTING_TRACE_BEGIN do {} while (0)
+#define SETTING_TRACE_END do {} while (0)
+
 #endif
 
 #define setting_retvm_if(expr, val, fmt, arg...) do { \

@@ -66,7 +66,7 @@ _main_gl_del_cb(void *data, Evas_Object *obj EINA_UNUSED)
 static inline void appmgrUg_init_itcs(SettingAppMgrUG *ad)
 {
 	setting_create_Gendial_itc(SETTING_GENLIST_GROUP_INDEX_STYLE, &(ad->itc_grp_title));
-	setting_create_Gendial_itc("multiline_sub", &(ad->itc_multiline));
+	setting_create_Gendial_itc(SETTING_GENLIST_MULTILINE_STYLE, &(ad->itc_multiline));
 	setting_create_Gendial_itc(SETTING_GENLIST_ICON_1LINE_STYLE, &(ad->itc_1txt_1ic_2));
 	setting_create_Gendial_itc(SETTING_GENLIST_ICON_1LINE_STYLE, &(ad->itc_1txt));
 	setting_create_Gendial_itc("multiline_sub.main", &(ad->itc_multiline_2txt));
@@ -77,7 +77,7 @@ static inline void appmgrUg_init_itcs(SettingAppMgrUG *ad)
 	ad->itc_main.func.state_get = NULL;
 	ad->itc_main.func.del = _main_gl_del_cb;
 
-	ad->itc_1ic.item_style = "full";
+	ad->itc_1ic.item_style = "1icon";
 	ad->itc_1ic.func.text_get = NULL;
 	ad->itc_1ic.func.content_get = appmgrUg_run_gl_stop_btn;
 	ad->itc_1ic.func.state_get = NULL;

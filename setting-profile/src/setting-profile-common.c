@@ -691,7 +691,7 @@ static Eina_Bool __volume_key_down_cb(void *data, int type, void *event)
 
 		sound_manager_get_current_sound_type(&sound_type);
 		if (sound_type == SOUND_TYPE_MEDIA) {
-			SETTING_TRACE("sound_type == SOUND_TYPE_MEDIA")
+			SETTING_TRACE("sound_type == SOUND_TYPE_MEDIA");
 			int ret =  sound_manager_get_volume(sound_type, &volume);
 			SETTING_TRACE("ret:%d", ret);
 			if (volume < 15) {
@@ -713,8 +713,8 @@ static Eina_Bool __volume_key_down_cb(void *data, int type, void *event)
 				}
 			}
 		} else {
-			SETTING_TRACE("sound_type == SOUND_TYPE_RINGTONE")
-			int ret =  sound_manager_get_volume(SOUND_TYPE_RINGTONE, &volume);
+			SETTING_TRACE("sound_type == SOUND_TYPE_RINGTONE");
+			sound_manager_get_volume(SOUND_TYPE_RINGTONE, &volume);
 			/*ad->backup_ringtong_volume = volume; */
 			/*vconf_set_int(VCONFKEY_SETAPPL_RINGTONE_BACKUP_VOLUME, ad->backup_ringtong_volume); */
 			/*SETTING_TRACE("ret:%d, volume:%d, ad->backup_ringtong_volume:%d", ret, volume, ad->backup_ringtong_volume); */
@@ -777,8 +777,9 @@ static Eina_Bool __volume_key_down_cb(void *data, int type, void *event)
 		ad->is_pressing = TRUE;
 		sound_manager_get_current_sound_type(&sound_type);
 		if (sound_type == SOUND_TYPE_MEDIA) {
-			SETTING_TRACE("sound_type == SOUND_TYPE_MEDIA")
-			int ret =  sound_manager_get_volume(sound_type, &volume);
+			SETTING_TRACE("sound_type == SOUND_TYPE_MEDIA");
+			int ret =  sound_manager_get_volume(sound_type,
+												&volume);
 			SETTING_TRACE("ret:%d", ret);
 			if (volume > 0) {
 				sound_manager_set_volume(sound_type, --volume);

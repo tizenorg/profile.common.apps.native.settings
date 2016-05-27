@@ -64,11 +64,10 @@
 #define SETTING_ICON_PATH		_TZ_SYS_RO_APP"/org.tizen.setting/res/icons"
 #define SETTING_UG_ICON_PATH	_TZ_SYS_RO_UG"/res/icon/org.tizen.setting"
 
-#define SETTING_UG_PATH			_TZ_SYS_RO_UG"/lib"
-#define SETTING_UG_PATH_USR		_TZ_SYS_RO_UG"/lib"
+#define SETTING_APP_MGR_ICON_SIZE	117
 
-/*#define SETTING_UG_PATH_OPT			"/opt/ug/lib" */
-/*#define SETTING_UG_PATH_USR_OPT		"/opt/ug/lib" */
+#define SETTING_UG_PATH		_TZ_SYS_RO_UG"/lib"
+#define SETTING_UG_PATH_USR	_TZ_SYS_RO_UG"/lib"
 
 #define SETTING_PATH_MEMORY_OPT			"/opt/usr"
 #define SETTING_PATH_SDCARD_OPT			_TZ_SYS_MEDIA"/sdcard"
@@ -83,19 +82,10 @@
 
 
 #define SETTING_EDJ_PATH		EDJDIR
-#define SETTINGS_EDJ				SETTING_EDJ_PATH"/settings.edj"
-#define SETTING_MEMORY_EDJ_NAME		SETTING_EDJ_PATH"/setting-memory.edj"
+#define SETTINGS_EDJ			SETTING_EDJ_PATH"/settings.edj"
 #define SETTING_THEME_EDJ_NAME		SETTING_EDJ_PATH"/setting-theme.edj"
-#define SETTING_5STEP_SLIDER_EDJ_NAME		SETTING_EDJ_PATH"/font-slider.edj"
-#define SETTING_NEWUX_EDJ_NAME		SETTING_EDJ_PATH"/setting-newux.edj"
-#define SETTING_SOUND_EDJ_NAME		SETTING_EDJ_PATH"/setting-sound.edj"
+#define SETTING_5STEP_SLIDER_EDJ_NAME	SETTING_EDJ_PATH"/font-slider.edj"
 #define SETTING_GENLIST_EDJ_NAME	SETTING_EDJ_PATH"/setting-genlist.edj"
-#define SETTING_NEW_GENLIST_EDJ_NAME	SETTING_EDJ_PATH"/setting-new-genlist.edj"
-#define SETTING_PROC_EDJ_NAME			SETTING_EDJ_PATH"/setting-proc.edj"
-#define SETTING_SLIDER_EDJ_NAME	SETTING_EDJ_PATH"/setting-slider.edj"
-#define SETTING_EFF_EDJ_NAME			SETTING_EDJ_PATH"/setting-eff.edj"
-
-#define SETTING_THEME_COLOR_THEME_EDJ_NAME		SETTING_EDJ_PATH"/setting-color-theme.edj"
 
 
 #define RCS_CHECHING_FILE		_TZ_SYS_SHARE"/ims/.RCS_ENABLED"
