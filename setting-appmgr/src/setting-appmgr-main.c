@@ -390,6 +390,8 @@ char *appmgrUg_main_gl_label_new_get(void *data, Evas_Object *obj, const char *p
 			label = strdup(desc);
 		} else {
 			label = strdup(_(MGRAPP_STR_COMPUTING));
+			info->size_idler = ecore_timer_add(0.6,
+											   (Ecore_Task_Cb)	appmgrUg_get_app_size, info);
 		}
 	}
 
@@ -423,16 +425,18 @@ Evas_Object *appmgrUg_main_gl_icon_new_get(void *data, Evas_Object *obj, const c
 	retv_if(data == NULL, NULL);
 
 	if (!safeStrCmp(part, "elm.swallow.icon")) {
+		icon = elm_icon_add(obj);
 
 		SETTING_TRACE(" -------> info->icon_path : %s", info->icon_path);
 
 		if (NULL == info->icon_path)
 			info->icon_path = appmgrUg_get_listinfo_default_icon(info->mainappid);
 
-		icon = elm_icon_add(obj);
 		elm_image_file_set(icon, info->icon_path, NULL);
 		elm_image_resizable_set(icon, EINA_TRUE, EINA_TRUE);
-		evas_object_size_hint_min_set(icon, SETTING_APP_MGR_ICON_SIZE, SETTING_APP_MGR_ICON_SIZE);
+
+		evas_object_size_hint_weight_set(icon, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+		evas_object_size_hint_align_set(icon, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 		return icon;
 	} else {

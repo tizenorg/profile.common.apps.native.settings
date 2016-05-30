@@ -21,6 +21,8 @@
 
 #include "setting-appmgr.h"
 
+#include <package_manager.h>
+
 enum {
 	APPMGRUG_SORT_ATOZ,
 	APPMGRUG_SORT_ZTOA,
@@ -34,6 +36,8 @@ void appmgrUg_get_runlistinfos_cb(int fn_result, SettingAppMgrUG *ad);
 void appmgrUg_pkgmgr_subscribe(SettingAppMgrUG *ad);
 void appmgrUg_pkgmgr_deinit(SettingAppMgrUG *ad);
 void appmgrUg_free_listinfos(SettingAppMgrUG *ad);
+Eina_Bool appmgrUg_get_app_size(void *data);
+
 void appmgrUg_size_to_str(int size, char *desc, int desc_size);
 char *appmgrUg_info_title_gl_label_get(void *data, Evas_Object *obj,
 									   const char *part);

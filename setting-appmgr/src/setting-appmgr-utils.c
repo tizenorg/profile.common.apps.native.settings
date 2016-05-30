@@ -39,6 +39,45 @@ extern void appmgrUg_run_stop_click(void *data, Evas_Object *obj, void *event_in
 
 static void appmgrUg_free_listinfo(gpointer data);
 
+void _get_size_cb(const char *package_id, const package_size_info_h size_info, void *data)
+{
+	retm_if(data == NULL, "data == NULL");
+	appmgr_listinfo *info = data;
+
+	long long size = 0;
+	package_size_info_get_data_size(size_info, &size);
+	info->total_size = (int)size;
+
+	package_size_info_get_app_size(size_info, &size);
+	info->total_size += (int)size;
+
+	info->valid_size = true;
+	if (info->size_idler) {
+		ecore_timer_del(info->size_idler);
+		info->size_idler = NULL;
+	}
+	elm_genlist_item_fields_update(info->item, "elm.text.sub",
+								   ELM_GENLIST_ITEM_FIELD_TEXT);
+}
+
+Eina_Bool appmgrUg_get_app_size(void *data)
+{
+	retvm_if(data == NULL, EINA_FALSE, "Data parameter is NULL");
+	appmgr_listinfo *info = data;
+	retv_if(info == NULL, 0);
+
+	elm_genlist_item_fields_update(info->item, "elm.text.sub",
+								   ELM_GENLIST_ITEM_FIELD_TEXT);
+
+	int ret = package_manager_get_package_size_info(info->pkgid,
+													_get_size_cb, info);
+	if (ret != 0) {
+		SETTING_TRACE_ERROR("failed to invoke ret = %d", ret);
+	}
+
+	return EINA_FALSE;
+}
+
 void _free_GSList(GSList *list)
 {
 	g_slist_foreach(list, (GFunc)g_free, NULL);
@@ -591,6 +630,13 @@ void appmgrUg_pkgmgr_subscribe(SettingAppMgrUG *ad)
 		return;
 	}
 
+	ret = pkgmgr_client_set_status_type(ad->pc_all_size, PKGMGR_CLIENT_STATUS_GET_SIZE);
+	if (ret < 0) {
+		SETTING_TRACE_ERROR("pkgmgr_client_set_status_type() Fail(%d)", ret);
+		pkgmgr_client_free(ad->pc_all_size);
+		ad->pc_main = NULL;
+	}
+
 	ret = pkgmgr_client_listen_status(ad->pc_main, (pkgmgr_handler)appmgrUg_pkgmgr_changed_cb, ad);
 	if (ret < 0) {
 		SETTING_TRACE_ERROR("pkgmgr_client_listen_status() Fail(%d)", ret);
@@ -641,7 +687,6 @@ Evas_Object *appmgrUg_info_title_gl_icon_get(void *data, Evas_Object *obj,
 											 const char *part)
 {
 	Evas_Object *icon = NULL;
-	Evas_Object *lay = NULL;
 	SettingAppMgrUG *ad = data;
 
 	retv_if(data == NULL, NULL);
@@ -688,10 +733,11 @@ void appmgrUg_pkg_disable_enable_cb(void *data, Evas_Object *obj,
 void appmgrUg_pkg_stop_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	SETTING_TRACE_BEGIN;
-	setting_retm_if(data == NULL, "Data parameter is NULL");
+
 	SettingAppMgrUG *ad = data;
-	ret_if(NULL == ad->pkginfo);
+	setting_retm_if(ad == NULL, "Data parameter is NULL");
 	appmgr_pkginfo *info = ad->pkginfo;
+	ret_if(info == NULL);
 
 	GList *cur = info->appids;
 	while (cur) {
@@ -730,28 +776,35 @@ Evas_Object *appmgrUg_info_2button1_gl_icon_get(void *data, Evas_Object *obj,
 												const char *part)
 {
 	SETTING_TRACE_BEGIN;
-	setting_retvm_if(data == NULL, NULL, "Data parameter is NULL");
-	if (0 != safeStrCmp(part, "elm.icon"))
-		return NULL;
-	SettingAppMgrUG *ad = data;
-	retv_if(NULL == ad->pkginfo, NULL);
-	appmgr_pkginfo *info = ad->pkginfo;
 
-	Evas_Object *box = elm_box_add(obj);
+	SettingAppMgrUG *ad = data;
+	appmgr_pkginfo *info;
+	bool running_flag;
+	GList *cur = NULL;
+	int ret;
+	char *appid = NULL;
+	Evas_Object *box = NULL;
+	Evas_Object *button1 = NULL;
+	Evas_Object *button2 = NULL;
+
+	setting_retvm_if(ad == NULL, NULL, "Data parameter is NULL");
+	if (0 != safeStrCmp(part, "elm.swallow.content")) {
+		return NULL;
+	}
+	setting_retvm_if(ad->pkginfo == NULL, NULL, "ad->pkginfo is NULL");
+	info = ad->pkginfo;
+
+	box = elm_box_add(obj);
 	elm_box_horizontal_set(box, 1);
 	elm_box_align_set(box, 0.0, 0.5);
 	elm_box_padding_set(box, 10, 0);
 
 	/* Force stop button */
-	/*check if have running app */
-	bool running_flag = 0;
-	GList *cur = info->appids;
+	running_flag = false;	/* check if have running app */
+	cur = info->appids;
 	while (cur) {
-		int ret;
-		char *appid = cur->data;
-
+		appid = cur->data;
 		cur = cur->next;
-
 		if (NULL == appid)
 			continue;
 
@@ -762,14 +815,18 @@ Evas_Object *appmgrUg_info_2button1_gl_icon_get(void *data, Evas_Object *obj,
 		}
 	}
 
-	Evas_Object *button1 =
-		setting_create_button(box, MGRAPP_STR_FORCE_STOP, NULL, appmgrUg_pkg_stop_cb, ad);
+	button1 = setting_create_button(box, MGRAPP_STR_FORCE_STOP,
+									NULL, appmgrUg_pkg_stop_cb, ad);
+	setting_retvm_if(!button1, NULL, "button1 is NULL");
+
 	if (!running_flag)
 		elm_object_disabled_set(button1, EINA_TRUE);
 
 	/* Disable/Enable button */
-	Evas_Object *button2 =
-		setting_create_button(box, MGRAPP_STR_DISABLE, NULL, appmgrUg_pkg_disable_enable_cb, ad);
+	button2 = setting_create_button(box, MGRAPP_STR_DISABLE,
+									NULL, appmgrUg_pkg_disable_enable_cb, ad);
+	setting_retvm_if(!button2, NULL, "button2 is NULL");
+
 	if (!info->is_support_disable) {
 		elm_object_disabled_set(button2, EINA_TRUE);
 	} else if (info->is_disable) {
@@ -790,24 +847,28 @@ Evas_Object *appmgrUg_info_2button2_gl_icon_get(void *data, Evas_Object *obj,
 												const char *part)
 {
 	SETTING_TRACE_BEGIN;
-	setting_retvm_if(data == NULL, NULL, "Data parameter is NULL");
-	if (0 != safeStrCmp(part, "elm.icon"))
-		return NULL;
-	SettingAppMgrUG *ad = data;
 
-	Evas_Object *box = elm_box_add(obj);
+	SettingAppMgrUG *ad = data;
+	int ret;
+	int mmc;
+	char *btn_str = NULL;
+	appmgr_pkginfo *info = NULL;
+	const char *mmc_key = VCONFKEY_SYSMAN_MMC_STATUS;
+	Evas_Object *box = NULL;
+	Evas_Object *button1 = NULL;
+	Evas_Object *button2 = NULL;
+
+	setting_retvm_if(ad == NULL, NULL, "Data parameter is NULL");
+	info = ad->pkginfo;
+	setting_retvm_if(info == NULL, NULL, "ad->pkginfo is NULL");
+	if (safeStrCmp(part, "elm.swallow.content") != 0)
+		return NULL;
+
+	box = elm_box_add(obj);
 	elm_box_horizontal_set(box, 1);
 	elm_box_align_set(box, 0.0, 0.5);
 	elm_box_padding_set(box, 8, 0);
 
-	int ret, mmc;
-	char *btn_str;
-	appmgr_pkginfo *info;
-	const char *mmc_key = VCONFKEY_SYSMAN_MMC_STATUS;
-
-	retv_if(NULL == ad->pkginfo, NULL);
-
-	info = ad->pkginfo;
 
 	/* Move to */
 	mmc = VCONFKEY_SYSMAN_MMC_REMOVED;
@@ -819,8 +880,8 @@ Evas_Object *appmgrUg_info_2button2_gl_icon_get(void *data, Evas_Object *obj,
 	else
 		btn_str = MGRAPP_STR_MOVE_TO_PHONE;
 
-	Evas_Object *button1 =
-		setting_create_button(box, btn_str, NULL, appmgrUg_pkg_moveto_cb, ad);
+	button1 = setting_create_button(box, btn_str, NULL,
+									appmgrUg_pkg_moveto_cb, ad);
 
 	if (VCONFKEY_SYSMAN_MMC_MOUNTED != mmc || !info->is_movable || info->is_preload)
 		elm_object_disabled_set(button1, EINA_TRUE);
@@ -831,8 +892,8 @@ Evas_Object *appmgrUg_info_2button2_gl_icon_get(void *data, Evas_Object *obj,
 	else
 		btn_str = MGRAPP_STR_UNINSTALL;
 
-	Evas_Object *button2 =
-		setting_create_button(box, btn_str, NULL, appmgrUg_pkg_uninstall_click, ad);
+	button2 = setting_create_button(box, btn_str, NULL,
+									appmgrUg_pkg_uninstall_click, ad);
 
 	if (!info->removable)
 		elm_object_disabled_set(button2, EINA_TRUE);
@@ -850,8 +911,9 @@ Evas_Object *appmgrUg_info_1button_gl_icon_get(void *data, Evas_Object *obj,
 											   const char *part)
 {
 	SETTING_TRACE_BEGIN;
+
 	setting_retvm_if(data == NULL, NULL, "Data parameter is NULL");
-	if (0 != safeStrCmp(part, "elm.icon"))
+	if (0 != safeStrCmp(part, "elm.swallow.content"))
 		return NULL;
 
 	Setting_GenGroupItem_Data *item_data = data;
@@ -869,24 +931,25 @@ Evas_Object *appmgrUg_info_1button_gl_icon_get(void *data, Evas_Object *obj,
 
 	info = ad->pkginfo;
 
-	Evas_Object *button1 =
-		setting_create_button(box, "BLANK", NULL, NULL, NULL);
-
-	evas_object_hide(button1);
-
 	/* Clear cache */
-
-	Evas_Object *button2 =
-		setting_create_button(box, MGRAPP_STR_CLEAR_CACHE, NULL, appmgrUg_pkg_clear_cache_click, ad);
+	Evas_Object *button1 = setting_create_button(box,
+												 MGRAPP_STR_CLEAR_CACHE, NULL,
+												 appmgrUg_pkg_clear_cache_click, ad);
 
 	if (info->sz_cache <= 0) {
-		elm_object_disabled_set(button2, EINA_TRUE);
+		elm_object_disabled_set(button1, EINA_TRUE);
 	}
+
+	/* Fake button to reserve space after button1 */
+	Evas_Object *button2 = setting_create_button(box, "BLANK", NULL, NULL,
+												 NULL);
+	evas_object_hide(button2);
+
 	elm_box_pack_end(box, button1);
 	elm_box_pack_end(box, button2);
 
 	/*evas_object_show(button1); */
-	evas_object_show(button2);
+	evas_object_show(button1);
 	evas_object_show(box);
 
 	SETTING_TRACE_END;

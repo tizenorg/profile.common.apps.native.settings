@@ -58,9 +58,9 @@ DEFINE_ITC1(SETTING_GENLIST_ICON_1LINE_STYLE, itc_cm_1text_1icon_2);
 DEFINE_ITC1(SETTING_GENLIST_ICON_1LINE_STYLE, itc_1text_1icon_divider);
 DEFINE_ITC1(SETTING_GENLIST_ICON_1LINE_STYLE, itc_multiline_1text_1icon);
 
-DEFINE_ITC1("1icon", itc_bg_1icon);
-DEFINE_ITC1("1icon", itc_1icon_with_no_line);
-DEFINE_ITC1("1icon", itc_1icon);
+DEFINE_ITC1(SETTING_GENLIST_1ICON_STYLE, itc_bg_1icon);
+DEFINE_ITC1(SETTING_GENLIST_1ICON_STYLE, itc_1icon_with_no_line);
+DEFINE_ITC1(SETTING_GENLIST_1ICON_STYLE, itc_1icon);
 
 DEFINE_ITC1("1text", itc_normal_1text);
 
