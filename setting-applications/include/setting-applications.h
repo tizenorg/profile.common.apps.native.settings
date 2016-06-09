@@ -46,6 +46,8 @@ struct _SettingApplicationsUG {
 
 	/* genlist */
 	Evas_Object *genlist;
+
+	setting_view *view_to_load;
 };
 
 extern setting_view setting_view_applications_main;
