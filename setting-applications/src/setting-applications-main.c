@@ -58,10 +58,14 @@ static int setting_applications_main_create(void *cb)
 
 	ad->genlist = scroller;
 	elm_genlist_mode_set(ad->genlist, ELM_LIST_COMPRESS);
+	/*register vconf key */
+
+	evas_object_smart_callback_add(ad->genlist, "realized",
+								   __gl_realized_cb, NULL);
 
 	setting_create_Gendial_field_def(ad->genlist, &itc_1text,
-									 setting_applications_main_mouse_up_Gendial_list_cb,
-									 ad, SWALLOW_Type_INVALID, NULL,
+									 setting_applications_main_mouse_up_Gendial_list_cb, ad,
+									 SWALLOW_Type_INVALID, NULL,
 									 NULL, 0,
 									 KeyStr_ApplicationManager, NULL, NULL);
 
@@ -74,9 +78,10 @@ static int setting_applications_main_destroy(void *cb)
 	SETTING_TRACE_BEGIN;
 	/* error check */
 	retv_if(cb == NULL, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
-	retv_if(!(setting_view_applications_main.is_create), SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
+	retv_if(!(setting_view_applications_main.is_create),
+			SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
 
-	SettingApplicationsUG *ad = (SettingApplicationsUG *) cb;
+	SettingApplicationsUG *ad = (SettingApplicationsUG *)cb;
 
 	if (ad->ly_main != NULL) {
 		evas_object_del(ad->ly_main);
@@ -92,7 +97,7 @@ static int setting_applications_main_update(void *cb)
 	/* error check */
 	retv_if(cb == NULL, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
 
-	SettingApplicationsUG *ad = (SettingApplicationsUG *) cb;
+	SettingApplicationsUG *ad = (SettingApplicationsUG *)cb;
 
 	if (ad->ly_main != NULL) {
 		evas_object_show(ad->ly_main);
@@ -113,11 +118,12 @@ static int setting_applications_main_cleanup(void *cb)
  *
  ***************************************************/
 
-static Eina_Bool setting_applications_manage_apps_freeze_event_timer_cb(void *cb)
+static Eina_Bool setting_applications_manage_apps_freeze_event_timer_cb(
+	void *cb)
 {
 	SETTING_TRACE_BEGIN;
 	retv_if(cb == NULL, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
-	SettingApplicationsUG *ad = (SettingApplicationsUG *) cb;
+	SettingApplicationsUG *ad = (SettingApplicationsUG *)cb;
 
 	evas_object_freeze_events_set(ad->navi_bar, EINA_FALSE);
 
@@ -131,26 +137,30 @@ static Eina_Bool setting_applications_manage_apps_freeze_event_timer_cb(void *cb
 static void setting_applications_manage_apps_ug(SettingApplicationsUG *ad)
 {
 	SETTING_TRACE_BEGIN;
-	if (app_launcher("setting-manage-applications-efl|viewtype:manage-applications") == 0) {
-		ad->event_freeze_timer = ecore_timer_add(1, setting_applications_manage_apps_freeze_event_timer_cb, ad);
+	if (app_launcher(
+			"setting-manage-applications-efl|viewtype:manage-applications")
+		== 0) {
+		ad->event_freeze_timer = ecore_timer_add(1,
+												 setting_applications_manage_apps_freeze_event_timer_cb,
+												 ad);
 		evas_object_freeze_events_set(ad->navi_bar, EINA_TRUE);
 	}
 }
 
-static void
-setting_applications_main_mouse_up_Gendial_list_cb(void *data, Evas_Object *obj,
-												   void *event_info)
+static void setting_applications_main_mouse_up_Gendial_list_cb(void *data,
+															   Evas_Object *obj, void *event_info)
 {
 	/* error check */
 	setting_retm_if(data == NULL, "Data parameter is NULL");
 
 	retm_if(event_info == NULL, "Invalid argument: event info is NULL");
-	Elm_Object_Item *item = (Elm_Object_Item *) event_info;
+	Elm_Object_Item *item = (Elm_Object_Item *)event_info;
 	elm_genlist_item_selected_set(item, 0);
 	Setting_GenGroupItem_Data *list_item =
-		(Setting_GenGroupItem_Data *) elm_object_item_data_get(item);
+		(Setting_GenGroupItem_Data *)elm_object_item_data_get(
+			item);
 
-	SettingApplicationsUG *ad = (SettingApplicationsUG *) data;
+	SettingApplicationsUG *ad = (SettingApplicationsUG *)data;
 
 	SETTING_TRACE("clicking item[%s]", _(list_item->keyStr));
 
@@ -159,14 +169,15 @@ setting_applications_main_mouse_up_Gendial_list_cb(void *data, Evas_Object *obj,
 	}
 }
 
-static Eina_Bool setting_applications_main_click_softkey_back_cb(void *data, Elm_Object_Item *it)
+static Eina_Bool setting_applications_main_click_softkey_back_cb(void *data,
+																 Elm_Object_Item *it)
 {
 	SETTING_TRACE_BEGIN;
 	/* error check */
 	setting_retvm_if(data == NULL, EINA_FALSE,
 					 "[Setting > Applications] Data parameter is NULL");
 
-	SettingApplicationsUG *ad = (SettingApplicationsUG *) data;
+	SettingApplicationsUG *ad = (SettingApplicationsUG *)data;
 
 	/* Send destroy request */
 	ug_destroy_me(ad->ug);

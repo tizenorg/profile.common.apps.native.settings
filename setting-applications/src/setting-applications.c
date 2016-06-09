@@ -20,20 +20,40 @@
  */
 
 #include <setting-applications.h>
+#include <Eina.h>
+#include <setting-cfg.h>
 
 #ifndef UG_MODULE_API
 #define UG_MODULE_API __attribute__ ((visibility("default")))
 #endif
 
+setting_view *__get_applications_view_to_load(void *data, app_control_h service)
+{
+	SETTING_TRACE_BEGIN;
+	setting_retvm_if((!data), NULL, "!data");
+
+	setting_view_node_table_register(&setting_view_applications_main, NULL);
+	return &setting_view_applications_main;
+}
+
+Evas_Object *__get_applications_layout_to_return(app_control_h service,
+												 void *priv)
+{
+	SETTING_TRACE_BEGIN;
+	SettingApplicationsUG *applicationsUG = priv;
+	return applicationsUG->ly_main;
+
+}
+
 static void setting_applications_ug_cb_resize(void *data, Evas *e,
 											  Evas_Object *obj, void *event_info)
 {
-	SettingApplicationsUG *ad = (SettingApplicationsUG *) data;
+	SettingApplicationsUG *ad = (SettingApplicationsUG *)data;
+	setting_view_update(ad->view_to_load, ad);
 }
 
 static void *setting_applications_ug_on_create(ui_gadget_h ug,
-											   enum ug_mode mode, app_control_h service,
-											   void *priv)
+											   enum ug_mode mode, app_control_h service, void *priv)
 {
 	setting_retvm_if((!priv), NULL, "!priv");
 	SETTING_TRACE_BEGIN;
@@ -42,8 +62,8 @@ static void *setting_applications_ug_on_create(ui_gadget_h ug,
 	applicationsUG->ug = ug;
 	setting_set_i18n(SETTING_PACKAGE, SETTING_LOCALEDIR);
 
-	applicationsUG->win_main_layout = (Evas_Object *) ug_get_parent_layout(ug);
-	applicationsUG->win_get = (Evas_Object *) ug_get_window();
+	applicationsUG->win_main_layout = (Evas_Object *)ug_get_parent_layout(ug);
+	applicationsUG->win_get = (Evas_Object *)ug_get_window();
 
 	applicationsUG->evas = evas_object_evas_get(applicationsUG->win_main_layout);
 
@@ -54,66 +74,79 @@ static void *setting_applications_ug_on_create(ui_gadget_h ug,
 	setting_view_node_table_intialize();
 
 	/*	creating a view. */
-	setting_view_node_set_cur_view(&setting_view_applications_main);
-	setting_view_create(&setting_view_applications_main, (void *)applicationsUG);
+	applicationsUG->view_to_load = __get_applications_view_to_load(
+									   applicationsUG, service);
+	setting_retvm_if(NULL == applicationsUG->view_to_load, NULL,
+					 "NULL == applicationsUG->view_to_load");
 
+	setting_view_node_set_cur_view(applicationsUG->view_to_load);
+	setting_view_create(applicationsUG->view_to_load,
+						(void *)applicationsUG);
 	evas_object_event_callback_add(applicationsUG->win_main_layout,
-								   EVAS_CALLBACK_RESIZE,
-								   setting_applications_ug_cb_resize, applicationsUG);
-	return applicationsUG->ly_main;
+								   EVAS_CALLBACK_RESIZE, setting_applications_ug_cb_resize,
+								   applicationsUG);
+	return __get_applications_layout_to_return(service, applicationsUG);
 }
 
-static void setting_applications_ug_on_start(ui_gadget_h ug, app_control_h service,
-											 void *priv)
+static void setting_applications_ug_on_start(ui_gadget_h ug,
+											 app_control_h service, void *priv)
 {
 }
 
-static void setting_applications_ug_on_pause(ui_gadget_h ug, app_control_h service,
-											 void *priv)
-{
-	SETTING_TRACE_BEGIN;
-	setting_retm_if((!priv), "!priv");
-}
-
-static void setting_applications_ug_on_resume(ui_gadget_h ug, app_control_h service,
-											  void *priv)
+static void setting_applications_ug_on_pause(ui_gadget_h ug,
+											 app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	setting_retm_if((!priv), "!priv");
+}
+
+static void setting_applications_ug_on_resume(ui_gadget_h ug,
+											  app_control_h service, void *priv)
+{
+	SETTING_TRACE_BEGIN;
+	setting_retm_if((!priv), "!priv");
 
 }
 
-static void setting_applications_ug_on_destroy(ui_gadget_h ug, app_control_h service,
-											   void *priv)
+static void setting_applications_ug_on_destroy(ui_gadget_h ug,
+											   app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	setting_retm_if((!priv), "!priv");
 	SettingApplicationsUG *applicationsUG = priv;
 
 	/* fix flash issue for gallery */
-	evas_object_event_callback_del(applicationsUG->win_main_layout, EVAS_CALLBACK_RESIZE, setting_applications_ug_cb_resize);
+	evas_object_event_callback_del(applicationsUG->win_main_layout,
+								   EVAS_CALLBACK_RESIZE,
+								   setting_applications_ug_cb_resize);
 	applicationsUG->ug = ug;
 
-	/*	called when this shared gadget is terminated. similar with app_exit */
-	setting_view_destroy(&setting_view_applications_main, applicationsUG);
+	/* called when this shared gadget is terminated. similar with app_exit */
+	if (&setting_view_applications_main == applicationsUG->view_to_load) {
+		setting_view_destroy(&setting_view_applications_main,
+							 applicationsUG);
+	} else {
+		/* do nothing */
+	}
 
 	if (NULL != ug_get_layout(applicationsUG->ug)) {
-		evas_object_hide((Evas_Object *) ug_get_layout(applicationsUG->ug));
-		evas_object_del((Evas_Object *) ug_get_layout(applicationsUG->ug));
+		evas_object_hide(
+			(Evas_Object *)ug_get_layout(applicationsUG->ug));
+		evas_object_del(
+			(Evas_Object *)ug_get_layout(applicationsUG->ug));
 	}
 
 	SETTING_TRACE_END;
 }
 
-static void setting_applications_ug_on_message(ui_gadget_h ug, app_control_h msg,
-											   app_control_h service, void *priv)
+static void setting_applications_ug_on_message(ui_gadget_h ug,
+											   app_control_h msg, app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 }
 
 static void setting_applications_ug_on_event(ui_gadget_h ug,
-											 enum ug_event event, app_control_h service,
-											 void *priv)
+											 enum ug_event event, app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	SettingApplicationsUG *ad = priv;
@@ -139,16 +172,16 @@ static void setting_applications_ug_on_event(ui_gadget_h ug,
 }
 
 static void setting_applications_ug_on_key_event(ui_gadget_h ug,
-												 enum ug_key_event event,
-												 app_control_h service, void *priv)
+												 enum ug_key_event event, app_control_h service, void *priv)
 {
 	SETTING_TRACE_BEGIN;
 	SettingApplicationsUG *ad = (SettingApplicationsUG *) priv;
 
 	switch (event) {
 	case UG_KEY_EVENT_END: {
-			if (elm_naviframe_top_item_get(ad->navi_bar) ==
-				elm_naviframe_bottom_item_get(ad->navi_bar)) {
+			if (elm_naviframe_top_item_get(ad->navi_bar)
+				== elm_naviframe_bottom_item_get(
+					ad->navi_bar)) {
 				ug_destroy_me(ug);
 			} else {
 				setting_view_cb_at_endKey(ad);
@@ -163,8 +196,10 @@ static void setting_applications_ug_on_key_event(ui_gadget_h ug,
 UG_MODULE_API int UG_MODULE_INIT(struct ug_module_ops *ops)
 {
 	SETTING_TRACE_BEGIN;
-	SettingApplicationsUG *applicationsUG = calloc(1, sizeof(SettingApplicationsUG));
-	setting_retvm_if(!applicationsUG, -1, "Create SettingApplicationsUG obj failed");
+	SettingApplicationsUG *applicationsUG = calloc(1,
+												   sizeof(SettingApplicationsUG));
+	setting_retvm_if(!applicationsUG, -1,
+					 "Create SettingApplicationsUG obj failed");
 
 	memset(applicationsUG, 0x00, sizeof(SettingApplicationsUG));
 

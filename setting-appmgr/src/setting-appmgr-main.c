@@ -162,7 +162,7 @@ static UNUSED char *_appmgrUg_access_info_prepend_cb(void *data, Evas_Object *ob
 	retv_if(!data, NULL);
 	char str[256];
 
-	sprintf(str, 256, _("IDS_CAM_BODY_SHOWING_PD_ITEMS_T_TTS"), data);
+	snprintf(str, 256, _("IDS_CAM_BODY_SHOWING_PD_ITEMS_T_TTS"), data);
 	return strdup(_(str));
 }
 
@@ -425,20 +425,19 @@ Evas_Object *appmgrUg_main_gl_icon_new_get(void *data, Evas_Object *obj, const c
 	retv_if(data == NULL, NULL);
 
 	if (!safeStrCmp(part, "elm.swallow.icon")) {
-		icon = elm_icon_add(obj);
 
 		SETTING_TRACE(" -------> info->icon_path : %s", info->icon_path);
 
 		if (NULL == info->icon_path)
 			info->icon_path = appmgrUg_get_listinfo_default_icon(info->mainappid);
 
+		icon = elm_icon_add(obj);
 		elm_image_file_set(icon, info->icon_path, NULL);
 		elm_image_resizable_set(icon, EINA_TRUE, EINA_TRUE);
-
-		evas_object_size_hint_weight_set(icon, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-		evas_object_size_hint_align_set(icon, EVAS_HINT_FILL, EVAS_HINT_FILL);
+		evas_object_size_hint_min_set(icon, SETTING_APP_MGR_ICON_SIZE, SETTING_APP_MGR_ICON_SIZE);
 
 		return icon;
+
 	} else {
 		return NULL;
 	}

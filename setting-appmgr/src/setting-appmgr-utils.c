@@ -837,6 +837,12 @@ Evas_Object *appmgrUg_info_2button1_gl_icon_get(void *data, Evas_Object *obj,
 	elm_box_pack_end(box, button1);
 	elm_box_pack_end(box, button2);
 
+	/* TODO: remove when box size bug will be fixed */
+	int w, h;
+	evas_object_size_hint_min_get(button1, &w, &h);
+	evas_object_size_hint_min_set(box, 0, h);
+	/* */
+
 	evas_object_show(button1);
 	evas_object_show(button2);
 	evas_object_show(box);
@@ -901,6 +907,12 @@ Evas_Object *appmgrUg_info_2button2_gl_icon_get(void *data, Evas_Object *obj,
 	elm_box_pack_end(box, button1);
 	elm_box_pack_end(box, button2);
 
+	/* TODO: remove when box size bug will be fixed */
+	int w, h;
+	evas_object_size_hint_min_get(button1, &w, &h);
+	evas_object_size_hint_min_set(box, 0, h);
+	/* */
+
 	evas_object_show(button1);
 	evas_object_show(button2);
 	evas_object_show(box);
@@ -947,6 +959,12 @@ Evas_Object *appmgrUg_info_1button_gl_icon_get(void *data, Evas_Object *obj,
 
 	elm_box_pack_end(box, button1);
 	elm_box_pack_end(box, button2);
+
+	/* TODO: remove when box size bug will be fixed */
+	int w, h;
+	evas_object_size_hint_min_get(button1, &w, &h);
+	evas_object_size_hint_min_set(box, 0, h);
+	/* */
 
 	/*evas_object_show(button1); */
 	evas_object_show(button1);

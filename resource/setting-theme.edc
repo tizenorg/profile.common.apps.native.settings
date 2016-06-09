@@ -4548,6 +4548,7 @@ collections
                   min: 1 1;
                   align: 0.5 0.5;
                   text_class: "tizen";
+                  ellipsis: -1;
                }
             }
             description { state: "hide" 0.0;
@@ -4866,6 +4867,7 @@ collections
 						min: 0 0;
 						align: 0.0 0.5;
 						text_class: "tizen";
+						ellipsis: -1;
 					}
 				}
 				description { state: "visible" 0.0;
@@ -4897,6 +4899,7 @@ collections
 				}
 			}
 			part { name: "units";
+				type: RECT;
 				mouse_events: 0;
 				scale: 1;
 				description { state: "default" 0.0;
@@ -4926,6 +4929,7 @@ collections
 						min: 0 0;
 						align: 0.0 0.5;
 						text_class: "tizen";
+						ellipsis: -1;
 					}
 				}
 				description { state: "visible" 0.0;
@@ -5432,6 +5436,7 @@ collections
 						size: 120;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -5490,6 +5495,7 @@ collections
 						size: 35;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -5543,6 +5549,7 @@ collections
 						size: 105;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -5611,6 +5618,7 @@ collections
 						size: 32;
 						min: 1 0;
 						align: 1.0 1.0;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -5648,6 +5656,7 @@ collections
 						size: 32;
 						min: 1 0;
 						align: 0.0 1.0;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6302,6 +6311,7 @@ collections
 						size: 32;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6417,6 +6427,7 @@ collections
 						size: 72;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6440,6 +6451,7 @@ collections
 						size: 64;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6492,6 +6504,7 @@ collections
 						size: 30;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6589,6 +6602,7 @@ collections
 						size: 90;
 						min: 1 1;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6627,6 +6641,7 @@ collections
 						size: 30;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6649,6 +6664,7 @@ collections
 						size: 34;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -6685,6 +6701,7 @@ collections
 						size: 24;
 						min: 1 0;
 						align: 0.0 0.5;
+						ellipsis: -1;
 					}
 				}
 			}
@@ -8250,11 +8267,9 @@ collections
 				type: RECT;
 				scale: 1;
 				description {
-					min: 0 96;
 					state: "default" 0.0;
-					rel1 { relative: 0.0 0.0; offset: 0 0;}
-					rel2 { relative: 1.0 1.0; offset: 0 0;}
-					color: 8 8 8 8;
+					min: 0 96;
+					color_class: "B041";
 				}
 				description {
 					inherit: "default" 0.0;
@@ -8262,21 +8277,6 @@ collections
 					min: 0 166;
 				}
 			}
-			part { name: "searchbar_bg";
-				    type: RECT;
-				    repeat_events: 1;
-				    scale: 1;
-				    description { state: "default" 0.0;
-				       min: 0 99;
-				       fixed: 0 1;
-				       align: 0.0 0.0;
-				       rel1 { relative: 0.0 0.0; offset: 0 2; to: "bg"; }
-				       rel2 { relative: 1.0 1.0; offset: 0 25; to: "bg"; }
-				       //color: 8 8 8 8;
-				       color_class: "B041";
-				    }
-				 }
-		///////////////////////////////////////////
 			part {
 				name: "elm.swallow.search.icon";
 				type: SWALLOW;
@@ -8286,9 +8286,9 @@ collections
 					state: "default" 0.0;
 					min: 35 35;
 					fixed: 1 1;
-					align: 0.0 0.0;
-					rel1 { relative: 0.0 0.0; offset: 10 22; to: "bg"; }
-					rel2 { relative: 0.0 1.0; offset: 45 0; to: "bg"; }
+					align: 1.0 0.5;
+					rel1 { relative: 1.0 0.5; offset: -10 0; to: "bg"; }
+					rel2 { relative: 1.0 0.5; offset: -10 0; to: "bg"; }
 				}
 			}
 			part {
@@ -8298,11 +8298,10 @@ collections
 				scale: 1;
 				description {
 					state: "default" 0.0;
-					min: 0 66;
 					fixed: 0 1;
-					align: 0.0 0.0;
-					rel1 { relative: 0.0 0.0; offset: 40 18; to: "bg"; }
-					rel2 { relative: 1.0 0.0; offset: -16 -12; to: "bg"; }
+					align: 0.0 0.5;
+					rel1 { relative: 0.0 0.5; offset: 40 0; to: "bg"; }
+					rel2 { relative: 0.0 0.5; offset: -5 0; to: "elm.swallow.search.icon"; }
 				}
 			}
 		}
@@ -8874,7 +8873,8 @@ collections
 		 type: SPACER;
 		 scale: 1;
 		 description { state: "default" 0.0;
-		    min: 0 300;
+		    min: 0 96;
+		    fixed: 1 1;
 		 }
 	      }
 
@@ -8929,6 +8929,7 @@ collections
 				type: RECT;
 				mouse_events: 1;
 				description {
+                        color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						rel1 { relative: 0.0 0.0;}
@@ -8941,6 +8942,7 @@ collections
 				type: RECT;
 				mouse_events: 1;
 				description {
+                        color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						rel1 { relative: 0.0 0.2;}
@@ -8965,6 +8967,7 @@ collections
 				type: RECT;
 				mouse_events: 1;
 				description {
+                        color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						rel1 { relative: 0.5 0.2;}
@@ -8989,6 +8992,7 @@ collections
 				type: RECT;
 				mouse_events: 1;
 				description {
+                        color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						rel1 { relative: 0.9 0.2;}
@@ -9162,6 +9166,7 @@ collections
 				type: RECT;
 				mouse_events: 1;
 				description {
+						color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						rel1 { relative: 0.0 0.0;}
@@ -9174,6 +9179,7 @@ collections
 				type: RECT;
 				mouse_events: 1;
 				description {
+						color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						rel1 { relative: 0.0 0.0;offset: 20 0; to: "bg";}
@@ -9186,6 +9192,7 @@ collections
 				type: SWALLOW;
 				mouse_events: 1;
 				description {
+						color: 0 0 0 0;
 						state: "default" 0.0;
 						fixed: 1 1;
 						//rel1 { relative: 0.0 0.0; offset: 20 0;to: "padding_left";}
