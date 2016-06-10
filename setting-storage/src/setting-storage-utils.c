@@ -24,7 +24,6 @@
 #include "setting-storage-async-worker.h"
 #include "setting-storage-utils.h"
 
-
 void storageUg_popup_del(void *data, Evas_Object *obj, void *event_info)
 {
 	SettingStorageUG *ad = data;
@@ -50,13 +49,14 @@ void storageUg_get_internal_storage_status(double *total, double *avail)
 
 	ret = storage_get_internal_memory_size(&s);
 	if (0 == ret) {
-		SETTING_TRACE("Total = %lu, Available = %lu", (s.f_frsize * s.f_blocks),
-					  (s.f_bsize * s.f_bavail));
-		tmp_total = (double)s.f_frsize * s.f_blocks;
+		SETTING_TRACE("Total = %lu, Available = %lu",
+				(s.f_frsize * s.f_blocks),
+				(s.f_bsize * s.f_bavail));
+		tmp_total = (double) s.f_frsize * s.f_blocks;
 #if 0
 		*avail = (double)s.f_bfree * s.f_frsize;
 #else
-		*avail = (double)s.f_bsize * s.f_bavail;
+		*avail = (double) s.f_bsize * s.f_bavail;
 #endif
 		if (sz_16G < tmp_total)
 			*total = sz_32G;
@@ -68,7 +68,7 @@ void storageUg_get_internal_storage_status(double *total, double *avail)
 }
 
 void storageUg_get_external_storage_status(const char *path, double *total,
-										   double *avail)
+		double *avail)
 {
 	struct statvfs s;
 
@@ -77,13 +77,14 @@ void storageUg_get_external_storage_status(const char *path, double *total,
 	ret_if(NULL == avail);
 
 	if (!storage_get_external_memory_size(&s)) {
-		SETTING_TRACE("f_frsize = %ld f_blocks = %ld f_bsize = %ld f_bavail = %ld ",
-					  s.f_frsize, s.f_blocks, s.f_bsize, s.f_bavail);
-		*total = (double)s.f_frsize * s.f_blocks;
+		SETTING_TRACE("f_frsize = %ld f_blocks = %ld f_bsize = %ld "
+				"f_bavail = %ld ",
+				s.f_frsize, s.f_blocks, s.f_bsize, s.f_bavail);
+		*total = (double) s.f_frsize * s.f_blocks;
 #if 0
 		*avail = (double)s.f_bsize * s.f_bavail;
 #else
-		*avail = (double)s.f_bfree * s.f_frsize;
+		*avail = (double) s.f_bfree * s.f_frsize;
 		SETTING_TRACE("NEW STYLE, %ld", *avail);
 #endif
 	}
@@ -96,18 +97,20 @@ void storageUg_size_to_str(double size, char *desc, int desc_size)
 	const int MEGABYTE_VALUE = KILOBYTE_VALUE * 1024;
 	const int GIGABYTE_VALUE = MEGABYTE_VALUE * 1024;
 
-	if (size < MEGABYTE_VALUE) {	/* size < 1MB: show x.xKB */
+	if (size < MEGABYTE_VALUE) { /* size < 1MB: show x.xKB */
 		tmp_size = size / KILOBYTE_VALUE;
-		snprintf(desc, desc_size, "%4.2lf%s", tmp_size, _(STORAGEUG_STR_KB));
-	} else if (size < GIGABYTE_VALUE) {	/* size < 1GB: show x.xMB */
+		snprintf(desc, desc_size, "%4.2lf%s", tmp_size,
+				_(STORAGEUG_STR_KB));
+	} else if (size < GIGABYTE_VALUE) { /* size < 1GB: show x.xMB */
 		tmp_size = size / MEGABYTE_VALUE;
-		snprintf(desc, desc_size, "%4.2lf%s", tmp_size, _(STORAGEUG_STR_MB));
+		snprintf(desc, desc_size, "%4.2lf%s", tmp_size,
+				_(STORAGEUG_STR_MB));
 	} else { /* 1G <= size: show x.xGB */
 		tmp_size = size / GIGABYTE_VALUE;
-		snprintf(desc, desc_size, "%4.2lf%s", tmp_size, _(STORAGEUG_STR_GB));
+		snprintf(desc, desc_size, "%4.2lf%s", tmp_size,
+				_(STORAGEUG_STR_GB));
 	}
 }
-
 
 void storageUg_ug_layout_cb(ui_gadget_h ug, enum ug_mode mode, void *priv)
 {
@@ -123,7 +126,8 @@ void storageUg_ug_layout_cb(ui_gadget_h ug, enum ug_mode mode, void *priv)
 
 	switch (mode) {
 	case UG_MODE_FULLVIEW:
-		evas_object_size_hint_weight_set(base, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+		evas_object_size_hint_weight_set(base, EVAS_HINT_EXPAND,
+				EVAS_HINT_EXPAND);
 		evas_object_show(base);
 		break;
 	default:
@@ -153,8 +157,8 @@ void storageUg_fail_popup(SettingStorageUG *ad)
 	}
 
 	ad->popup = setting_create_popup(ad, ad->win, NULL,
-									 STORAGEUG_STR_FAIL, storageUg_popup_del,
-									 SETTING_STORAGE_POPUP_TIMER, FALSE, FALSE, 0);
+	STORAGEUG_STR_FAIL, storageUg_popup_del,
+	SETTING_STORAGE_POPUP_TIMER, FALSE, FALSE, 0);
 }
 
 void storageUg_manage_app_ug(SettingStorageUG *ad)
@@ -173,11 +177,11 @@ void storageUg_manage_app_ug(SettingStorageUG *ad)
 	memset(&cbs, 0, sizeof(struct ug_cbs));
 	cbs.layout_cb = storageUg_ug_layout_cb;
 	cbs.destroy_cb = storageUg_ug_destroy_cb;
-	cbs.priv = (void *)ad;
+	cbs.priv = (void *) ad;
 
 	elm_object_tree_focus_allow_set(ad->lo_main, EINA_FALSE);
-	ug = setting_ug_create(ad->ug, "setting-manage-applications-efl", UG_MODE_FULLVIEW,
-						   svc, &cbs);
+	ug = setting_ug_create(ad->ug, "setting-manage-applications-efl",
+			UG_MODE_FULLVIEW, svc, &cbs);
 	warn_if(NULL == ug, "setting_ug_create() Fail");
 
 	app_control_destroy(svc);
@@ -209,7 +213,6 @@ static bool storageUg_get_misces_item(media_info_h media, void *data)
 
 	return true;
 }
-
 
 static bool storageUg_get_media_item(media_info_h media, void *data)
 {
@@ -247,9 +250,9 @@ enum {
 };
 
 void storageug_genlist_text_update(Setting_GenGroupItem_Data *item_data,
-								   double size)
+		double size)
 {
-	char desc[STORAGEUG_MAX_STR_LEN] = {0};
+	char desc[STORAGEUG_MAX_STR_LEN] = { 0 };
 
 	ret_if(NULL == item_data);
 	ret_if(NULL == item_data->item);
@@ -257,8 +260,11 @@ void storageug_genlist_text_update(Setting_GenGroupItem_Data *item_data,
 	storageUg_size_to_str(size, desc, sizeof(desc));
 
 	G_FREE(item_data->sub_desc);
-	item_data->sub_desc = (char *)g_strdup(desc);
-	elm_genlist_item_fields_update(item_data->item, "elm.text.sub", ELM_GENLIST_ITEM_FIELD_TEXT);
+	item_data->sub_desc = (char *) g_strdup(desc);
+
+	elm_genlist_item_fields_update(item_data->item, "elm.text.sub",
+			ELM_GENLIST_ITEM_FIELD_TEXT);
+
 }
 
 void storageUg_get_internal_detail_cb(int fn_result, SettingStorageUG *ad)
@@ -268,12 +274,13 @@ void storageUg_get_internal_detail_cb(int fn_result, SettingStorageUG *ad)
 	ad->size_worker = NULL;
 
 	if (SETTING_RETURN_SUCCESS != fn_result) {
-		SETTING_TRACE_ERROR("storageUg_get_internal_detail() Fail(%d)", fn_result);
+		SETTING_TRACE_ERROR("storageUg_get_internal_detail() Fail(%d)",
+				fn_result);
 		return;
 	}
 
 	ad->sz_sys = ad->sz_inter_total - ad->sz_apps - ad->sz_pics_videos
-				 - ad->sz_audio - ad->sz_misces - ad->sz_inter_avail;
+			- ad->sz_audio - ad->sz_misces - ad->sz_inter_avail;
 
 	storageug_genlist_text_update(ad->sys_mem, ad->sz_sys);
 	storageug_genlist_text_update(ad->pics_videos, ad->sz_pics_videos);
@@ -285,7 +292,7 @@ void storageUg_get_internal_detail_cb(int fn_result, SettingStorageUG *ad)
 }
 
 static int storageUG_get_media_info(const char *cond, media_info_cb cb,
-									struct _calculated_sizes *sizes)
+		struct _calculated_sizes *sizes)
 {
 	int ret;
 	filter_h filter = NULL;
@@ -297,17 +304,21 @@ static int storageUG_get_media_info(const char *cond, media_info_cb cb,
 		return ret;
 	}
 
-	ret = media_filter_set_condition(filter, cond, MEDIA_CONTENT_COLLATE_DEFAULT);
+	ret = media_filter_set_condition(filter, cond,
+			MEDIA_CONTENT_COLLATE_DEFAULT);
 	if (MEDIA_CONTENT_ERROR_NONE != ret) {
 		media_filter_destroy(filter);
-		SETTING_TRACE_ERROR("media_filter_set_condition() Fail(%d)", ret);
+		SETTING_TRACE_ERROR("media_filter_set_condition() Fail(%d)",
+				ret);
 		return ret;
 	}
 
 	ret = media_info_foreach_media_from_db(filter, cb, sizes);
 	if (MEDIA_CONTENT_ERROR_NONE != ret) {
 		media_filter_destroy(filter);
-		SETTING_TRACE_ERROR("media_info_foreach_media_from_db() Fail(%d)", ret);
+		SETTING_TRACE_ERROR(
+				"media_info_foreach_media_from_db() Fail(%d)",
+				ret);
 		return ret;
 	}
 
@@ -319,32 +330,13 @@ static int storageUG_get_media_info(const char *cond, media_info_cb cb,
 
 	return ret;
 }
-static void storageUG_get_cache_files_size(pkgmgr_client *pc, const pkg_size_info_t *size_info, void *user_data)
-{
-	SETTING_TRACE_BEGIN;
-	setting_retm_if(NULL == user_data, "user_data is NULL");
-	setting_retm_if(NULL == size_info, "size_info is NULL");
-	/*char * path = app_get_cache_path(); */
-	/*SETTING_TRACE_DEBUG("cache path:%s",path); */
-	SettingStorageUG *ad = user_data;
-	ad->sz_caches = (double)(size_info->cache_size + size_info->ext_cache_size);
-	SETTING_TRACE_DEBUG("ad->sz_caches:%lf", ad->sz_caches);
-	storageug_genlist_text_update(ad->caches, ad->sz_caches);
-
-	setting_retm_if(!ad->pie_it, "!ad->pie_it")
-	elm_genlist_item_update(ad->pie_it);
-
-	pkgmgr_client_free(ad->pc_total_size);
-	ad->pc_total_size = NULL;
-	SETTING_TRACE_END;
-}
 
 int storageUg_get_internal_detail(SettingStorageUG *ad)
 {
 	int ret;
 	const char *cond;
 	const char *cond_misc;
-	struct _calculated_sizes sizes = {0.0, 0.0, 0.0};
+	struct _calculated_sizes sizes = { 0.0, 0.0, 0.0 };
 
 	retv_if(NULL == ad, SETTING_GENERAL_ERR_NULL_DATA_PARAMETER);
 
@@ -353,13 +345,16 @@ int storageUg_get_internal_detail(SettingStorageUG *ad)
 	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
 	cond = "((MEDIA_TYPE < 4) AND (MEDIA_STORAGE_TYPE=0))";
 	ret = storageUG_get_media_info(cond, storageUg_get_media_item, &sizes);
-	warn_if(MEDIA_CONTENT_ERROR_NONE != ret, "storageUG_get_media_info() Fail(%d)", ret);
+	warn_if(MEDIA_CONTENT_ERROR_NONE != ret,
+			"storageUG_get_media_info() Fail(%d)", ret);
 
 	storageUG_STOP_POINT;
 
 	cond_misc = "((MEDIA_TYPE=4) AND (MEDIA_STORAGE_TYPE=0))";
-	ret = storageUG_get_media_info(cond_misc, storageUg_get_misces_item, &sizes);
-	warn_if(MEDIA_CONTENT_ERROR_NONE != ret, "storageUG_get_media_info() Fail(%d)", ret);
+	ret = storageUG_get_media_info(cond_misc, storageUg_get_misces_item,
+			&sizes);
+	warn_if(MEDIA_CONTENT_ERROR_NONE != ret,
+			"storageUG_get_media_info() Fail(%d)", ret);
 
 	storageUG_STOP_POINT;
 
@@ -370,10 +365,41 @@ int storageUg_get_internal_detail(SettingStorageUG *ad)
 	return SETTING_RETURN_SUCCESS;
 }
 
-void storageUG_update_cache_info(SettingStorageUG *ad)
+static void storageUG_get_app_cache_size_cb(pkgmgr_client *pc,
+		const pkg_size_info_t *size_info, void *user_data)
 {
+	SETTING_TRACE_BEGIN;
+	setting_retm_if(NULL == user_data, "user_data is NULL");
+	setting_retm_if(NULL == size_info, "size_info is NULL");
 
-	/*package_manager_get_total_package_size_info(storageUG_get_cache_files_size, ad); */
+
+	/*char * path = app_get_cache_path(); */
+	/*SETTING_TRACE_DEBUG("cache path:%s",path); */
+	
+	SettingStorageUG *ad = user_data;
+
+	ad->sz_apps = (double) (size_info->app_size	+ size_info->ext_app_size);
+	ad->sz_caches = (double) (size_info->cache_size + size_info->ext_cache_size);
+	
+	SETTING_TRACE_DEBUG("size_info->app_size : %ld", ad->sz_apps);
+	SETTING_TRACE_DEBUG("ad->sz_caches:%lf", ad->sz_caches);
+	
+	storageug_genlist_text_update(ad->apps, ad->sz_apps);
+	storageug_genlist_text_update(ad->caches, ad->sz_caches);
+
+	setting_retm_if(!ad->pie_it, "!ad->pie_it");
+	elm_genlist_item_update(ad->pie_it);
+
+	pkgmgr_client_free(ad->pc_total_size);
+	ad->pc_total_size = NULL;
+	SETTING_TRACE_END;
+}
+
+void storageUG_update_apps_cache_info(SettingStorageUG *ad)
+{
+	SETTING_TRACE_BEGIN;
+	
+
 	int ret;
 
 	ret_if(NULL == ad);
@@ -387,44 +413,10 @@ void storageUG_update_cache_info(SettingStorageUG *ad)
 		return;
 	}
 
-	ret = pkgmgr_client_get_total_package_size_info(ad->pc_total_size, storageUG_get_cache_files_size, ad);
+	ret = pkgmgr_client_get_total_package_size_info(ad->pc_total_size,
+			storageUG_get_app_cache_size_cb, ad);
 
-	warn_if(ret, "pkgmgr_client_get_total_package_size_info() Fail(%d)", ret);
-}
+	setting_retm_if(ret, "pkgmgr_client_get_total_package_size_info() Fail(%d)", ret);
 
-static int storageUg_get_apps_info(uid_t target_uid, int req_id, const char *pkg_type,
-								   const char *pkgid, const char *key, const char *val, const void *pmsg, void *data)
-{
-	SettingStorageUG *ad = data;
-
-	retv_if(NULL == data, 0);
-	retv_if(NULL == val, 0);
-
-	ad->sz_apps = atof(val);
-
-	storageug_genlist_text_update(ad->apps, ad->sz_apps);
-	setting_retvm_if(!ad->pie_it, 0, "!ad->pie_it");
-	elm_genlist_item_update(ad->pie_it);
-	return 0;
-}
-
-void storageUG_update_apps_info(SettingStorageUG *ad)
-{
-	int ret;
-
-	ret_if(NULL == ad);
-
-	if (ad->pc)
-		pkgmgr_client_free(ad->pc);
-
-	ad->pc = pkgmgr_client_new(PC_REQUEST);
-	if (NULL == ad->pc) {
-		SETTING_TRACE_ERROR("pkgmgr_client_new() Fail");
-		return;
-	}
-
-	ret = pkgmgr_client_get_size(ad->pc, "get", PM_GET_ALL_PKGS, &storageUg_get_apps_info,
-								 ad);
-	warn_if(ret, "pkgmgr_client_get_size() Fail(%d)", ret);
 }
 
