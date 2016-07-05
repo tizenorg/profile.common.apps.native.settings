@@ -95,12 +95,12 @@ BuildRequires:  pkgconfig(bundle)
 BuildRequires:  pkgconfig(notification)
 BuildRequires:  pkgconfig(callmgr_client)
 BuildRequires:  pkgconfig(privilege-info)
+BuildRequires:  pkgconfig(security-privilege-manager)
 BuildRequires:  libcap-devel
 BuildRequires:  cmake
 BuildRequires:  edje-tools
 BuildRequires:  gettext-tools
 BuildRequires:  hash-signer
-Requires: security-privilege-manager
 Requires(post): attr
 
 %description

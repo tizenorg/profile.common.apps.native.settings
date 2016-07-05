@@ -1205,34 +1205,6 @@ setting_time_main_chk_btn_cb(void *data, Evas_Object *obj, void *event_info)
 	ad = list_item->userdata;
 	list_item->chk_status = elm_check_state_get(obj);	/*	for genlist update status */
 
-	int err;
-	if (obj == ad->data_auto->eo_check) {
-		int bvalue;
-		setting_get_bool_slp_key(BOOL_SLP_SETTING_AUTOMATIC_TIME_UPDATE,
-								 &bvalue, &err);
-		if (bvalue) {
-			(void) setting_set_bool_slp_key(BOOL_SLP_SETTING_AUTOMATIC_TIME_UPDATE, SETTING_ON_OFF_BTN_OFF, &err);
-			setting_update_gl_item_chk_status(ad->data_auto, 0);
-
-			if (ad->data_tz) {
-				setting_enable_genlist_item(ad->data_tz->item);
-			}
-
-			if (ad->data_time) {
-				ad->data_time->isItemDisableFlag = FALSE;
-				/*setting_disable_evas_object(ad->data_time->eo_check); */
-				setting_enable_evas_object(ad->data_time->btn_left);
-				setting_enable_evas_object(ad->data_time->btn_right);
-				setting_enable_genlist_item(ad->data_time->item);
-			}
-		} else {
-			__time_auto_update(ad);
-		}
-	}
-
-
-
-	/*#define FUNCTION_SYSTEM_SETTING 1 */
 #if FUNCTION_SYSTEM_SETTING
 	/* Time format */
 	if (ad->data_time_fmt == list_item) {
